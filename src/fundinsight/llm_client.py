@@ -1,9 +1,12 @@
-"""OpenAI LLM client wrapper for report generation."""
+"""OpenAI-compatible LLM client wrapper for report generation."""
 
 from __future__ import annotations
 
 import os
 from typing import Any, Protocol
+
+
+BAILIAN_BASE_URL = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 
 
 class LLMClient(Protocol):
@@ -17,27 +20,53 @@ class LLMConfigurationError(RuntimeError):
     """Raised when the LLM client cannot be configured."""
 
 
-class OpenAILLMClient:
-    """OpenAI chat completions client configured from environment variables."""
+class OpenAICompatibleLLMClient:
+    """Chat completions client configured for OpenAI-compatible providers."""
 
     def __init__(
         self,
         api_key: str | None = None,
         model: str | None = None,
+        base_url: str | None = None,
         *,
         temperature: float = 0.2,
     ) -> None:
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
-        self.model = model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+        provider = os.getenv("FUNDINSIGHT_LLM_PROVIDER", "openai").lower()
+        if provider in {"bailian", "dashscope", "aliyun"}:
+            self.provider = "bailian"
+            self.api_key = api_key or os.getenv("DASHSCOPE_API_KEY") or os.getenv(
+                "ALIYUN_BAILIAN_API_KEY"
+            )
+            self.model = (
+                model
+                or os.getenv("DASHSCOPE_MODEL")
+                or os.getenv("BAILIAN_MODEL")
+                or "qwen-plus"
+            )
+            self.base_url = (
+                base_url
+                or os.getenv("DASHSCOPE_BASE_URL")
+                or os.getenv("BAILIAN_BASE_URL")
+                or BAILIAN_BASE_URL
+            )
+        else:
+            self.provider = "openai"
+            self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+            self.model = model or os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+            self.base_url = base_url or os.getenv("OPENAI_BASE_URL")
         self.temperature = temperature
 
         if not self.api_key:
+            if self.provider == "bailian":
+                raise LLMConfigurationError(
+                    "DASHSCOPE_API_KEY or ALIYUN_BAILIAN_API_KEY is required for Bailian."
+                )
             raise LLMConfigurationError("OPENAI_API_KEY is required to call OpenAI.")
         if not self.model:
-            raise LLMConfigurationError("OPENAI_MODEL must not be empty.")
+            raise LLMConfigurationError("LLM model name must not be empty.")
 
     def generate(self, prompt: str) -> str:
-        """Call OpenAI and return the generated report text."""
+        """Call the configured provider and return the generated report text."""
 
         try:
             from openai import OpenAI
@@ -46,7 +75,10 @@ class OpenAILLMClient:
                 "The openai package is not installed. Install project dependencies first."
             ) from exc
 
-        client = OpenAI(api_key=self.api_key)
+        client_kwargs = {"api_key": self.api_key}
+        if self.base_url:
+            client_kwargs["base_url"] = self.base_url
+        client = OpenAI(**client_kwargs)
         response = client.chat.completions.create(
             model=self.model,
             messages=[
@@ -58,6 +90,9 @@ class OpenAILLMClient:
             temperature=self.temperature,
         )
         return _extract_response_text(response)
+
+
+OpenAILLMClient = OpenAICompatibleLLMClient
 
 
 def _extract_response_text(response: Any) -> str:

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Fund Report"
+  short_description: "Guide FundInsight fund report generation work."
+  default_prompt: "Use $fund-report to work on FundInsight Agent report prompts, guardrails, schema validation, or tests."

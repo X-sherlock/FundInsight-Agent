@@ -1,29 +1,39 @@
 # Report Structure
 
-The Markdown report must follow this structure.
+The Markdown report must follow this v0.2 structure. Section names should remain stable so `report_guard` can check the output without judging fund quality.
 
 ```markdown
-# {Fund Name} 基金指标分析报告
+# {基金名称} 客户级基金深度分析报告
 
 ## 1. 报告说明
 
-## 2. 基金基本信息
+## 2. 核心结论
 
-## 3. 核心指标概览
+## 3. 基金基本信息
 
-## 4. 收益表现分析
+## 4. 关键指标总览
 
-## 5. 风险与回撤分析
+## 5. 收益分析
 
-## 6. 风险调整后表现
+## 6. 收益质量分析
 
-## 7. 基准与同类对照
+## 7. 风险控制分析
 
-## 8. 管理人与运作观察
+## 8. 同类竞争力分析
 
-## 9. 数据缺口与解读限制
+## 9. 基准比较分析
 
-## 10. 非投资建议声明
+## 10. 图表解读
+
+## 11. 主要优势
+
+## 12. 主要风险
+
+## 13. 适合关注的场景
+
+## 14. 数据局限性
+
+## 15. 风险提示
 ```
 
 ## Section Requirements
@@ -32,39 +42,58 @@ The Markdown report must follow this structure.
 
 State the report date, data source if available, and that the report is based on structured historical indicators.
 
-### 2. 基金基本信息
+### 2. 核心结论
 
-Summarize fund code, name, type, inception date, fund company, benchmark, and category.
+Provide at least five concise conclusions. Each important conclusion should cite metrics and follow Data -> Comparison -> Interpretation -> Implication -> Caveat where possible.
 
-### 3. 核心指标概览
+### 3. 基金基本信息
 
-Use a compact Markdown table for selected metrics. Include units and time windows where possible.
+Summarize fund code, name, type, inception date, fund company, benchmark, category, manager, and observation date.
 
-### 4. 收益表现分析
+### 4. 关键指标总览
 
-Discuss historical return windows and excess return context. Cite metrics such as `return_1y`, `benchmark_return_1y`, and `excess_return_1y` when available. Do not predict future return.
+Use Markdown tables for selected return, benchmark, excess return, risk, drawdown, risk-adjusted, holding, fee, and scale metrics.
 
-### 5. 风险与回撤分析
+### 5. 收益分析
 
-Discuss volatility, downside volatility, beta, tracking error, maximum drawdown, and recovery information. Cite the relevant metrics.
+Discuss historical return windows and explicitly include fund return, benchmark return, and excess return when available.
 
-### 6. 风险调整后表现
+### 6. 收益质量分析
 
-Discuss Sharpe ratio, information ratio, and Calmar ratio when available. Do not turn these into a fund score.
+Discuss consistency across return windows, excess return, risk-adjusted return, and the relationship between return and volatility. Do not turn this into a score.
 
-### 7. 基准与同类对照
+### 7. 风险控制分析
 
-Use benchmark and category information when provided. If peer percentile or peer average is missing, state that peer comparison is limited.
+Discuss maximum drawdown, volatility, downside volatility, beta, tracking error, recovery days, and Sharpe ratio where available.
 
-### 8. 管理人与运作观察
+### 8. 同类竞争力分析
 
-Discuss manager tenure, background, AUM, turnover, holdings concentration, and fee information when available.
+Use `peer_summary.peer_rank_percentile` and related peer fields when provided. Explain percentile direction and limitations. If peer data is missing, state that peer analysis is limited.
 
-### 9. 数据缺口与解读限制
+### 9. 基准比较分析
 
-List missing fields and explain how they constrain interpretation.
+Use benchmark name, benchmark return, excess return, beta, and tracking error when available.
 
-### 10. 非投资建议声明
+### 10. 图表解读
 
-Include a clear statement that the report is not investment advice and does not constitute buy, sell, hold, timing, or allocation guidance.
+Include at least five chart placeholders such as `<!-- chart: returns_by_period -->`. Each placeholder must be followed by an interpretation paragraph.
 
+### 11. 主要优势
+
+Summarize historically observed strengths using evidence. Do not write promotional claims.
+
+### 12. 主要风险
+
+Summarize risk points and uncertainties using evidence.
+
+### 13. 适合关注的场景
+
+Describe research, due-diligence, or monitoring scenarios where the report may be useful. This is not a suitability, purchase, holding, timing, portfolio-construction, position-sizing, core-allocation, or allocation recommendation.
+
+### 14. 数据局限性
+
+List missing, stale, synthetic, or incomplete fields and explain how they limit interpretation.
+
+### 15. 风险提示
+
+Include a clear statement that the report is not investment advice and does not constitute buy, sell, hold, timing, or allocation guidance. State that historical indicators do not predict or guarantee future returns.

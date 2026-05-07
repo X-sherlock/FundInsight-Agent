@@ -10,11 +10,26 @@
   "currency": "CNY",
   "benchmark": {
     "name": "沪深300指数",
-    "code": "000300.SH"
+    "code": "000300.SH",
+    "description": "用于观察权益市场基准表现"
+  },
+  "benchmark_info": {
+    "name": "沪深300指数",
+    "code": "000300.SH",
+    "description": "样例基金采用的主要业绩比较基准"
   },
   "category": {
     "name": "主动混合型基金",
     "peer_count": 420
+  },
+  "peer_summary": {
+    "peer_rank_percentile": 0.32,
+    "peer_average_return_1y": 0.083,
+    "peer_median_return_1y": 0.076,
+    "peer_average_volatility_1y": 0.196,
+    "peer_count": 420,
+    "percentile_direction": "lower_is_better_rank_position",
+    "notes": "peer_rank_percentile 为样例同类分位，数值越低表示历史排名位置越靠前。"
   },
   "metrics": {
     "performance": {
@@ -26,6 +41,13 @@
       "return_since_inception_annualized": 0.083,
       "benchmark_return_1y": 0.091,
       "excess_return_1y": 0.035
+    },
+    "excess_return": {
+      "excess_return_1m": 0.006,
+      "excess_return_3m": 0.011,
+      "excess_return_6m": 0.018,
+      "excess_return_1y": 0.035,
+      "excess_return_3y_annualized": 0.012
     },
     "risk": {
       "volatility_1y": 0.182,
@@ -69,10 +91,14 @@
   "data_quality": {
     "source": "synthetic_sample",
     "missing_fields": [
-      "peer_percentile_1y",
-      "quarterly_holding_details"
+      "quarterly_holding_details",
+      "daily_nav_series",
+      "full_peer_distribution"
     ],
-    "notes": "示例数据为项目骨架阶段的合成数据，不代表真实基金。"
-  }
+    "notes": "示例数据为项目样例，不代表真实基金。"
+  },
+  "data_notes": [
+    "百分比指标使用小数形式，例如 0.126 表示 12.6%。",
+    "同类分位为样例口径，真实业务中需要记录数据供应商和排名方向。"
+  ]
 }
-

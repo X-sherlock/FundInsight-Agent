@@ -1,77 +1,44 @@
 # FundInsight Agent
 
-FundInsight Agent is a Codex Skill and LLM based fund intelligence evaluation system. Version 1 focuses on one capability: read structured fund metrics from a local JSON file and call a large language model to generate a Markdown fund analysis report.
+FundInsight Agent is a Codex Skill and LLM based fund intelligence report system. v0.2 generates a customer-grade Markdown fund analysis report from structured fund metrics JSON and also emits `chart_specs.json` for later chart rendering.
 
-The project is designed to evolve into a broader system for fund metric display, report management, fund comparison, batch analysis, report Q&A, report export, and Prompt version management.
+The system is intended for research assistance, report drafting, and structured interpretation of historical fund indicators. It is not an investment advisory product.
 
-## Version 1 Scope
+## v0.2 Scope
 
-- Input: local JSON fund metrics file.
-- Output: Markdown fund analysis report.
-- Analysis engine: direct LLM generation.
-- Codex Skill: `.agents/skills/fund-report/` for Codex App guidance.
-- Runtime prompt: `prompts/fund_report_prompt.md` for application LLM calls.
-- Guardrail: optional `report_guard` for prohibited expressions, required sections, and obvious boundary violations.
+- Input: one local JSON fund metrics file.
+- Output: one Markdown report and one chart specification JSON file.
+- Analysis engine: direct LLM generation using `prompts/fund_report_prompt.md`.
+- Planner: `report_planner` prepares derived metrics, metric tables, chart drafts, missing fields, and analysis focus for the LLM.
+- Parser: `report_parser` extracts `<report_markdown>` and `<chart_specs_json>` from the LLM output.
+- Guardrail: `report_guard` checks required sections, prohibited expressions, chart placeholders, and minimum depth signals.
 
-Version 1 deliberately does not include rule-based scoring, fixed-weight fund ranking, portfolio advice, or future-return prediction.
+v0.2 deliberately does not include a rule analyzer, fixed-weight score, deterministic fund rating engine, Web UI, database, or investment recommendation workflow.
 
-## Non-Goals
+## Workflow
 
-- No buy, sell, hold, timing, or allocation recommendations.
-- No prediction of future returns.
-- No deterministic score based on fixed indicator weights.
-- No manual runtime loader for Codex Skill files.
-- No complete Web UI, FastAPI backend, database, or batch pipeline in the first milestone.
+```text
+Local JSON
+  -> Pydantic schema validation
+  -> report_planner context generation
+  -> runtime prompt rendering
+  -> LLM call
+  -> report_parser extracts Markdown and chart specs
+  -> report_guard checks safety and structure
+  -> local Markdown and chart_specs.json output
+```
 
-## Planned Structure
+## Project Structure
 
 ```text
 FundInsightAgent/
-  .agents/
-    skills/
-      fund-report/
-        references/
-        assets/
-  prompts/
-  docs/
-  data/
-    sample/
-  src/
-    fundinsight/
-      cli.py
-      data_loader.py
-      llm_client.py
-      models.py
-      report_agent.py
-      report_guard.py
-    fundinsight_agent/
-      application/
-      domain/
-      infrastructure/
-      interfaces/
-      guards/
-  tests/
+  .agents/skills/fund-report/   Codex Skill guidance, not runtime code
+  prompts/                      Runtime LLM prompt templates
+  data/sample/                  Non-sensitive sample inputs
+  data/outputs/                 Local generated outputs
+  src/fundinsight/              Runtime package
+  tests/                        Unit tests
 ```
-
-## First-Version Workflow
-
-```text
-Local JSON -> Schema validation -> Runtime prompt rendering -> LLM call -> Markdown report -> Guard check
-```
-
-## Codex Skill
-
-The first Codex Skill lives in `.agents/skills/fund-report`. It defines indicator meanings, report structure, analysis principles, writing style, safety boundaries, and examples for Codex-assisted work.
-
-## Development Status
-
-V0.1 adds a local CLI flow:
-
-```text
-Local JSON -> Pydantic schema validation -> Runtime prompt rendering -> OpenAI LLM call -> Markdown report -> Guard check -> Local output file
-```
-
-The runtime code uses `prompts/fund_report_prompt.md` as the report-generation template. The Codex Skill under `.agents/skills/fund-report/` is development guidance only and is not loaded by the application.
 
 ## Installation
 
@@ -85,40 +52,89 @@ python -m pip install -e ".[dev]"
 
 ## Environment Variables
 
-PowerShell:
+### Bailian / DashScope
+
+```powershell
+$env:FUNDINSIGHT_LLM_PROVIDER = "bailian"
+$env:DASHSCOPE_API_KEY = "your_bailian_api_key"
+$env:DASHSCOPE_MODEL = "qwen-plus"
+```
+
+Default OpenAI-compatible Bailian endpoint:
+
+```text
+https://dashscope.aliyuncs.com/compatible-mode/v1
+```
+
+You can override it with `DASHSCOPE_BASE_URL` or `BAILIAN_BASE_URL`.
+
+### OpenAI
 
 ```powershell
 $env:OPENAI_API_KEY = "your_api_key"
 $env:OPENAI_MODEL = "gpt-4o-mini"
 ```
 
-cmd:
-
-```bat
-set OPENAI_API_KEY=your_api_key
-set OPENAI_MODEL=gpt-4o-mini
-```
-
-`OPENAI_API_KEY` is required. `OPENAI_MODEL` is optional and defaults to `gpt-4o-mini`.
+`OPENAI_MODEL` is optional and defaults to `gpt-4o-mini`.
 
 ## CLI Usage
 
-Generate a Markdown report from the sample metrics file:
+Generate a Markdown report and chart specs from the sample metrics file:
 
-```bash
-fundinsight report --input data/sample/fund_metrics.json --output data/outputs/000001_report.md
+```powershell
+fundinsight report --input data/sample/fund_metrics.json --output data/outputs/sample_report.md --chart-output data/outputs/sample_chart_specs.json
 ```
 
-The CLI validates the input JSON, renders `prompts/fund_report_prompt.md`, calls OpenAI, checks the generated Markdown with `report_guard`, and writes the report only when guard checks pass.
+If `--chart-output` is omitted, the CLI writes chart specs next to the Markdown report using `<output stem>_chart_specs.json`.
+
+## LLM Output Contract
+
+The runtime prompt requires the LLM response to contain two tagged sections:
+
+```text
+<report_markdown>
+完整 Markdown 报告
+</report_markdown>
+
+<chart_specs_json>
+合法图表配置 JSON
+</chart_specs_json>
+```
+
+The Markdown report must include core conclusions, key metric tables, return analysis, return quality analysis, risk control analysis, peer analysis, benchmark comparison, chart interpretation, strengths, risks, research scenarios, data limitations, and risk warnings.
+
+The chart specs are written as:
+
+```json
+{
+  "charts": [
+    {
+      "id": "returns_by_period",
+      "title": "多周期收益表现",
+      "type": "bar",
+      "description": "展示基金在不同历史观察窗口内的收益表现。",
+      "source_fields": ["metrics.performance.return_1y"],
+      "series": [{"name": "基金收益", "values": [{"period": "1Y", "value": 0.126}]}],
+      "encoding": {"x": "period", "y": "value"},
+      "x_axis": "观察周期",
+      "y_axis": "收益率",
+      "value_unit": "decimal_percent",
+      "notes": ["用于观察不同时间窗口的历史收益形态。"]
+    }
+  ]
+}
+```
+
+Every Markdown chart placeholder must have a matching chart spec with the same `id`.
 
 ## Tests
 
-```bash
-pytest
+```powershell
+.venv\Scripts\python -m pytest
 ```
 
-The tests cover schema validation, sample data loading, prompt rendering, report orchestration with a fake LLM client, guard checks, and CLI output behavior.
+The tests cover schema validation, planner context generation, prompt rendering, tagged output parsing, report orchestration with a fake LLM client, guard checks, chart spec output, LLM client configuration, and CLI behavior.
 
 ## Safety Boundary
 
-FundInsight Agent V0.1 does not implement a rule analyzer, fixed-weight score, fund rating formula, or investment recommendation workflow. Generated reports must not contain buy, sell, hold, timing, position-sizing, or future-return prediction advice.
+FundInsight Agent v0.2 must not output buy, sell, hold, timing, position-sizing, portfolio-allocation, core-allocation, or future-return prediction advice. It must not implement fixed-weight scoring, deterministic ratings, or suitability judgments.

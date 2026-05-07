@@ -1,11 +1,11 @@
-"""Pydantic models for structured fund metrics input."""
+"""Pydantic models for structured fund metrics input and v0.2 report outputs."""
 
 from __future__ import annotations
 
 from datetime import date
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class FundInsightModel(BaseModel):
@@ -25,11 +25,22 @@ class FundInfo(FundInsightModel):
 class BenchmarkInfo(FundInsightModel):
     name: str = Field(min_length=1)
     code: str = Field(min_length=1)
+    description: str | None = None
 
 
 class CategoryInfo(FundInsightModel):
     name: str = Field(min_length=1)
     peer_count: int | None = Field(default=None, ge=0)
+
+
+class PeerSummary(FundInsightModel):
+    peer_rank_percentile: float | None = Field(default=None, ge=0, le=1)
+    peer_average_return_1y: float | None = None
+    peer_median_return_1y: float | None = None
+    peer_average_volatility_1y: float | None = None
+    peer_count: int | None = Field(default=None, ge=0)
+    percentile_direction: str | None = None
+    notes: str | None = None
 
 
 class PerformanceMetrics(FundInsightModel):
@@ -41,6 +52,14 @@ class PerformanceMetrics(FundInsightModel):
     return_since_inception_annualized: float | None = None
     benchmark_return_1y: float | None = None
     excess_return_1y: float | None = None
+
+
+class ExcessReturnMetrics(FundInsightModel):
+    excess_return_1m: float | None = None
+    excess_return_3m: float | None = None
+    excess_return_6m: float | None = None
+    excess_return_1y: float | None = None
+    excess_return_3y_annualized: float | None = None
 
 
 class RiskMetrics(FundInsightModel):
@@ -90,6 +109,7 @@ class Metrics(FundInsightModel):
     holding: HoldingMetrics
     fee: FeeMetrics
     scale: ScaleMetrics
+    excess_return: ExcessReturnMetrics = Field(default_factory=ExcessReturnMetrics)
 
 
 class ManagerInfo(FundInsightModel):
@@ -108,13 +128,79 @@ class FundMetricsInput(FundInsightModel):
     fund: FundInfo
     as_of_date: date
     currency: str = Field(min_length=1)
-    benchmark: BenchmarkInfo
+    benchmark: BenchmarkInfo | None = None
+    benchmark_info: BenchmarkInfo | None = None
     category: CategoryInfo
+    peer_summary: PeerSummary | None = None
     metrics: Metrics
     manager: ManagerInfo
     data_quality: DataQuality
+    data_notes: list[str] = Field(default_factory=list)
+
+    @field_validator("data_notes", mode="before")
+    @classmethod
+    def _coerce_data_notes(cls, value: Any) -> list[str]:
+        if value is None:
+            return []
+        if isinstance(value, str):
+            return [value]
+        return value
+
+    @model_validator(mode="after")
+    def _require_benchmark_context(self) -> "FundMetricsInput":
+        if self.benchmark is None and self.benchmark_info is None:
+            raise ValueError("Either benchmark or benchmark_info is required.")
+        return self
+
+    @property
+    def resolved_benchmark(self) -> BenchmarkInfo:
+        benchmark = self.benchmark_info or self.benchmark
+        if benchmark is None:
+            raise ValueError("Benchmark context is missing.")
+        return benchmark
 
     def to_prompt_payload(self) -> dict[str, Any]:
         """Return a JSON-serializable payload for prompt rendering."""
+
+        return self.model_dump(mode="json")
+
+
+class ChartSeries(FundInsightModel):
+    name: str = Field(min_length=1)
+    values: list[dict[str, Any]] = Field(min_length=1)
+
+
+class ChartEncoding(FundInsightModel):
+    x: str | None = None
+    y: str | None = None
+    category: str | None = None
+    value: str | None = None
+
+
+class ChartSpec(FundInsightModel):
+    id: str = Field(min_length=1)
+    title: str = Field(min_length=1)
+    type: str = Field(min_length=1)
+    description: str = Field(min_length=1)
+    source_fields: list[str] = Field(min_length=1)
+    series: list[ChartSeries] = Field(min_length=1)
+    encoding: ChartEncoding = Field(default_factory=ChartEncoding)
+    x_axis: str | None = None
+    y_axis: str | None = None
+    value_unit: str | None = None
+    notes: list[str] = Field(default_factory=list)
+
+
+class ReportPlan(FundInsightModel):
+    source_metrics: dict[str, Any]
+    derived_metrics: dict[str, Any]
+    metric_tables: dict[str, list[dict[str, Any]]]
+    chart_specs: list[ChartSpec]
+    analysis_focus: list[str]
+    missing_fields: list[str]
+    data_notes: list[str]
+
+    def to_prompt_payload(self) -> dict[str, Any]:
+        """Return a JSON-serializable report context for the runtime prompt."""
 
         return self.model_dump(mode="json")

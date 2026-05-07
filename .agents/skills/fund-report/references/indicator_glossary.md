@@ -9,6 +9,8 @@
 - `fund.fund_company`: asset management company.
 - `as_of_date`: metric observation date.
 - `currency`: reporting currency.
+- `benchmark_info`: optional extended benchmark metadata, equivalent to or richer than `benchmark`.
+- `data_notes`: optional top-level notes about data freshness, source, coverage, or caveats.
 
 ## Performance Metrics
 
@@ -20,6 +22,15 @@
 - `return_since_inception_annualized`: annualized historical return since inception.
 - `benchmark_return_1y`: benchmark return over the latest one-year window.
 - `excess_return_1y`: fund return minus benchmark return over the latest one-year window.
+- `metrics.excess_return`: optional excess-return group for multiple windows such as one month, three months, six months, one year, and three-year annualized.
+
+## Peer Summary
+
+- `peer_summary.peer_rank_percentile`: same-category percentile position when available. The report must explain the direction implied by the data provider and avoid turning the percentile into an investment recommendation.
+- `peer_summary.peer_average_return_1y`: same-category average one-year historical return.
+- `peer_summary.peer_median_return_1y`: same-category median one-year historical return.
+- `peer_summary.peer_average_volatility_1y`: same-category average one-year volatility.
+- `peer_summary.peer_count`: number of comparable peer funds when available.
 
 ## Risk Metrics
 
@@ -63,4 +74,3 @@
 ## Value Format
 
 Unless otherwise specified, percentage-like values use decimal form. For example, `0.125` means `12.5%`.
-

@@ -14,9 +14,14 @@ def test_load_sample_fund_metrics() -> None:
     assert fund_metrics.fund.code == "000001"
     assert fund_metrics.fund.name == "示例稳健成长混合基金"
     assert fund_metrics.metrics.performance.return_1y == 0.126
+    assert fund_metrics.metrics.excess_return.excess_return_1y == 0.035
+    assert fund_metrics.peer_summary is not None
+    assert fund_metrics.peer_summary.peer_rank_percentile == 0.32
+    assert fund_metrics.resolved_benchmark.name == "沪深300指数"
     assert fund_metrics.data_quality.missing_fields == [
-        "peer_percentile_1y",
         "quarterly_holding_details",
+        "daily_nav_series",
+        "full_peer_distribution",
     ]
 
 
