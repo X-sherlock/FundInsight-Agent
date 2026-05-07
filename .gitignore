@@ -7,9 +7,14 @@ __pycache__/
 venv/
 build/
 dist/
+node_modules/
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+vitest.config.js
+vitest.config.d.ts
 *.egg-info/
 .env
 .env.*
 reports/*.md
 !reports/.gitkeep
-

@@ -41,6 +41,15 @@ This repository must not implement a rule analyzer, fixed-weight scoring formula
 - `data/sample/` contains non-sensitive sample inputs only.
 - `reports/` may be used for local generated Markdown reports and should not contain private user data.
 
+## Frontend Design Guidelines
+
+- FundInsight Agent frontend experiences should feel professional, clear, modern, and appropriate for a financial technology system.
+- Pages should not be rough demos; they should aim for the product completeness expected from a real system.
+- Report generation is only one system capability. Frontend structure must leave room for future modules such as fund metrics display, fund comparison, batch analysis, and historical report management.
+- When needed, `image2` / `gpt-image-2` may be used to generate page visual references, illustrations, empty states, report header images, or design assets.
+- Image generation outputs must support system functionality and visual consistency, and must not introduce unrelated decoration.
+- All image assets should be placed under `frontend/src/assets` or `docs/design/assets`, with their purpose documented in `docs/design.md`.
+
 ## Coding Guidance
 
 - Prefer small modules with explicit responsibilities.

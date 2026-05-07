@@ -5,12 +5,15 @@ description = "Skill-based fund intelligence report generation system."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+  "fastapi>=0.115.0",
   "openai>=1.0.0",
-  "pydantic>=2.0.0"
+  "pydantic>=2.0.0",
+  "uvicorn>=0.30.0"
 ]
 
 [project.scripts]
 fundinsight = "fundinsight.cli:main"
+fundinsight-api = "fundinsight.api:run"
 
 [project.optional-dependencies]
 dev = [

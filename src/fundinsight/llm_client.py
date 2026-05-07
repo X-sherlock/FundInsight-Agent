@@ -31,7 +31,7 @@ class OpenAICompatibleLLMClient:
         *,
         temperature: float = 0.2,
     ) -> None:
-        provider = os.getenv("FUNDINSIGHT_LLM_PROVIDER", "openai").lower()
+        provider = _resolve_provider()
         if provider in {"bailian", "dashscope", "aliyun"}:
             self.provider = "bailian"
             self.api_key = api_key or os.getenv("DASHSCOPE_API_KEY") or os.getenv(
@@ -93,6 +93,15 @@ class OpenAICompatibleLLMClient:
 
 
 OpenAILLMClient = OpenAICompatibleLLMClient
+
+
+def _resolve_provider() -> str:
+    configured_provider = os.getenv("FUNDINSIGHT_LLM_PROVIDER")
+    if configured_provider:
+        return configured_provider.lower()
+    if os.getenv("DASHSCOPE_API_KEY") or os.getenv("ALIYUN_BAILIAN_API_KEY"):
+        return "bailian"
+    return "openai"
 
 
 def _extract_response_text(response: Any) -> str:

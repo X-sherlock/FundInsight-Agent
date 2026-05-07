@@ -127,6 +127,63 @@ The chart specs are written as:
 
 Every Markdown chart placeholder must have a matching chart spec with the same `id`.
 
+## API And Frontend Integration
+
+Phase 4 adds a lightweight FastAPI backend for local frontend integration.
+
+Start the backend:
+
+```powershell
+fundinsight-api
+```
+
+By default, API report tasks save reports even when `report_guard` finds structure or boundary issues. The report is returned with warning metadata so the frontend can display the guard issues without blocking local integration.
+
+To make guard issues fail report tasks:
+
+```powershell
+fundinsight-api --enforce-report-guard
+```
+
+The same strict behavior can be enabled for `uvicorn fundinsight.api:app` with:
+
+```powershell
+$env:FUNDINSIGHT_ENFORCE_REPORT_GUARD = "true"
+```
+
+Or run directly:
+
+```powershell
+uvicorn fundinsight.api:app --reload
+```
+
+The API uses local metrics JSON files from `data/funds/{fund_code}/metrics.json`, with the sample fund available at `data/funds/000001/metrics.json`. Reports are stored under:
+
+```text
+reports/
+  funds/{fund_code}/report.md
+  funds/{fund_code}/chart_specs.json
+  funds/{fund_code}/metadata.json
+  funds/{fund_code}/source_metrics.json
+  tasks/{task_id}.json
+```
+
+Main endpoints:
+
+- `GET /api/funds?query=000001`
+- `GET /api/funds/{fund_code}/metrics`
+- `POST /api/reports/ensure`
+- `GET /api/report-tasks/{task_id}`
+- `GET /api/reports/{report_id}`
+
+Start the frontend from `frontend/`:
+
+```powershell
+npm run dev
+```
+
+The frontend reads `VITE_API_BASE_URL` and defaults to `http://127.0.0.1:8000`. If the backend is unavailable in tests, the existing mock fallback remains available.
+
 ## Tests
 
 ```powershell

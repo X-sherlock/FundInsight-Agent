@@ -1,0 +1,15 @@
+{
+  "task_id": "task_20260507_165901_000001_5c399ded",
+  "fund_code": "000001",
+  "status": "failed",
+  "stage": "failed",
+  "stage_label": "报告生成未完成",
+  "message": "报告未通过结构或边界检查，系统未保存为可用报告。Report contains prohibited expression matching: (买入|卖出|持有|加仓|减仓|清仓|建仓|抄底|止盈|止损); context: 率0.31偏低，反映年化收益对最严重回撤的覆盖能力不足，可能影响投资者持有体验； - **同类分位解释力受限**：peer_rank_per; Report should include at least 3 tables.; Report should contain explicit analytical interpretation language.",
+  "report_id": null,
+  "error": {
+    "code": "REPORT_GUARD_FAILED",
+    "message": "报告未通过结构或边界检查，系统未保存为可用报告。Report contains prohibited expression matching: (买入|卖出|持有|加仓|减仓|清仓|建仓|抄底|止盈|止损); context: 率0.31偏低，反映年化收益对最严重回撤的覆盖能力不足，可能影响投资者持有体验； - **同类分位解释力受限**：peer_rank_per; Report should include at least 3 tables.; Report should contain explicit analytical interpretation language."
+  },
+  "created_at": "2026-05-07T16:59:01.243697+08:00",
+  "updated_at": "2026-05-07T17:01:05.741896+08:00"
+}

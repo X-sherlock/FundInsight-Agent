@@ -1,0 +1,15 @@
+{
+  "task_id": "task_20260507_165509_000001_d0b30d85",
+  "fund_code": "000001",
+  "status": "failed",
+  "stage": "failed",
+  "stage_label": "报告生成未完成",
+  "message": "模型服务暂时不可用或报告生成失败：OPENAI_API_KEY is required to call OpenAI.",
+  "report_id": null,
+  "error": {
+    "code": "LLM_GENERATION_FAILED",
+    "message": "模型服务暂时不可用或报告生成失败：OPENAI_API_KEY is required to call OpenAI."
+  },
+  "created_at": "2026-05-07T16:55:09.328383+08:00",
+  "updated_at": "2026-05-07T16:55:09.342285+08:00"
+}
