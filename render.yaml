@@ -17,12 +17,14 @@ services:
           name: fundinsight-agent-web
           type: web
           property: host
-      - key: OPENAI_API_KEY
+      - key: DASHSCOPE_API_KEY
         sync: false
-      - key: OPENAI_MODEL
-        value: gpt-4o-mini
+      - key: DASHSCOPE_MODEL
+        value: qwen-plus
+      - key: DASHSCOPE_BASE_URL
+        value: https://dashscope.aliyuncs.com/compatible-mode/v1
       - key: FUNDINSIGHT_LLM_PROVIDER
-        value: openai
+        value: bailian
 
   - type: web
     name: fundinsight-agent-web
