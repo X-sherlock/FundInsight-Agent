@@ -153,7 +153,7 @@ class ReportStore:
         for raw_line in match.group("body").splitlines():
             line = raw_line.strip()
             line = re.sub(r"^\d+[.)]\s*", "", line)
-            line = re.sub(r"^[-*]\s*", "", line)
+            line = re.sub(r"^[-*]\s+", "", line)
             if line:
                 lines.append(line)
             if len(lines) == 5:

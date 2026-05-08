@@ -26,6 +26,7 @@ def test_report_store_saves_and_loads_frontend_record(tmp_path: Path) -> None:
     assert record["guard_result"]["passed"] is True
     assert record["chart_specs"]["charts"][0]["id"] == "returns_by_period"
     assert record["key_metrics"][0]["helper"] == "metrics.performance.return_1y"
+    assert record["core_conclusions"][0].startswith("**基于 return_1y 指标**")
 
 
 def _report_result(metrics):
@@ -44,7 +45,7 @@ def _report_result(metrics):
         markdown=(
             "# report\n\n"
             "## 1. 报告说明\ncontent\n\n"
-            "## 2. 核心结论\n1. 基于 return_1y 指标观察历史收益。\n\n"
+            "## 2. 核心结论\n1. **基于 return_1y 指标**观察历史收益。\n\n"
             "## 3. 基金基本信息\ncontent"
         ),
         chart_specs=[

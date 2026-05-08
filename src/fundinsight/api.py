@@ -44,7 +44,7 @@ def create_app(
     app = FastAPI(title="FundInsight Agent API", version="0.4.0")
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+        allow_origins=_resolve_cors_allow_origins(),
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
@@ -134,6 +134,20 @@ def _resolve_enforce_report_guard(value: bool | None = None) -> bool:
         return value
     raw = os.getenv("FUNDINSIGHT_ENFORCE_REPORT_GUARD", "")
     return raw.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _resolve_cors_allow_origins() -> list[str]:
+    defaults = ["http://localhost:5173", "http://127.0.0.1:5173"]
+    raw = os.getenv("FUNDINSIGHT_CORS_ALLOW_ORIGINS", "")
+    configured = [_normalize_origin(origin) for origin in raw.split(",") if origin.strip()]
+    return defaults + configured
+
+
+def _normalize_origin(origin: str) -> str:
+    value = origin.strip().rstrip("/")
+    if value.startswith(("http://", "https://")):
+        return value
+    return f"https://{value}"
 
 
 app = create_app()

@@ -52,6 +52,22 @@ def test_api_creates_task_and_returns_report_detail(tmp_path: Path) -> None:
     assert report.json()["report_id"] == "000001"
 
 
+def test_api_allows_configured_cors_origin(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("FUNDINSIGHT_CORS_ALLOW_ORIGINS", "fundinsight-agent-web.onrender.com")
+    client = _client(tmp_path)
+
+    response = client.options(
+        "/api/health",
+        headers={
+            "Origin": "https://fundinsight-agent-web.onrender.com",
+            "Access-Control-Request-Method": "GET",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "https://fundinsight-agent-web.onrender.com"
+
+
 def _client(tmp_path: Path) -> TestClient:
     client, _ = _client_with_store(tmp_path)
     return client
