@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
   ensureReport,
+  createResearchMaterial,
+  deleteResearchMaterial,
   getDashboardSummary,
   getFundMetrics,
   getReport,
+  getResearchContext,
   getReportTask,
+  listResearchMaterials,
   searchFunds
 } from "../../src/services/reportApi";
 
@@ -35,5 +39,27 @@ describe("report API service with mock fallback", () => {
     expect(ensured.mode).toBe("created");
     expect(task.status).toBe("completed");
     expect(task.report_id).toBe("mock-report-000001");
+  });
+
+  it("manages research materials and context through the typed API", async () => {
+    const created = await createResearchMaterial("000001", {
+      title: "research note",
+      content: "research body",
+      source_type: "report",
+      source_name: "Research Desk",
+      publish_date: "2026-05-01"
+    });
+    const materials = await listResearchMaterials("000001");
+    const context = await getResearchContext("000001");
+    const ensured = await ensureReport({ fund_code: "000001", include_research: true });
+
+    expect(created.material_id).toContain("mock-material-000001");
+    expect(materials.some((item) => item.material_id === created.material_id)).toBe(true);
+    expect(context?.positive_factors ?? []).toEqual([]);
+    expect(ensured.mode).toBe("created");
+
+    await deleteResearchMaterial("000001", created.material_id);
+    const afterDelete = await listResearchMaterials("000001");
+    expect(afterDelete.some((item) => item.material_id === created.material_id)).toBe(false);
   });
 });

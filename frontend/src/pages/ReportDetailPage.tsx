@@ -10,16 +10,18 @@ import { CoreConclusionPanel } from "../features/reports/components/CoreConclusi
 import { FundInfoPanel } from "../features/reports/components/FundInfoPanel";
 import { MetricCardGrid } from "../features/reports/components/MetricCardGrid";
 import { ReportHeader } from "../features/reports/components/ReportHeader";
+import { ResearchFusionPanel } from "../features/reports/components/ResearchFusionPanel";
 import { RiskNoticePanel } from "../features/reports/components/RiskNoticePanel";
 import { SourceFieldsDrawer } from "../features/reports/components/SourceFieldsDrawer";
-import type { ReportRecord } from "../features/reports/types";
+import type { ReportRecord, ResearchContext } from "../features/reports/types";
 import { extractMarkdownTitle } from "../lib/markdownSections";
-import { ensureReport, getReport } from "../services/reportApi";
+import { ensureReport, getReport, getResearchContext } from "../services/reportApi";
 
 export function ReportDetailPage() {
   const { reportId } = useParams();
   const navigate = useNavigate();
   const [report, setReport] = useState<ReportRecord | null>(null);
+  const [researchContext, setResearchContext] = useState<ResearchContext | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [regenerating, setRegenerating] = useState(false);
 
@@ -30,9 +32,22 @@ export function ReportDetailPage() {
       return;
     }
     getReport(reportId)
-      .then((data) => {
+      .then(async (data) => {
         if (mounted) {
           setReport(data);
+          setResearchContext(data.research_context ?? null);
+        }
+        if (!data.research_context) {
+          try {
+            const context = await getResearchContext(data.fund.code);
+            if (mounted) {
+              setResearchContext(context);
+            }
+          } catch {
+            if (mounted) {
+              setResearchContext(null);
+            }
+          }
         }
       })
       .catch((issue) => {
@@ -92,6 +107,10 @@ export function ReportDetailPage() {
 
           <Card title="核心指标" eyebrow="Metrics">
             <MetricCardGrid metrics={report.key_metrics} />
+          </Card>
+
+          <Card title="投研信息融合" eyebrow="Research">
+            <ResearchFusionPanel context={researchContext} />
           </Card>
 
           <Card title="图表区域" eyebrow="Chart Specs">

@@ -31,6 +31,7 @@ No generated image asset is required for the initial Phase 3 implementation. If 
 
 - `docs/design/assets/dashboard-reference.png`: Dashboard visual reference.
 - `docs/design/assets/report-detail-reference.png`: report detail layout reference.
+- `docs/design/assets/report-generation-flow-image2.png`: image2-generated documentation flowchart for the backend report creation pipeline.
 - `frontend/src/assets/empty-report-state.png`: business empty state for reports.
 - `frontend/src/assets/report-cover-abstract.png`: subdued report header visual.
 

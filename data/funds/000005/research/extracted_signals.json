@@ -1,0 +1,120 @@
+{
+  "fund_code": "000005",
+  "signals": [
+    {
+      "signal_id": "sig_9e58eaa55cdb5b0b0517",
+      "fund_code": "000005",
+      "material_id": "mat_bacc9c4683f096d6",
+      "chunk_id": "mat_bacc9c4683f096d6_0000",
+      "signal_type": "positive_factor",
+      "summary": "研报样例关注近一年相对基准表现与规模增长",
+      "detail": "材料将该基金作为科技主题研究观察对象，关注超额收益、规模增长和换手率变化。",
+      "category": "被关注原因",
+      "signal_date": "2026-04-08",
+      "impact_direction": "positive",
+      "importance": "high",
+      "confidence": 0.88,
+      "evidence_text": "虚构研报样例将该基金列为科技主题观察名单，关注近一年相对基准表现、规模增长和换手率变化。",
+      "source_type": "report",
+      "publish_date": "2026-04-08"
+    },
+    {
+      "signal_id": "sig_91701281e8574358c802",
+      "fund_code": "000005",
+      "material_id": "mat_1327d39fe51a7fd0",
+      "chunk_id": "mat_1327d39fe51a7fd0_0000",
+      "signal_type": "key_event",
+      "summary": "公告样例披露投资范围未变化并提示波动风险",
+      "detail": "材料披露运作要素稳定，同时提示科技主题波动可能加大。",
+      "category": "关键事件",
+      "signal_date": "2026-04-18",
+      "impact_direction": "neutral",
+      "importance": "medium",
+      "confidence": 0.86,
+      "evidence_text": "虚构公告样例披露，基金合同中的投资范围未变化，管理人提示科技主题波动可能加大。",
+      "source_type": "announcement",
+      "publish_date": "2026-04-18"
+    },
+    {
+      "signal_id": "sig_7f82664844388c74e5ee",
+      "fund_code": "000005",
+      "material_id": "mat_11a51e1f7e0ee210",
+      "chunk_id": "mat_11a51e1f7e0ee210_0000",
+      "signal_type": "risk_notice",
+      "summary": "新闻样例提示科技板块估值波动和主题拥挤度风险",
+      "detail": "材料提示外部市场背景可能放大净值波动，需要与结构化风险指标共同观察。",
+      "category": "风险提示",
+      "signal_date": "2026-04-25",
+      "impact_direction": "negative",
+      "importance": "high",
+      "confidence": 0.84,
+      "evidence_text": "虚构新闻样例称，近期科技板块估值波动和主题拥挤度上升，可能放大净值波动。",
+      "source_type": "news",
+      "publish_date": "2026-04-25"
+    },
+    {
+      "signal_id": "sig_9e0e582e563591949e34",
+      "fund_code": "000005",
+      "material_id": "mat_35228a0f4785c514",
+      "chunk_id": "mat_35228a0f4785c514_0000",
+      "signal_type": "view_change",
+      "summary": "正面研究评级表述上调为材料表达正面研究关注",
+      "detail": "材料表达研究关注，材料表达较高关注，收益预期相关表述较高水平。",
+      "category": "观点变化",
+      "signal_date": "2026-05-02",
+      "impact_direction": "uncertain",
+      "importance": "high",
+      "confidence": 0.82,
+      "evidence_text": "买入评级",
+      "source_type": "internal_research",
+      "publish_date": "2026-05-02"
+    }
+  ],
+  "materials": [
+    {
+      "material_id": "mat_bacc9c4683f096d6",
+      "fund_code": "000005",
+      "title": "虚构样例研报：科技主题基金关注因素梳理",
+      "source_type": "report",
+      "source_name": "虚构研报样例",
+      "publish_date": "2026-04-08",
+      "file_name": null,
+      "content_hash": "bacc9c4683f096d662ab139dc124c87e6a0fdad2490b4a141465432406478a61",
+      "created_at": "2026-05-11T09:05:46.451545+08:00"
+    },
+    {
+      "material_id": "mat_1327d39fe51a7fd0",
+      "fund_code": "000005",
+      "title": "虚构样例公告：基金运作要素与风险提示说明",
+      "source_type": "announcement",
+      "source_name": "虚构公告样例",
+      "publish_date": "2026-04-18",
+      "file_name": null,
+      "content_hash": "1327d39fe51a7fd0d036ab7468d63d4648612d93964e7e4a226846856f09a3f0",
+      "created_at": "2026-05-11T09:05:46.451545+08:00"
+    },
+    {
+      "material_id": "mat_11a51e1f7e0ee210",
+      "fund_code": "000005",
+      "title": "虚构样例新闻：科技板块波动与资金关注度变化",
+      "source_type": "news",
+      "source_name": "虚构新闻样例",
+      "publish_date": "2026-04-25",
+      "file_name": null,
+      "content_hash": "11a51e1f7e0ee21007612e1a5313dac12de934822d0d03e489c4485256e0c407",
+      "created_at": "2026-05-11T09:05:46.457213+08:00"
+    },
+    {
+      "material_id": "mat_35228a0f4785c514",
+      "fund_code": "000005",
+      "title": "虚构样例内部投研：跟踪框架与观点变化记录",
+      "source_type": "internal_research",
+      "source_name": "虚构内部投研样例",
+      "publish_date": "2026-05-02",
+      "file_name": null,
+      "content_hash": "35228a0f4785c51459f0e1bf6e265a0497264547c5c25164c0be6051b26db9c7",
+      "created_at": "2026-05-11T09:05:46.457213+08:00"
+    }
+  ],
+  "generated_at": "2026-05-11T09:05:46.462527+08:00"
+}

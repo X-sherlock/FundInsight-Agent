@@ -1,9 +1,12 @@
 import json
+from datetime import date
 from pathlib import Path
 
 from fundinsight.data_loader import load_fund_metrics
 from fundinsight.report_agent import ReportAgent, render_prompt
 from fundinsight.report_planner import build_report_plan
+from fundinsight.research_service import ResearchMaterialService
+from fundinsight.research_store import ResearchStore
 from tests.test_report_guard import valid_v02_report
 
 
@@ -112,6 +115,28 @@ class FakeLLMClient:
         )
 
 
+class FakeResearchLLMClient:
+    def generate(self, prompt: str) -> str:
+        return json.dumps(
+            {
+                "signals": [
+                    {
+                        "signal_type": "positive_factor",
+                        "summary": "research signal",
+                        "detail": "detail",
+                        "category": "operations",
+                        "signal_date": "2026-05-01",
+                        "impact_direction": "positive",
+                        "importance": "high",
+                        "confidence": 0.9,
+                        "evidence_text": "EVIDENCE_RESEARCH",
+                    }
+                ]
+            },
+            ensure_ascii=False,
+        )
+
+
 def test_render_prompt_injects_report_context_json() -> None:
     fund_metrics = load_fund_metrics(SAMPLE_INPUT)
     report_plan = build_report_plan(fund_metrics)
@@ -137,3 +162,61 @@ def test_report_agent_generates_parses_and_checks_report() -> None:
     assert result.chart_specs[0].id == "returns_by_period"
     assert len(llm_client.prompts) == 1
     assert "report_context_json" not in llm_client.prompts[0]
+
+
+def test_report_agent_includes_research_context_when_requested(tmp_path: Path) -> None:
+    report_llm = FakeLLMClient()
+    research_llm = FakeResearchLLMClient()
+    research_store = ResearchStore(tmp_path / "data")
+    service = ResearchMaterialService(research_store)
+    service.import_text_material(
+        fund_code="000001",
+        title="research material",
+        source_type="report",
+        source_name="Research Desk",
+        publish_date=date(2026, 5, 1),
+        content="EVIDENCE_RESEARCH appears here. FULL ORIGINAL BODY SHOULD NOT ENTER PROMPT.",
+    )
+    agent = ReportAgent(
+        llm_client=report_llm,
+        prompt_template_path=PROMPT_TEMPLATE,
+        research_store=research_store,
+        research_material_service=service,
+        research_llm_client=research_llm,
+    )
+
+    result = agent.generate_report(SAMPLE_INPUT, include_research=True, force_reextract=True)
+
+    assert result.research_context is not None
+    assert result.research_context.positive_factors[0].summary == "research signal"
+    assert '"research_context"' in report_llm.prompts[0]
+    assert "research signal" in report_llm.prompts[0]
+    assert "FULL ORIGINAL BODY SHOULD NOT ENTER PROMPT" not in report_llm.prompts[0]
+
+
+def test_report_agent_degrades_when_research_processing_fails(tmp_path: Path, monkeypatch) -> None:
+    def fail_processing(*args, **kwargs):
+        raise RuntimeError("pipeline failed")
+
+    monkeypatch.setattr("fundinsight.report_agent.process_research_materials", fail_processing)
+    report_llm = FakeLLMClient()
+    agent = ReportAgent(
+        llm_client=report_llm,
+        prompt_template_path=PROMPT_TEMPLATE,
+        research_store=ResearchStore(tmp_path / "data"),
+    )
+
+    result = agent.generate_report(SAMPLE_INPUT, include_research=True)
+
+    assert result.guard_result.passed
+    assert result.research_processing_error
+    assert "pipeline failed" in result.research_processing_error
+    assert "pipeline failed" in report_llm.prompts[0]
+
+
+def test_prompt_contains_research_context_rules() -> None:
+    template = PROMPT_TEMPLATE.read_text(encoding="utf-8")
+
+    assert "research_context 使用规则" in template
+    assert "不能让非结构化材料覆盖" in template
+    assert "不得编造任何投研材料" in template

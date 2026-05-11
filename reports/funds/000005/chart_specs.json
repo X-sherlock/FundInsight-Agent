@@ -1,0 +1,271 @@
+{
+  "charts": [
+    {
+      "id": "returns_by_period",
+      "title": "多周期收益表现",
+      "type": "bar",
+      "description": "展示基金不同历史窗口收益。",
+      "source_fields": [
+        "metrics.performance.return_1m",
+        "metrics.performance.return_3m",
+        "metrics.performance.return_6m",
+        "metrics.performance.return_1y",
+        "metrics.performance.return_3y_annualized"
+      ],
+      "series": [
+        {
+          "name": "基金收益",
+          "values": [
+            {
+              "period": "1M",
+              "value": 0.026
+            },
+            {
+              "period": "3M",
+              "value": 0.074
+            },
+            {
+              "period": "6M",
+              "value": 0.119
+            },
+            {
+              "period": "1Y",
+              "value": 0.158
+            },
+            {
+              "period": "3Y Ann.",
+              "value": 0.083
+            }
+          ]
+        }
+      ],
+      "encoding": {
+        "x": "period",
+        "y": "value",
+        "category": null,
+        "value": null
+      },
+      "x_axis": "观察周期",
+      "y_axis": "收益率",
+      "value_unit": "decimal_percent",
+      "notes": [
+        "历史窗口不可外推。"
+      ]
+    },
+    {
+      "id": "benchmark_excess_return_1y",
+      "title": "近1年基金、基准与超额收益",
+      "type": "bar",
+      "description": "展示基金收益、基准收益和超额收益。",
+      "source_fields": [
+        "metrics.performance.return_1y",
+        "metrics.performance.benchmark_return_1y",
+        "metrics.performance.excess_return_1y"
+      ],
+      "series": [
+        {
+          "name": "近1年对比",
+          "values": [
+            {
+              "metric": "基金收益",
+              "value": 0.158
+            },
+            {
+              "metric": "基准收益",
+              "value": 0.136
+            },
+            {
+              "metric": "超额收益",
+              "value": 0.022
+            }
+          ]
+        }
+      ],
+      "encoding": {
+        "x": "metric",
+        "y": "value",
+        "category": null,
+        "value": null
+      },
+      "x_axis": "指标",
+      "y_axis": "收益率",
+      "value_unit": "decimal_percent",
+      "notes": [
+        "用于观察相对基准历史表现。"
+      ]
+    },
+    {
+      "id": "risk_drawdown_profile",
+      "title": "波动与回撤风险画像",
+      "type": "bar",
+      "description": "展示波动率、下行波动率和最大回撤。",
+      "source_fields": [
+        "metrics.risk.volatility_1y",
+        "metrics.risk.downside_volatility_1y",
+        "metrics.drawdown.max_drawdown_1y",
+        "metrics.drawdown.max_drawdown_3y"
+      ],
+      "series": [
+        {
+          "name": "风险指标",
+          "values": [
+            {
+              "metric": "近1年波动率",
+              "value": 0.304
+            },
+            {
+              "metric": "近1年下行波动率",
+              "value": 0.213
+            },
+            {
+              "metric": "近1年最大回撤",
+              "value": -0.219
+            },
+            {
+              "metric": "近3年最大回撤",
+              "value": -0.381
+            }
+          ]
+        }
+      ],
+      "encoding": {
+        "x": "metric",
+        "y": "value",
+        "category": null,
+        "value": null
+      },
+      "x_axis": "风险指标",
+      "y_axis": "指标值",
+      "value_unit": "decimal_percent",
+      "notes": [
+        "用于观察主题基金历史波动压力。"
+      ]
+    },
+    {
+      "id": "risk_adjusted_metrics",
+      "title": "风险调整后表现",
+      "type": "bar",
+      "description": "展示夏普比率、信息比率和 Calmar 比率。",
+      "source_fields": [
+        "metrics.risk_adjusted.sharpe_1y",
+        "metrics.risk_adjusted.information_ratio_1y",
+        "metrics.risk_adjusted.calmar_3y"
+      ],
+      "series": [
+        {
+          "name": "风险调整",
+          "values": [
+            {
+              "metric": "夏普比率",
+              "value": 0.49
+            },
+            {
+              "metric": "信息比率",
+              "value": 0.21
+            },
+            {
+              "metric": "Calmar 比率",
+              "value": 0.22
+            }
+          ]
+        }
+      ],
+      "encoding": {
+        "x": "metric",
+        "y": "value",
+        "category": null,
+        "value": null
+      },
+      "x_axis": "风险调整指标",
+      "y_axis": "指标值",
+      "value_unit": "number",
+      "notes": [
+        "用于观察收益与风险匹配关系。"
+      ]
+    },
+    {
+      "id": "asset_allocation_profile",
+      "title": "资产配置结构",
+      "type": "pie",
+      "description": "展示股票、债券和现金仓位比例。",
+      "source_fields": [
+        "metrics.holding.stock_position",
+        "metrics.holding.bond_position",
+        "metrics.holding.cash_position"
+      ],
+      "series": [
+        {
+          "name": "资产配置",
+          "values": [
+            {
+              "asset": "股票",
+              "value": 0.91
+            },
+            {
+              "asset": "债券",
+              "value": 0.0
+            },
+            {
+              "asset": "现金",
+              "value": 0.04
+            }
+          ]
+        }
+      ],
+      "encoding": {
+        "x": null,
+        "y": null,
+        "category": "asset",
+        "value": "value"
+      },
+      "x_axis": "资产类别",
+      "y_axis": "占比",
+      "value_unit": "decimal_percent",
+      "notes": [
+        "用于观察权益暴露。"
+      ]
+    },
+    {
+      "id": "peer_context",
+      "title": "同类相对位置",
+      "type": "bar",
+      "description": "展示同类分位和同类均值参照。",
+      "source_fields": [
+        "peer_summary.peer_rank_percentile",
+        "peer_summary.peer_average_return_1y",
+        "peer_summary.peer_average_volatility_1y"
+      ],
+      "series": [
+        {
+          "name": "同类上下文",
+          "values": [
+            {
+              "metric": "同类分位",
+              "value": 0.48
+            },
+            {
+              "metric": "同类平均近1年收益",
+              "value": 0.128
+            },
+            {
+              "metric": "同类平均近1年波动率",
+              "value": 0.286
+            }
+          ]
+        }
+      ],
+      "encoding": {
+        "x": "metric",
+        "y": "value",
+        "category": null,
+        "value": null
+      },
+      "x_axis": "同类指标",
+      "y_axis": "指标值",
+      "value_unit": "mixed",
+      "notes": [
+        "同类分位方向以样例口径为准。"
+      ]
+    }
+  ]
+}

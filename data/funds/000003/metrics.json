@@ -1,0 +1,104 @@
+{
+  "fund": {
+    "code": "000003",
+    "name": "示例低波红利股票基金",
+    "type": "股票型",
+    "inception_date": "2017-09-08",
+    "fund_company": "示例基金管理有限公司"
+  },
+  "as_of_date": "2026-03-31",
+  "currency": "CNY",
+  "benchmark": {
+    "name": "中证红利指数",
+    "code": "000922.CSI",
+    "description": "用于观察红利风格股票资产的历史表现"
+  },
+  "benchmark_info": {
+    "name": "中证红利指数",
+    "code": "000922.CSI",
+    "description": "样例红利股票基金采用的主要业绩比较基准"
+  },
+  "category": {
+    "name": "主动股票型基金",
+    "peer_count": 360
+  },
+  "peer_summary": {
+    "peer_rank_percentile": 0.27,
+    "peer_average_return_1y": 0.058,
+    "peer_median_return_1y": 0.052,
+    "peer_average_volatility_1y": 0.211,
+    "peer_count": 360,
+    "percentile_direction": "lower_is_better_rank_position",
+    "notes": "peer_rank_percentile 为样例同类分位，数值越低表示历史排名位置越靠前。"
+  },
+  "metrics": {
+    "performance": {
+      "return_1m": 0.009,
+      "return_3m": 0.028,
+      "return_6m": 0.047,
+      "return_1y": 0.112,
+      "return_3y_annualized": 0.069,
+      "return_since_inception_annualized": 0.081,
+      "benchmark_return_1y": 0.086,
+      "excess_return_1y": 0.026
+    },
+    "excess_return": {
+      "excess_return_1m": 0.002,
+      "excess_return_3m": 0.006,
+      "excess_return_6m": 0.011,
+      "excess_return_1y": 0.026,
+      "excess_return_3y_annualized": 0.014
+    },
+    "risk": {
+      "volatility_1y": 0.151,
+      "downside_volatility_1y": 0.093,
+      "beta_1y": 0.78,
+      "tracking_error_1y": 0.082
+    },
+    "drawdown": {
+      "max_drawdown_1y": -0.096,
+      "max_drawdown_3y": -0.184,
+      "drawdown_recovery_days": 57
+    },
+    "risk_adjusted": {
+      "sharpe_1y": 0.71,
+      "information_ratio_1y": 0.32,
+      "calmar_3y": 0.38
+    },
+    "holding": {
+      "stock_position": 0.88,
+      "bond_position": 0.0,
+      "cash_position": 0.06,
+      "top10_holding_weight": 0.51,
+      "turnover_rate_1y": 0.96
+    },
+    "fee": {
+      "management_fee": 0.015,
+      "custodian_fee": 0.0025,
+      "sales_service_fee": 0.0
+    },
+    "scale": {
+      "aum": 1460000000,
+      "aum_change_6m": 0.067,
+      "holder_count": 94000
+    }
+  },
+  "manager": {
+    "name": "王示例",
+    "tenure_years": 5.1,
+    "background": "具有红利策略研究和低波动组合管理经验"
+  },
+  "data_quality": {
+    "source": "synthetic_sample",
+    "missing_fields": [
+      "quarterly_holding_details",
+      "daily_nav_series",
+      "full_peer_distribution"
+    ],
+    "notes": "示例数据为项目样例，不代表真实基金。"
+  },
+  "data_notes": [
+    "百分比指标使用小数形式，例如 0.112 表示 11.2%。",
+    "持仓数据为样例汇总口径，不包含完整重仓股明细。"
+  ]
+}

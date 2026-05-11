@@ -5,6 +5,7 @@ import { BoundaryNotice } from "../features/reports/components/BoundaryNotice";
 import { FundPreviewCard } from "../features/reports/components/FundPreviewCard";
 import { FundSearchBox } from "../features/reports/components/FundSearchBox";
 import { ReportCreateForm } from "../features/reports/components/ReportCreateForm";
+import { ResearchMaterialsPanel } from "../features/reports/components/ResearchMaterialsPanel";
 import type { FundBrief, FundMetricsResponse } from "../features/reports/types";
 import { ensureReport, getFundMetrics, searchFunds } from "../services/reportApi";
 
@@ -16,6 +17,7 @@ export function ReportCreatePage() {
   const [fundMetrics, setFundMetrics] = useState<FundMetricsResponse | null>(null);
   const [metricsLoading, setMetricsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [includeResearch, setIncludeResearch] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -86,7 +88,10 @@ export function ReportCreatePage() {
     setLoading(true);
     setError(null);
     try {
-      const response = await ensureReport({ fund_code: selectedFund.code });
+      const response = await ensureReport({
+        fund_code: selectedFund.code,
+        include_research: includeResearch
+      });
       if (response.mode === "existing" && response.report_id) {
         navigate(`/reports/${response.report_id}`);
         return;
@@ -131,6 +136,14 @@ export function ReportCreatePage() {
           {error && <div className="form-error">{error}</div>}
         </Card>
       </div>
+
+      <Card title="投研材料" eyebrow="Research">
+        <ResearchMaterialsPanel
+          fund={selectedFund}
+          includeResearch={includeResearch}
+          onIncludeResearchChange={setIncludeResearch}
+        />
+      </Card>
     </div>
   );
 }

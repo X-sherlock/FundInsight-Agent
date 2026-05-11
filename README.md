@@ -55,27 +55,18 @@ python -m pip install -e ".[dev]"
 ### Bailian / DashScope
 
 ```powershell
-$env:FUNDINSIGHT_LLM_PROVIDER = "bailian"
 $env:DASHSCOPE_API_KEY = "your_bailian_api_key"
-$env:DASHSCOPE_MODEL = "qwen-plus"
 ```
 
-Default OpenAI-compatible Bailian endpoint:
+The runtime uses Bailian's OpenAI-compatible endpoint with fixed model `deepseek-v4-flash`.
+
+Default Bailian endpoint:
 
 ```text
 https://dashscope.aliyuncs.com/compatible-mode/v1
 ```
 
 You can override it with `DASHSCOPE_BASE_URL` or `BAILIAN_BASE_URL`.
-
-### OpenAI
-
-```powershell
-$env:OPENAI_API_KEY = "your_api_key"
-$env:OPENAI_MODEL = "gpt-4o-mini"
-```
-
-`OPENAI_MODEL` is optional and defaults to `gpt-4o-mini`.
 
 ## CLI Usage
 

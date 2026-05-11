@@ -1,0 +1,104 @@
+{
+  "fund": {
+    "code": "000005",
+    "name": "示例科技创新股票基金",
+    "type": "股票型",
+    "inception_date": "2021-11-18",
+    "fund_company": "示例基金管理有限公司"
+  },
+  "as_of_date": "2026-03-31",
+  "currency": "CNY",
+  "benchmark": {
+    "name": "中证TMT产业主题指数",
+    "code": "000998.CSI",
+    "description": "用于观察科技、传媒和通信主题权益资产的历史表现"
+  },
+  "benchmark_info": {
+    "name": "中证TMT产业主题指数",
+    "code": "000998.CSI",
+    "description": "样例科技主题基金采用的主要业绩比较基准"
+  },
+  "category": {
+    "name": "科技主题股票型基金",
+    "peer_count": 185
+  },
+  "peer_summary": {
+    "peer_rank_percentile": 0.48,
+    "peer_average_return_1y": 0.128,
+    "peer_median_return_1y": 0.119,
+    "peer_average_volatility_1y": 0.286,
+    "peer_count": 185,
+    "percentile_direction": "lower_is_better_rank_position",
+    "notes": "peer_rank_percentile 为样例同类分位，数值越低表示历史排名位置越靠前。"
+  },
+  "metrics": {
+    "performance": {
+      "return_1m": 0.026,
+      "return_3m": 0.074,
+      "return_6m": 0.119,
+      "return_1y": 0.158,
+      "return_3y_annualized": 0.083,
+      "return_since_inception_annualized": 0.071,
+      "benchmark_return_1y": 0.136,
+      "excess_return_1y": 0.022
+    },
+    "excess_return": {
+      "excess_return_1m": 0.005,
+      "excess_return_3m": 0.013,
+      "excess_return_6m": 0.021,
+      "excess_return_1y": 0.022,
+      "excess_return_3y_annualized": -0.004
+    },
+    "risk": {
+      "volatility_1y": 0.304,
+      "downside_volatility_1y": 0.213,
+      "beta_1y": 1.18,
+      "tracking_error_1y": 0.104
+    },
+    "drawdown": {
+      "max_drawdown_1y": -0.219,
+      "max_drawdown_3y": -0.381,
+      "drawdown_recovery_days": 126
+    },
+    "risk_adjusted": {
+      "sharpe_1y": 0.49,
+      "information_ratio_1y": 0.21,
+      "calmar_3y": 0.22
+    },
+    "holding": {
+      "stock_position": 0.91,
+      "bond_position": 0.0,
+      "cash_position": 0.04,
+      "top10_holding_weight": 0.62,
+      "turnover_rate_1y": 2.18
+    },
+    "fee": {
+      "management_fee": 0.015,
+      "custodian_fee": 0.0025,
+      "sales_service_fee": 0.0
+    },
+    "scale": {
+      "aum": 960000000,
+      "aum_change_6m": 0.142,
+      "holder_count": 76000
+    }
+  },
+  "manager": {
+    "name": "赵示例",
+    "tenure_years": 2.8,
+    "background": "具有科技产业研究和成长风格权益组合管理经验"
+  },
+  "data_quality": {
+    "source": "synthetic_sample",
+    "missing_fields": [
+      "sector_exposure_detail",
+      "daily_nav_series",
+      "full_peer_distribution"
+    ],
+    "notes": "示例数据为项目样例，不代表真实基金。"
+  },
+  "data_notes": [
+    "百分比指标使用小数形式，例如 0.158 表示 15.8%。",
+    "主题行业暴露明细缺失，报告生成时应避免推断具体行业配置。"
+  ]
+}

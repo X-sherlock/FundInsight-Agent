@@ -83,7 +83,7 @@ The guard layer must not judge whether a fund is good or bad.
 
 ## 5. LLM Provider Boundary
 
-LLM calls should be hidden behind a provider interface so later versions can support multiple providers without changing the report-generation use case.
+LLM calls are hidden behind a provider interface, while the current runtime is intentionally fixed to Bailian `deepseek-v4-flash` as the default and only selectable report-generation model.
 
 Conceptual interface:
 
@@ -93,7 +93,7 @@ class LlmClient:
         ...
 ```
 
-The actual implementation will be added in Milestone 1.
+The implementation uses Bailian's OpenAI-compatible chat completions endpoint.
 
 ## 6. Guard Boundary
 

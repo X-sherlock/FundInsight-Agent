@@ -7,7 +7,44 @@ from typing import Any
 from fundinsight.models import ChartEncoding, ChartSeries, ChartSpec, FundMetricsInput, ReportPlan
 
 
-def build_report_plan(fund_metrics: FundMetricsInput) -> ReportPlan:
+RESEARCH_CONTEXT_FIELDS = (
+    "positive_factors",
+    "risk_notices",
+    "key_events",
+    "view_changes",
+    "source_materials",
+    "limitations",
+)
+RESEARCH_SIGNAL_FIELDS = (
+    "signal_id",
+    "fund_code",
+    "material_id",
+    "chunk_id",
+    "signal_type",
+    "summary",
+    "detail",
+    "category",
+    "signal_date",
+    "impact_direction",
+    "importance",
+    "confidence",
+    "evidence_text",
+    "source_type",
+    "publish_date",
+)
+SOURCE_MATERIAL_FIELDS = (
+    "material_id",
+    "title",
+    "source_type",
+    "source_name",
+    "publish_date",
+)
+
+
+def build_report_plan(
+    fund_metrics: FundMetricsInput,
+    research_context: Any | None = None,
+) -> ReportPlan:
     """Build deterministic context for the LLM.
 
     The planner only organizes data, computes simple derived metrics, drafts
@@ -20,6 +57,7 @@ def build_report_plan(fund_metrics: FundMetricsInput) -> ReportPlan:
     missing_fields = _collect_missing_fields(fund_metrics, derived_metrics)
     data_notes = _collect_data_notes(fund_metrics)
     analysis_focus = _build_analysis_focus(fund_metrics, missing_fields)
+    sanitized_research_context = sanitize_research_context(research_context)
 
     return ReportPlan(
         source_metrics=fund_metrics.to_prompt_payload(),
@@ -29,7 +67,56 @@ def build_report_plan(fund_metrics: FundMetricsInput) -> ReportPlan:
         analysis_focus=analysis_focus,
         missing_fields=missing_fields,
         data_notes=data_notes,
+        research_context=sanitized_research_context,
     )
+
+
+def sanitize_research_context(research_context: Any | None) -> dict[str, Any] | None:
+    """Return only report-safe, structured research context fields."""
+
+    if research_context is None:
+        return None
+    if hasattr(research_context, "model_dump"):
+        raw_context = research_context.model_dump(mode="json")
+    elif isinstance(research_context, dict):
+        raw_context = research_context
+    else:
+        raise TypeError("research_context must be a mapping or Pydantic model.")
+
+    sanitized: dict[str, Any] = {}
+    for field_name in RESEARCH_CONTEXT_FIELDS:
+        value = raw_context.get(field_name)
+        if field_name == "source_materials":
+            sanitized[field_name] = [_sanitize_source_material(item) for item in value or []]
+        elif field_name == "limitations":
+            sanitized[field_name] = [item for item in value or [] if isinstance(item, str)]
+        else:
+            sanitized[field_name] = [_sanitize_research_signal(item) for item in value or []]
+    return sanitized
+
+
+def _sanitize_research_signal(signal: Any) -> dict[str, Any]:
+    if hasattr(signal, "model_dump"):
+        raw_signal = signal.model_dump(mode="json")
+    elif isinstance(signal, dict):
+        raw_signal = signal
+    else:
+        return {}
+    return {field_name: raw_signal.get(field_name) for field_name in RESEARCH_SIGNAL_FIELDS if field_name in raw_signal}
+
+
+def _sanitize_source_material(material: Any) -> dict[str, Any]:
+    if hasattr(material, "model_dump"):
+        raw_material = material.model_dump(mode="json")
+    elif isinstance(material, dict):
+        raw_material = material
+    else:
+        return {}
+    return {
+        field_name: raw_material.get(field_name)
+        for field_name in SOURCE_MATERIAL_FIELDS
+        if field_name in raw_material
+    }
 
 
 def _build_derived_metrics(fund_metrics: FundMetricsInput) -> dict[str, Any]:

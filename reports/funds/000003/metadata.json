@@ -1,0 +1,17 @@
+{
+  "report_id": "000003",
+  "fund_code": "000003",
+  "created_at": "2026-05-08T14:15:57.271389+08:00",
+  "status": "warning",
+  "guard_passed": false,
+  "guard_issues": [
+    {
+      "code": "missing_analysis_chain_language",
+      "message": "Report should contain explicit analytical interpretation language."
+    },
+    {
+      "code": "data_restatement_risk",
+      "message": "Core conclusions look too close to metric restatement and need interpretation."
+    }
+  ]
+}

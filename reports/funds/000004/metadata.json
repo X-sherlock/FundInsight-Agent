@@ -1,0 +1,25 @@
+{
+  "report_id": "000004",
+  "fund_code": "000004",
+  "created_at": "2026-05-08T16:03:20.053551+08:00",
+  "status": "warning",
+  "guard_passed": false,
+  "guard_issues": [
+    {
+      "code": "prohibited_expression",
+      "message": "Report contains prohibited expression matching: (买入|卖出|持有|加仓|减仓|清仓|建仓|抄底|止盈|止损); context: - **超额收益来源**：近1年2.10%的超额收益，主要来源于基金持有的16%股票仓位以及基金经理在债券投资上的主动管理（如久期管理、信用挖"
+    },
+    {
+      "code": "missing_analysis_chain_language",
+      "message": "Report should contain explicit analytical interpretation language."
+    },
+    {
+      "code": "data_restatement_risk",
+      "message": "Core conclusions look too close to metric restatement and need interpretation."
+    },
+    {
+      "code": "unused_chart_spec",
+      "message": "chart_specs_json contains id not used by Markdown placeholders: asset_allocation_profile"
+    }
+  ]
+}

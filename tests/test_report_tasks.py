@@ -1,11 +1,17 @@
+import json
 from dataclasses import replace
+from datetime import date
 from pathlib import Path
 
 from fundinsight.fund_repository import FundRepository
+from fundinsight.report_agent import ReportAgent
 from fundinsight.report_guard import GuardIssue, GuardResult
 from fundinsight.report_store import ReportStore
 from fundinsight.report_tasks import ReportTaskManager
+from fundinsight.research_service import ResearchMaterialService
+from fundinsight.research_store import ResearchStore
 from fundinsight.task_store import TaskStore
+from tests.test_report_agent import FakeLLMClient, FakeResearchLLMClient, PROMPT_TEMPLATE
 from tests.test_report_store import SAMPLE_INPUT, _report_result
 
 
@@ -22,6 +28,67 @@ def test_report_task_executes_and_writes_completed_report(tmp_path: Path) -> Non
     assert task.status == "completed"
     assert task.report_id == "000001"
     assert report_store.report_exists("000001")
+
+
+def test_report_task_with_research_saves_context_and_manifest(tmp_path: Path) -> None:
+    research_store = ResearchStore(tmp_path / "data")
+    service = ResearchMaterialService(research_store)
+    service.import_text_material(
+        fund_code="000001",
+        title="research material",
+        source_type="report",
+        source_name="Research Desk",
+        publish_date=date(2026, 5, 1),
+        content="EVIDENCE_RESEARCH appears here. FULL ORIGINAL BODY SHOULD NOT ENTER PROMPT.",
+    )
+    manager, task_store, report_store = _manager(
+        tmp_path,
+        report_agent_factory=lambda: ReportAgent(
+            llm_client=FakeLLMClient(),
+            prompt_template_path=PROMPT_TEMPLATE,
+            research_store=research_store,
+            research_material_service=service,
+            research_llm_client=FakeResearchLLMClient(),
+        ),
+    )
+
+    response = manager.ensure_report("000001", force_regenerate=True, include_research=True, force_reextract=True)
+    assert response.task_id
+    manager.execute_task(response.task_id)
+
+    task = task_store.get(response.task_id)
+    research_context = json.loads(report_store.research_context_path("000001").read_text(encoding="utf-8"))
+    manifest = json.loads(report_store.source_materials_manifest_path("000001").read_text(encoding="utf-8"))
+
+    assert task.status == "completed"
+    assert research_store.load_signal_bundle("000001") is not None
+    assert research_store.load_fusion_context("000001") is not None
+    assert research_context["positive_factors"][0]["summary"] == "research signal"
+    assert manifest["source_materials"][0]["material_id"]
+    assert "FULL ORIGINAL BODY SHOULD NOT ENTER PROMPT" not in json.dumps(research_context, ensure_ascii=False)
+
+
+def test_report_task_with_research_and_no_materials_still_generates(tmp_path: Path) -> None:
+    research_store = ResearchStore(tmp_path / "data")
+    manager, task_store, report_store = _manager(
+        tmp_path,
+        report_agent_factory=lambda: ReportAgent(
+            llm_client=FakeLLMClient(),
+            prompt_template_path=PROMPT_TEMPLATE,
+            research_store=research_store,
+        ),
+    )
+
+    response = manager.ensure_report("000001", force_regenerate=True, include_research=True)
+    assert response.task_id
+    manager.execute_task(response.task_id)
+
+    task = task_store.get(response.task_id)
+    research_context = json.loads(report_store.research_context_path("000001").read_text(encoding="utf-8"))
+
+    assert task.status == "completed"
+    assert research_context["limitations"]
+    assert research_context["positive_factors"] == []
 
 
 def test_report_task_reuses_running_task_for_same_fund(tmp_path: Path) -> None:
@@ -104,13 +171,13 @@ def _manager(tmp_path: Path, report_agent_factory=None, enforce_report_guard: bo
 
 
 class FakeReportAgent:
-    def generate_report(self, input_path: str | Path):
+    def generate_report(self, input_path: str | Path, **kwargs):
         metrics = FundRepository(sample_input_path=SAMPLE_INPUT).get_metrics("000001")
         return _report_result(metrics)
 
 
 class FakeGuardFailedReportAgent:
-    def generate_report(self, input_path: str | Path):
+    def generate_report(self, input_path: str | Path, **kwargs):
         metrics = FundRepository(sample_input_path=SAMPLE_INPUT).get_metrics("000001")
         return replace(
             _report_result(metrics),

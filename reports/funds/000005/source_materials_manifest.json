@@ -1,0 +1,32 @@
+{
+  "source_materials": [
+    {
+      "material_id": "mat_bacc9c4683f096d6",
+      "title": "虚构样例研报：科技主题基金关注因素梳理",
+      "source_type": "report",
+      "source_name": "虚构研报样例",
+      "publish_date": "2026-04-08"
+    },
+    {
+      "material_id": "mat_1327d39fe51a7fd0",
+      "title": "虚构样例公告：基金运作要素与风险提示说明",
+      "source_type": "announcement",
+      "source_name": "虚构公告样例",
+      "publish_date": "2026-04-18"
+    },
+    {
+      "material_id": "mat_11a51e1f7e0ee210",
+      "title": "虚构样例新闻：科技板块波动与资金关注度变化",
+      "source_type": "news",
+      "source_name": "虚构新闻样例",
+      "publish_date": "2026-04-25"
+    },
+    {
+      "material_id": "mat_35228a0f4785c514",
+      "title": "虚构样例内部投研：跟踪框架与观点变化记录",
+      "source_type": "internal_research",
+      "source_name": "虚构内部投研样例",
+      "publish_date": "2026-05-02"
+    }
+  ]
+}

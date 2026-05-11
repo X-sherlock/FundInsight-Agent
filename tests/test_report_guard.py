@@ -122,8 +122,49 @@ def test_check_report_flags_prohibited_recommendations() -> None:
     assert any(issue.code == "prohibited_expression" for issue in result.issues)
 
 
+def test_check_report_flags_target_price() -> None:
+    report = valid_v02_report() + "\n相关材料给出目标价作为结论。"
+
+    result = check_report(report)
+
+    assert not result.passed
+    assert any(issue.code == "prohibited_expression" for issue in result.issues)
+
+
+def test_check_report_flags_expected_return_rate() -> None:
+    report = valid_v02_report() + "\n报告正文给出预计收益率为 8%。"
+
+    result = check_report(report)
+
+    assert not result.passed
+    assert any(issue.code == "prohibited_expression" for issue in result.issues)
+
+
 def test_check_report_allows_historical_holding_percentages() -> None:
     report = valid_v02_report() + "\n从持仓指标看，股票配置比例为 72%，现金配置比例为 8%。"
+
+    result = check_report(report)
+
+    assert result.passed
+
+
+def test_check_report_allows_normal_holding_context_terms() -> None:
+    report = (
+        valid_v02_report()
+        + "\n补充说明：最短持有期、基金持有人、持有份额、持有债券、持仓结构、持仓集中度和持有期产品均属于基金材料中的正常描述。"
+    )
+
+    result = check_report(report)
+
+    assert result.passed
+
+
+def test_check_report_allows_neutral_research_source_phrasing() -> None:
+    report = (
+        valid_v02_report()
+        + "\n研报观点认为，基金经理近期风格保持稳定。相关材料显示，渠道关注点集中在回撤修复过程。"
+        + "公告披露，基金合同要素未发生重大变化。内部投研材料提到，需要关注行业集中度变化。"
+    )
 
     result = check_report(report)
 

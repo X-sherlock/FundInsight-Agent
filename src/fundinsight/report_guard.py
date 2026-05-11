@@ -28,13 +28,19 @@ REQUIRED_SECTIONS = (
 )
 
 PROHIBITED_RECOMMENDATION_PATTERNS = (
-    r"(买入|卖出|持有|加仓|减仓|清仓|建仓|抄底|止盈|止损)",
+    r"(建议买入|建议卖出|推荐买入|强烈推荐|维持买入|维持推荐|建议持有|建议加仓|建议减仓)",
+    r"(明确推荐配置|立即配置|可以重仓|目标价)",
+    r"(买入建议|卖出建议|持有建议|加仓建议|减仓建议|配置建议)",
+    r"(建议.{0,8}(买入|卖出|持有|加仓|减仓|配置|重仓))",
+    r"(推荐.{0,8}(买入|卖出|持有|加仓|减仓|配置|重仓))",
     r"(仓位建议|仓位配置建议|配置比例建议|建议配置比例|适合购买|不适合购买)",
     r"(核心配置|底仓配置|组合配置|适合作为.*配置|作为.*配置之一|配置为.*核心)",
+    r"(抄底|止盈|止损|清仓|建仓)",
 )
 
 PROHIBITED_PREDICTION_PATTERNS = (
-    r"(未来收益将|预计收益|必然上涨|必然下跌|保证收益|承诺收益|稳赚|无风险|确定跑赢|一定跑赢)",
+    r"(保证收益|承诺收益|稳赚|必然上涨|必然下跌|未来收益可达|未来收益将|预计收益率|预计收益|收益预测)",
+    r"(无风险|确定跑赢|一定跑赢)",
 )
 
 NEGATED_BOUNDARY_MARKERS = (
@@ -309,11 +315,6 @@ def _find_non_negated_match_context(pattern: str, text: str) -> str | None:
 def _is_allowed_non_advisory_match(matched_text: str, context: str) -> bool:
     if matched_text in {"无风险"}:
         return any(term in context for term in ("无风险利率", "无风险收益率"))
-    if matched_text == "持有":
-        return any(
-            term in context
-            for term in ("持有者", "长期持有者", "持有人", "持有期", "持有份额")
-        )
     if matched_text in {"配置比例", "仓位"}:
         return any(
             term in context

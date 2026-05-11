@@ -82,6 +82,7 @@ export interface ReportRecord {
   key_metrics: KeyMetric[];
   markdown: string;
   chart_specs: ChartSpecsPayload;
+  research_context?: ResearchContext | null;
   guard_result: GuardResult;
   data_quality: DataQuality;
 }
@@ -100,6 +101,9 @@ export interface CreateReportResponse {
 export interface EnsureReportRequest {
   fund_code: string;
   force_regenerate?: boolean;
+  include_research?: boolean;
+  research_material_ids?: string[] | null;
+  force_reextract?: boolean;
 }
 
 export interface EnsureReportResponse {
@@ -115,6 +119,8 @@ export type ReportTaskStage =
   | "queued"
   | "loading_data"
   | "planning_context"
+  | "extracting_research"
+  | "fusing_research"
   | "llm_generating"
   | "parsing_charts"
   | "quality_checking"
@@ -131,8 +137,61 @@ export interface ReportTaskStatus {
   message: string;
   report_id?: string | null;
   error?: GuardIssue | null;
+  include_research?: boolean;
+  research_material_ids?: string[] | null;
+  force_reextract?: boolean;
   created_at: string;
   updated_at: string;
+}
+
+export type ResearchSourceType = "report" | "announcement" | "news" | "internal_research";
+
+export interface ResearchMaterial {
+  material_id: string;
+  fund_code: string;
+  title: string;
+  source_type: ResearchSourceType;
+  source_name?: string | null;
+  publish_date?: string | null;
+  file_name?: string | null;
+  created_at: string;
+}
+
+export interface ResearchMaterialCreateRequest {
+  title: string;
+  content: string;
+  source_type: ResearchSourceType;
+  source_name?: string | null;
+  publish_date?: string | null;
+}
+
+export interface ResearchSignal {
+  signal_id?: string;
+  fund_code?: string;
+  material_id?: string;
+  chunk_id?: string | null;
+  signal_type?: string;
+  summary?: string;
+  detail?: string | null;
+  category?: string | null;
+  signal_date?: string | null;
+  impact_direction?: string | null;
+  importance?: string | null;
+  confidence?: number | null;
+  evidence_text?: string;
+  source_type?: ResearchSourceType;
+  publish_date?: string | null;
+}
+
+export interface ResearchContext {
+  fund_code?: string;
+  positive_factors?: ResearchSignal[];
+  risk_notices?: ResearchSignal[];
+  key_events?: ResearchSignal[];
+  view_changes?: ResearchSignal[];
+  source_materials?: ResearchMaterial[];
+  limitations?: string[];
+  generated_at?: string;
 }
 
 export interface FundMetricsResponse {

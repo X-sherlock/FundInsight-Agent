@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 
 from fundinsight.data_loader import load_fund_metrics
+from fundinsight.fund_repository import FundRepository
 
 
 SAMPLE_INPUT = Path(__file__).resolve().parents[1] / "data" / "sample" / "fund_metrics.json"
@@ -31,3 +32,10 @@ def test_load_fund_metrics_rejects_invalid_shape(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError, match="schema validation"):
         load_fund_metrics(invalid_input)
+
+
+def test_default_repository_lists_synthetic_sample_funds() -> None:
+    funds = FundRepository().list_funds()
+    codes = {fund.code for fund in funds}
+
+    assert {"000001", "000002", "000003", "000004", "000005"}.issubset(codes)

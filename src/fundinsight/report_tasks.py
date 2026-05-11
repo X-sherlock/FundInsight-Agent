@@ -33,9 +33,17 @@ class ReportTaskManager:
         self.report_agent_factory = report_agent_factory or ReportAgent
         self.enforce_report_guard = enforce_report_guard
 
-    def ensure_report(self, fund_code: str, *, force_regenerate: bool = False) -> EnsureReportResponse:
+    def ensure_report(
+        self,
+        fund_code: str,
+        *,
+        force_regenerate: bool = False,
+        include_research: bool = False,
+        research_material_ids: list[str] | None = None,
+        force_reextract: bool = False,
+    ) -> EnsureReportResponse:
         normalized_code = fund_code.strip()
-        if not force_regenerate and self.report_store.report_exists(normalized_code):
+        if not force_regenerate and not include_research and self.report_store.report_exists(normalized_code):
             report_id = self.report_store.report_id_for_fund(normalized_code)
             return EnsureReportResponse(
                 mode="existing",
@@ -54,7 +62,13 @@ class ReportTaskManager:
             )
 
         task_id = self._new_task_id(normalized_code)
-        self.task_store.create_task(task_id, normalized_code)
+        self.task_store.create_task(
+            task_id,
+            normalized_code,
+            include_research=include_research,
+            research_material_ids=research_material_ids,
+            force_reextract=force_reextract,
+        )
         return EnsureReportResponse(
             mode="created",
             status="queued",
@@ -75,7 +89,13 @@ class ReportTaskManager:
             self.task_store.update_stage(task_id, "planning_context")
             current_stage = "llm_generating"
             self.task_store.update_stage(task_id, "llm_generating")
-            result = self.report_agent_factory().generate_report(input_path)
+            result = self.report_agent_factory().generate_report(
+                input_path,
+                include_research=task.include_research,
+                research_material_ids=task.research_material_ids,
+                force_reextract=task.force_reextract,
+                stage_callback=lambda stage: self.task_store.update_stage(task_id, stage),
+            )
 
             current_stage = "parsing_charts"
             self.task_store.update_stage(task_id, "parsing_charts")

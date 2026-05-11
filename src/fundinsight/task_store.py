@@ -38,11 +38,34 @@ class TaskNotFoundError(LookupError):
     """Raised when a task JSON file does not exist."""
 
 
+STAGE_MESSAGES.update(
+    {
+        "extracting_research": (
+            "正在提取投研材料信号",
+            "正在从已保存的投研材料中提取正面因素、风险提示、关键事件和观点变化。",
+        ),
+        "fusing_research": (
+            "正在融合投研上下文",
+            "正在将投研材料信号整理为报告可用的结构化上下文。",
+        ),
+    }
+)
+RUNNING_STATUSES.update({"extracting_research", "fusing_research"})
+
+
 class TaskStore:
     def __init__(self, reports_root: str | Path = DEFAULT_REPORTS_ROOT) -> None:
         self.tasks_root = Path(reports_root) / "tasks"
 
-    def create_task(self, task_id: str, fund_code: str) -> ReportTaskResponse:
+    def create_task(
+        self,
+        task_id: str,
+        fund_code: str,
+        *,
+        include_research: bool = False,
+        research_material_ids: list[str] | None = None,
+        force_reextract: bool = False,
+    ) -> ReportTaskResponse:
         now = self._now()
         task = ReportTaskResponse(
             task_id=task_id,
@@ -53,6 +76,9 @@ class TaskStore:
             message=STAGE_MESSAGES["queued"][1],
             report_id=None,
             error=None,
+            include_research=include_research,
+            research_material_ids=research_material_ids,
+            force_reextract=force_reextract,
             created_at=now,
             updated_at=now,
         )

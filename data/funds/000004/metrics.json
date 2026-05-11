@@ -1,0 +1,105 @@
+{
+  "fund": {
+    "code": "000004",
+    "name": "示例固收增强债券基金",
+    "type": "债券型",
+    "inception_date": "2020-04-10",
+    "fund_company": "示例基金管理有限公司"
+  },
+  "as_of_date": "2026-03-31",
+  "currency": "CNY",
+  "benchmark": {
+    "name": "中债综合财富指数",
+    "code": "CBA00203.CS",
+    "description": "用于观察债券市场综合财富表现"
+  },
+  "benchmark_info": {
+    "name": "中债综合财富指数",
+    "code": "CBA00203.CS",
+    "description": "样例债券基金采用的主要业绩比较基准"
+  },
+  "category": {
+    "name": "混合债券型二级基金",
+    "peer_count": 290
+  },
+  "peer_summary": {
+    "peer_rank_percentile": 0.36,
+    "peer_average_return_1y": 0.035,
+    "peer_median_return_1y": 0.033,
+    "peer_average_volatility_1y": 0.064,
+    "peer_count": 290,
+    "percentile_direction": "lower_is_better_rank_position",
+    "notes": "peer_rank_percentile 为样例同类分位，数值越低表示历史排名位置越靠前。"
+  },
+  "metrics": {
+    "performance": {
+      "return_1m": 0.004,
+      "return_3m": 0.012,
+      "return_6m": 0.024,
+      "return_1y": 0.052,
+      "return_3y_annualized": 0.041,
+      "return_since_inception_annualized": 0.045,
+      "benchmark_return_1y": 0.031,
+      "excess_return_1y": 0.021
+    },
+    "excess_return": {
+      "excess_return_1m": 0.001,
+      "excess_return_3m": 0.004,
+      "excess_return_6m": 0.009,
+      "excess_return_1y": 0.021,
+      "excess_return_3y_annualized": 0.008
+    },
+    "risk": {
+      "volatility_1y": 0.058,
+      "downside_volatility_1y": 0.034,
+      "beta_1y": 0.24,
+      "tracking_error_1y": 0.031
+    },
+    "drawdown": {
+      "max_drawdown_1y": -0.031,
+      "max_drawdown_3y": -0.067,
+      "drawdown_recovery_days": 42
+    },
+    "risk_adjusted": {
+      "sharpe_1y": 0.82,
+      "information_ratio_1y": 0.68,
+      "calmar_3y": 0.61
+    },
+    "holding": {
+      "stock_position": 0.16,
+      "bond_position": 0.77,
+      "cash_position": 0.05,
+      "top10_holding_weight": 0.29,
+      "turnover_rate_1y": 0.72
+    },
+    "fee": {
+      "management_fee": 0.007,
+      "custodian_fee": 0.0018,
+      "sales_service_fee": 0.0
+    },
+    "scale": {
+      "aum": 3820000000,
+      "aum_change_6m": -0.018,
+      "holder_count": 156000
+    }
+  },
+  "manager": {
+    "name": "陈示例",
+    "tenure_years": 4.7,
+    "background": "具有信用债研究、利率债交易和固收增强策略经验"
+  },
+  "data_quality": {
+    "source": "synthetic_sample",
+    "missing_fields": [
+      "credit_rating_distribution",
+      "duration_profile",
+      "daily_nav_series",
+      "full_peer_distribution"
+    ],
+    "notes": "示例数据为项目样例，不代表真实基金。"
+  },
+  "data_notes": [
+    "百分比指标使用小数形式，例如 0.052 表示 5.2%。",
+    "债券组合久期和信用评级分布缺失，报告生成时应显式说明该局限。"
+  ]
+}

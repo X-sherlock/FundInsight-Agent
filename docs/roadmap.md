@@ -27,7 +27,7 @@ Status: current scope
 - Add API endpoints for single-report generation.
 - Add request and response models.
 - Add report metadata handling.
-- Add provider configuration and error handling.
+- Add Bailian API key/base URL configuration and error handling.
 - Add API-level tests.
 
 ## Milestone 3: Report Management

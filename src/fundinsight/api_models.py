@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import date, datetime
 from typing import Any, Literal
 
 from pydantic import BaseModel, Field
@@ -11,6 +12,8 @@ ReportTaskStatusValue = Literal[
     "queued",
     "loading_data",
     "planning_context",
+    "extracting_research",
+    "fusing_research",
     "llm_generating",
     "parsing_charts",
     "quality_checking",
@@ -48,6 +51,32 @@ class FundMetricsResponse(BaseModel):
 class EnsureReportRequest(BaseModel):
     fund_code: str = Field(min_length=1)
     force_regenerate: bool = False
+    include_research: bool = False
+    research_material_ids: list[str] | None = None
+    force_reextract: bool = False
+
+
+class ResearchMaterialCreateRequest(BaseModel):
+    title: str
+    content: str
+    source_type: str
+    source_name: str | None = None
+    publish_date: date | None = None
+
+
+class ResearchMaterialSummaryResponse(BaseModel):
+    material_id: str
+    fund_code: str
+    title: str
+    source_type: Literal["report", "announcement", "news", "internal_research"]
+    source_name: str | None = None
+    publish_date: date | None = None
+    file_name: str | None = None
+    created_at: datetime
+
+
+class ResearchMaterialListResponse(BaseModel):
+    items: list[ResearchMaterialSummaryResponse]
 
 
 class EnsureReportResponse(BaseModel):
@@ -68,5 +97,8 @@ class ReportTaskResponse(BaseModel):
     message: str
     report_id: str | None = None
     error: ApiError | None = None
+    include_research: bool = False
+    research_material_ids: list[str] | None = None
+    force_reextract: bool = False
     created_at: str
     updated_at: str

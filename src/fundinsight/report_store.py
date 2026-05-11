@@ -11,6 +11,7 @@ from typing import Any
 from fundinsight.api_models import FundBriefResponse
 from fundinsight.models import FundMetricsInput
 from fundinsight.report_agent import ReportResult
+from fundinsight.report_planner import sanitize_research_context
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -43,8 +44,21 @@ class ReportStore:
     def source_metrics_path(self, fund_code: str) -> Path:
         return self.fund_report_dir(fund_code) / "source_metrics.json"
 
+    def research_context_path(self, fund_code: str) -> Path:
+        return self.fund_report_dir(fund_code) / "research_context.json"
+
+    def source_materials_manifest_path(self, fund_code: str) -> Path:
+        return self.fund_report_dir(fund_code) / "source_materials_manifest.json"
+
     def report_exists(self, fund_code: str) -> bool:
         return self.report_path(fund_code).is_file()
+
+    def save_report_json(self, fund_code: str, file_name: str, payload: dict[str, Any]) -> Path:
+        output_dir = self.fund_report_dir(fund_code)
+        output_dir.mkdir(parents=True, exist_ok=True)
+        path = output_dir / file_name
+        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        return path
 
     def save_generated_report(self, result: ReportResult, source_metrics: dict[str, Any]) -> str:
         fund_code = result.fund_metrics.fund.code
@@ -64,6 +78,20 @@ class ReportStore:
             json.dumps(source_metrics, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
+        research_context_payload = sanitize_research_context(result.research_context)
+        if research_context_payload is not None:
+            self.research_context_path(fund_code).write_text(
+                json.dumps(research_context_payload, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            self.source_materials_manifest_path(fund_code).write_text(
+                json.dumps(
+                    {"source_materials": research_context_payload.get("source_materials", [])},
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
         metadata = {
             "report_id": self.report_id_for_fund(fund_code),
             "fund_code": fund_code,
@@ -74,6 +102,11 @@ class ReportStore:
                 {"code": issue.code, "message": issue.message}
                 for issue in result.guard_result.issues
             ],
+            "research": {
+                "included": result.include_research,
+                "processing_error": result.research_processing_error,
+                "context_saved": research_context_payload is not None,
+            },
         }
         self.metadata_path(fund_code).write_text(
             json.dumps(metadata, ensure_ascii=False, indent=2),
@@ -89,6 +122,7 @@ class ReportStore:
         source_metrics = self._read_json(self.source_metrics_path(fund_code))
         metadata = self._read_json(self.metadata_path(fund_code))
         chart_specs = self._read_json(self.chart_specs_path(fund_code), default={"charts": []})
+        research_context = self._read_json(self.research_context_path(fund_code), default={})
         markdown = self.report_path(fund_code).read_text(encoding="utf-8")
         metrics = FundMetricsInput.model_validate(source_metrics)
         guard_issues = metadata.get("guard_issues", [])
@@ -104,6 +138,7 @@ class ReportStore:
             "key_metrics": self._key_metrics(metrics),
             "markdown": markdown,
             "chart_specs": chart_specs,
+            "research_context": research_context or None,
             "guard_result": {"passed": guard_passed, "issues": guard_issues},
             "data_quality": {
                 "missing_fields": metrics.data_quality.missing_fields,
