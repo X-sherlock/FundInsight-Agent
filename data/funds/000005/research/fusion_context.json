@@ -17,9 +17,43 @@
       "evidence_text": "虚构研报样例将该基金列为科技主题观察名单，关注近一年相对基准表现、规模增长和换手率变化。",
       "source_type": "report",
       "publish_date": "2026-04-08"
+    },
+    {
+      "signal_id": "sig_f6df59257d35822c9e11",
+      "fund_code": "000005",
+      "material_id": "mat_13d596d783193b1f",
+      "chunk_id": "mat_13d596d783193b1f_0000",
+      "signal_type": "positive_factor",
+      "summary": "工信部公开数据反映软件业收入和利润保持增长",
+      "detail": "软件业运行数据可作为科技、软件和集成电路设计方向的行业背景。",
+      "category": "行业背景",
+      "signal_date": "2025-08-01",
+      "impact_direction": "positive",
+      "importance": "medium",
+      "confidence": 0.9,
+      "evidence_text": "工信部披露，2025 年上半年我国软件业务收入为 70585 亿元，同比增长 11.9%；软件业利润总额为 8581 亿元，同比增长 12.0%。",
+      "source_type": "news",
+      "publish_date": "2025-08-01"
     }
   ],
   "risk_notices": [
+    {
+      "signal_id": "sig_f4fbc5914885b0944ea9",
+      "fund_code": "000005",
+      "material_id": "mat_8c9043a7ca023de4",
+      "chunk_id": "mat_8c9043a7ca023de4_0000",
+      "signal_type": "risk_notice",
+      "summary": "中证TMT指数公开数据提示主题指数波动和估值水平较高",
+      "detail": "公开 factsheet 可作为指数背景和风险观察材料，但不能替代基金自身指标。",
+      "category": "指数背景",
+      "signal_date": "2026-03-31",
+      "impact_direction": "uncertain",
+      "importance": "high",
+      "confidence": 0.9,
+      "evidence_text": "factsheet 显示，截至 2026-03-31，该指数 1 年收益率为 34.05%，3 年年化收益率为 9.73%，1 年年化波动率为 29.54%，滚动市盈率为 41.09。",
+      "source_type": "report",
+      "publish_date": "2026-03-31"
+    },
     {
       "signal_id": "sig_7f82664844388c74e5ee",
       "fund_code": "000005",
@@ -39,6 +73,23 @@
     }
   ],
   "key_events": [
+    {
+      "signal_id": "sig_42e2911130455249a630",
+      "fund_code": "000005",
+      "material_id": "mat_06bc373c4d5ef2a4",
+      "chunk_id": "mat_06bc373c4d5ef2a4_0000",
+      "signal_type": "key_event",
+      "summary": "工信部公开数据反映电子信息制造业上半年生产增长",
+      "detail": "行业运行数据可作为科技主题制造端背景，需要与基金风险指标共同观察。",
+      "category": "行业背景",
+      "signal_date": "2025-07-30",
+      "impact_direction": "positive",
+      "importance": "medium",
+      "confidence": 0.9,
+      "evidence_text": "工信部披露，2025 年上半年规模以上电子信息制造业增加值同比增长 11.1%，增速分别比同期工业、高技术制造业高 4.7 个和 1.6 个百分点。",
+      "source_type": "announcement",
+      "publish_date": "2025-07-30"
+    },
     {
       "signal_id": "sig_91701281e8574358c802",
       "fund_code": "000005",
@@ -78,26 +129,16 @@
   ],
   "source_materials": [
     {
-      "material_id": "mat_bacc9c4683f096d6",
+      "material_id": "mat_06bc373c4d5ef2a4",
       "fund_code": "000005",
-      "title": "虚构样例研报：科技主题基金关注因素梳理",
-      "source_type": "report",
-      "source_name": "虚构研报样例",
-      "publish_date": "2026-04-08",
-      "file_name": null,
-      "content_hash": "bacc9c4683f096d662ab139dc124c87e6a0fdad2490b4a141465432406478a61",
-      "created_at": "2026-05-11T09:05:46.451545+08:00"
-    },
-    {
-      "material_id": "mat_1327d39fe51a7fd0",
-      "fund_code": "000005",
-      "title": "虚构样例公告：基金运作要素与风险提示说明",
+      "title": "真实公开数据样例：2025年上半年电子信息制造业运行情况",
       "source_type": "announcement",
-      "source_name": "虚构公告样例",
-      "publish_date": "2026-04-18",
+      "source_name": "工业和信息化部运行监测协调局",
+      "source_url": "https://www.miit.gov.cn/jgsj/yxj/xxfb/art/2025/art_a55ea74ca4384daa998a23858e82372b.html",
+      "publish_date": "2025-07-30",
       "file_name": null,
-      "content_hash": "1327d39fe51a7fd0d036ab7468d63d4648612d93964e7e4a226846856f09a3f0",
-      "created_at": "2026-05-11T09:05:46.451545+08:00"
+      "content_hash": "06bc373c4d5ef2a42c1a47084e848e01fc4e3e7e08a8c835b349d0c43b168a1e",
+      "created_at": "2026-05-11T09:13:11.960179+08:00"
     },
     {
       "material_id": "mat_11a51e1f7e0ee210",
@@ -111,6 +152,29 @@
       "created_at": "2026-05-11T09:05:46.457213+08:00"
     },
     {
+      "material_id": "mat_1327d39fe51a7fd0",
+      "fund_code": "000005",
+      "title": "虚构样例公告：基金运作要素与风险提示说明",
+      "source_type": "announcement",
+      "source_name": "虚构公告样例",
+      "publish_date": "2026-04-18",
+      "file_name": null,
+      "content_hash": "1327d39fe51a7fd0d036ab7468d63d4648612d93964e7e4a226846856f09a3f0",
+      "created_at": "2026-05-11T09:05:46.451545+08:00"
+    },
+    {
+      "material_id": "mat_13d596d783193b1f",
+      "fund_code": "000005",
+      "title": "真实公开数据样例：2025年上半年软件业运行情况",
+      "source_type": "news",
+      "source_name": "工业和信息化部运行监测协调局",
+      "source_url": "https://www.miit.gov.cn/jgsj/yxj/xxfb/art/2025/art_68003fdb41984bcab3f1234f8c8eb449.html",
+      "publish_date": "2025-08-01",
+      "file_name": null,
+      "content_hash": "13d596d783193b1fd064a50619606c81906c87b1918f4fc8d07c8bf6837f851b",
+      "created_at": "2026-05-11T09:13:11.968587+08:00"
+    },
+    {
       "material_id": "mat_35228a0f4785c514",
       "fund_code": "000005",
       "title": "虚构样例内部投研：跟踪框架与观点变化记录",
@@ -120,8 +184,31 @@
       "file_name": null,
       "content_hash": "35228a0f4785c51459f0e1bf6e265a0497264547c5c25164c0be6051b26db9c7",
       "created_at": "2026-05-11T09:05:46.457213+08:00"
+    },
+    {
+      "material_id": "mat_8c9043a7ca023de4",
+      "fund_code": "000005",
+      "title": "真实公开数据样例：中证TMT指数基础信息与风险指标",
+      "source_type": "report",
+      "source_name": "中证指数有限公司",
+      "source_url": "https://oss-ch.csindex.com.cn/static/html/csindex/public/uploads/indices/detail/files/zh_CN/000998factsheet.pdf",
+      "publish_date": "2026-03-31",
+      "file_name": null,
+      "content_hash": "aa86e631e44d8d538f0f073d92dd9bf8cf1fe5451ab517f7d0f132b0d6d7c531",
+      "created_at": "2026-05-11T09:13:11.960179+08:00"
+    },
+    {
+      "material_id": "mat_bacc9c4683f096d6",
+      "fund_code": "000005",
+      "title": "虚构样例研报：科技主题基金关注因素梳理",
+      "source_type": "report",
+      "source_name": "虚构研报样例",
+      "publish_date": "2026-04-08",
+      "file_name": null,
+      "content_hash": "bacc9c4683f096d662ab139dc124c87e6a0fdad2490b4a141465432406478a61",
+      "created_at": "2026-05-11T09:05:46.451545+08:00"
     }
   ],
   "limitations": [],
-  "generated_at": "2026-05-11T09:05:46.462527+08:00"
+  "generated_at": "2026-05-11T09:14:29.278688+08:00"
 }

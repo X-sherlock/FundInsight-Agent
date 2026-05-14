@@ -16,6 +16,11 @@ from fundinsight.research_models import ResearchChunk, ResearchDocument, SourceT
 from fundinsight.research_store import ResearchStore
 
 
+EXTRACTION_CHUNK_MIN_CHARS = 1200
+EXTRACTION_CHUNK_MAX_CHARS = 2800
+EXTRACTION_CHUNK_OVERLAP_CHARS = 350
+
+
 class ResearchMaterialService:
     def __init__(self, store: ResearchStore | None = None) -> None:
         self.store = store or ResearchStore()
@@ -28,6 +33,7 @@ class ResearchMaterialService:
         content: str,
         source_type: SourceType,
         source_name: str | None = None,
+        source_url: str | None = None,
         publish_date: date | str | None = None,
         file_name: str | None = None,
     ) -> ResearchDocument:
@@ -45,6 +51,7 @@ class ResearchMaterialService:
             title=title,
             source_type=source_type,
             source_name=source_name,
+            source_url=source_url,
             publish_date=publish_date,
             file_name=file_name,
             content=normalized,
@@ -60,6 +67,7 @@ class ResearchMaterialService:
         title: str,
         source_type: SourceType,
         source_name: str | None = None,
+        source_url: str | None = None,
         publish_date: date | str | None = None,
     ) -> ResearchDocument:
         input_path = Path(path)
@@ -69,6 +77,7 @@ class ResearchMaterialService:
             content=load_research_json(input_path),
             source_type=source_type,
             source_name=source_name,
+            source_url=source_url,
             publish_date=publish_date,
             file_name=input_path.name,
         )
@@ -87,7 +96,12 @@ class ResearchMaterialService:
         if content is None:
             raise ValueError(f"Research material does not exist: {material_id}")
 
-        chunk_texts = split_research_chunks(content)
+        chunk_texts = split_research_chunks(
+            content,
+            target_min_chars=EXTRACTION_CHUNK_MIN_CHARS,
+            target_max_chars=EXTRACTION_CHUNK_MAX_CHARS,
+            overlap_chars=EXTRACTION_CHUNK_OVERLAP_CHARS,
+        )
         return [
             ResearchChunk(
                 chunk_id=f"{material_id}_{chunk_index:04d}",

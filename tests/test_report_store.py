@@ -29,7 +29,59 @@ def test_report_store_saves_and_loads_frontend_record(tmp_path: Path) -> None:
     assert record["core_conclusions"][0].startswith("**基于 return_1y 指标**")
 
 
-def _report_result(metrics):
+def test_report_store_enriches_fact_card_chunks_from_related_material_section(tmp_path: Path) -> None:
+    metrics = load_fund_metrics(SAMPLE_INPUT)
+    store = ReportStore(tmp_path / "reports")
+    fact_card = {
+        "fund_code": "000001",
+        "source_metrics": {},
+        "derived_metrics": {},
+        "metric_tables": {},
+        "missing_fields": [],
+        "data_notes": [],
+        "retrieved_chunks": [
+            {
+                "chunk_id": "mat_1_parent_0001",
+                "material_id": "mat_1",
+                "fund_code": "000001",
+                "chunk_index": 0,
+                "evidence_text": "完整证据原文",
+                "relevance_score": 0.5,
+                "source_type": "report",
+                "title": "年度报告.pdf",
+            }
+        ],
+        "source_materials": [],
+        "limitations": [],
+    }
+    markdown = (
+        "# report\n\n"
+        "## 1. 报告说明\ncontent\n\n"
+        "## 2. 核心结论\n1. **基于 return_1y 指标**观察历史收益。\n\n"
+        "## 14. 相关材料解读\n\n"
+        "**解读1：历史超额收益表现**\n"
+        "- **材料摘要**：年度报告披露基金过去一年收益与基准对比。\n"
+        "- **情绪标签**：正面\n"
+        "- **证据原文摘录**：“过去一年 13.07% 3.47% 9.60%”\n"
+        "- **详细来源**：标题《年度报告.pdf》，来源类型：report，chunk_id：mat_1_parent_0001\n\n"
+        "## 15. 数据局限性\ncontent"
+    )
+
+    report_id = store.save_generated_report(
+        _report_result(metrics, markdown=markdown, fact_card=fact_card),
+        metrics.model_dump(mode="json"),
+    )
+
+    record = store.load_report_record(report_id)
+    chunk = record["fact_card"]["retrieved_chunks"][0]
+    assert chunk["analysis_title"] == "历史超额收益表现"
+    assert chunk["material_summary"] == "年度报告披露基金过去一年收益与基准对比。"
+    assert chunk["sentiment_label"] == "正面"
+    assert chunk["evidence_excerpt"] == "“过去一年 13.07% 3.47% 9.60%”"
+    assert chunk["evidence_text"] == "完整证据原文"
+
+
+def _report_result(metrics, markdown: str | None = None, fact_card: dict | None = None):
     return ReportResult(
         fund_metrics=metrics,
         report_plan=ReportPlan(
@@ -42,7 +94,8 @@ def _report_result(metrics):
             data_notes=[],
         ),
         prompt="",
-        markdown=(
+        markdown=markdown
+        or (
             "# report\n\n"
             "## 1. 报告说明\ncontent\n\n"
             "## 2. 核心结论\n1. **基于 return_1y 指标**观察历史收益。\n\n"
@@ -62,4 +115,5 @@ def _report_result(metrics):
             )
         ],
         guard_result=GuardResult(tuple()),
+        fact_card=fact_card,
     )

@@ -200,6 +200,7 @@ class ReportPlan(FundInsightModel):
     missing_fields: list[str]
     data_notes: list[str]
     research_context: dict[str, Any] | None = None
+    fact_card: dict[str, Any] | None = None
 
     def to_prompt_payload(self) -> dict[str, Any]:
         """Return a JSON-serializable report context for the runtime prompt."""
@@ -207,4 +208,6 @@ class ReportPlan(FundInsightModel):
         payload = self.model_dump(mode="json")
         if payload.get("research_context") is None:
             payload.pop("research_context", None)
+        if payload.get("fact_card") is None:
+            payload.pop("fact_card", None)
         return payload

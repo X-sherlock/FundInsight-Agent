@@ -1,0 +1,58 @@
+{
+  "source_materials": [
+    {
+      "material_id": "mat_9aa5a48230a15011",
+      "title": "兴全合润混合A产品页摘录",
+      "source_type": "report",
+      "source_name": "兴证全球/蚂蚁财富产品页",
+      "source_url": "https://www.amcfortune.com/funds/public/163406/index.shtml",
+      "publish_date": "2026-05-07",
+      "file_name": "mat_163406_profile.txt",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\163406\\research\\materials\\mat_9aa5a48230a15011\\original.txt",
+      "chunk_count": 1
+    },
+    {
+      "material_id": "mat_03ef0fd58e150ca4",
+      "title": "兴全合润混合A净值上涨3.61%",
+      "source_type": "news",
+      "source_name": "新浪财经",
+      "source_url": "https://finance.sina.com.cn/money/fund/aiassistant/jzyd/2026-05-12/doc-inhxqquv8579487.shtml",
+      "publish_date": "2026-05-12",
+      "file_name": "mat_163406_news_20260512.txt",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\163406\\research\\materials\\mat_03ef0fd58e150ca4\\original.txt",
+      "chunk_count": 1
+    }
+  ],
+  "retrieved_chunks": [
+    {
+      "chunk_id": "mat_9aa5a48230a15011_0000",
+      "material_id": "mat_9aa5a48230a15011",
+      "fund_code": "163406",
+      "chunk_index": 0,
+      "evidence_text": "产品页显示，兴全合润混合A（163406）为混合型基金，管理人为兴证全球基金管理有限公司，成立时间为2010-04-22，基金经理为谢治宇。\n截至2026-05-07，页面显示最新净值为2.4987，涨跌幅0.66%，今年以来区间涨跌幅为20.12%，近一年为63.20%，成立以来为850.26%。\n产品页披露风险类型为中风险，起投金额为1元。该材料可用于解释基金基本属性、阶段性表现和产品风险等级。",
+      "relevance_score": 0.8102759745378904,
+      "source_type": "report",
+      "title": "兴全合润混合A产品页摘录",
+      "source_name": "兴证全球/蚂蚁财富产品页",
+      "source_url": "https://www.amcfortune.com/funds/public/163406/index.shtml",
+      "publish_date": "2026-05-07",
+      "file_name": "mat_163406_profile.txt",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\163406\\research\\materials\\mat_9aa5a48230a15011\\original.txt"
+    },
+    {
+      "chunk_id": "mat_03ef0fd58e150ca4_0000",
+      "material_id": "mat_03ef0fd58e150ca4",
+      "fund_code": "163406",
+      "chunk_index": 0,
+      "evidence_text": "新浪财经材料显示，兴全合润混合A在2026年5月11日最新净值上涨3.61%。\n材料列示该基金成立以来收益880.59%，今年以来收益23.94%，近一月收益15.53%，近一年收益69.06%，近三年收益71.94%，近一年同类排名1603/8183。\n材料列示前十大重仓股包括巨化股份、晶晨股份、中际旭创、宁德时代、华海清科、德业股份、澜起科技、华鲁恒升、博源化工和大族激光。\n该新闻可用于解释基金近期净值表现、科技制造和新能源相关持仓暴露，以及重仓股对净值波动的影响。",
+      "relevance_score": 0.7519085909421918,
+      "source_type": "news",
+      "title": "兴全合润混合A净值上涨3.61%",
+      "source_name": "新浪财经",
+      "source_url": "https://finance.sina.com.cn/money/fund/aiassistant/jzyd/2026-05-12/doc-inhxqquv8579487.shtml",
+      "publish_date": "2026-05-12",
+      "file_name": "mat_163406_news_20260512.txt",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\163406\\research\\materials\\mat_03ef0fd58e150ca4\\original.txt"
+    }
+  ]
+}

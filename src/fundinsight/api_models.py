@@ -51,7 +51,7 @@ class FundMetricsResponse(BaseModel):
 class EnsureReportRequest(BaseModel):
     fund_code: str = Field(min_length=1)
     force_regenerate: bool = False
-    include_research: bool = False
+    include_research: bool | None = None
     research_material_ids: list[str] | None = None
     force_reextract: bool = False
 
@@ -61,6 +61,7 @@ class ResearchMaterialCreateRequest(BaseModel):
     content: str
     source_type: str
     source_name: str | None = None
+    source_url: str | None = None
     publish_date: date | None = None
 
 
@@ -70,8 +71,14 @@ class ResearchMaterialSummaryResponse(BaseModel):
     title: str
     source_type: Literal["report", "announcement", "news", "internal_research"]
     source_name: str | None = None
+    source_url: str | None = None
     publish_date: date | None = None
     file_name: str | None = None
+    original_file_path: str | None = None
+    extracted_text_path: str | None = None
+    chunk_count: int | None = None
+    vector_status: Literal["pending", "indexed", "failed"] = "pending"
+    vector_error: str | None = None
     created_at: datetime
 
 
@@ -97,7 +104,7 @@ class ReportTaskResponse(BaseModel):
     message: str
     report_id: str | None = None
     error: ApiError | None = None
-    include_research: bool = False
+    include_research: bool | None = None
     research_material_ids: list[str] | None = None
     force_reextract: bool = False
     created_at: str

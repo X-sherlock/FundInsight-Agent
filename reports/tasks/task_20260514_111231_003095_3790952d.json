@@ -1,0 +1,15 @@
+{
+  "task_id": "task_20260514_111231_003095_3790952d",
+  "fund_code": "003095",
+  "status": "completed",
+  "stage": "completed",
+  "stage_label": "报告已生成",
+  "message": "即将打开报告详情页。",
+  "report_id": "003095",
+  "error": null,
+  "include_research": true,
+  "research_material_ids": null,
+  "force_reextract": false,
+  "created_at": "2026-05-14T11:12:31.434557+08:00",
+  "updated_at": "2026-05-14T11:14:06.441535+08:00"
+}

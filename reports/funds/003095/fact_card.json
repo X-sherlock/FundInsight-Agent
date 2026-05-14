@@ -1,0 +1,476 @@
+{
+  "fund_code": "003095",
+  "source_metrics": {
+    "fund": {
+      "code": "003095",
+      "name": "中欧医疗健康混合A",
+      "type": "混合型",
+      "inception_date": "2016-09-29",
+      "fund_company": "中欧基金管理有限公司"
+    },
+    "as_of_date": "2026-05-07",
+    "currency": "CNY",
+    "benchmark": {
+      "name": "65%×中证医药卫生指数收益率+35%×中证综合债券指数收益率",
+      "code": "custom_benchmark",
+      "description": "中欧医疗健康混合A业绩评价标准"
+    },
+    "benchmark_info": {
+      "name": "65%×中证医药卫生指数收益率+35%×中证综合债券指数收益率",
+      "code": "custom_benchmark",
+      "description": "中欧医疗健康混合A业绩评价标准"
+    },
+    "category": {
+      "name": "偏股混合型基金",
+      "peer_count": 8179
+    },
+    "peer_summary": {
+      "peer_rank_percentile": 0.6134,
+      "peer_average_return_1y": null,
+      "peer_median_return_1y": null,
+      "peer_average_volatility_1y": null,
+      "peer_count": 8179,
+      "percentile_direction": "lower_is_better_rank_position",
+      "notes": "同类排名按新浪基金新闻 5017/8179 估算为分位 0.6134。"
+    },
+    "metrics": {
+      "performance": {
+        "return_1m": -0.0287,
+        "return_3m": -0.0027,
+        "return_6m": null,
+        "return_1y": 0.1367,
+        "return_3y_annualized": null,
+        "return_since_inception_annualized": null,
+        "benchmark_return_1y": null,
+        "excess_return_1y": null
+      },
+      "risk": {
+        "volatility_1y": null,
+        "downside_volatility_1y": null,
+        "beta_1y": null,
+        "tracking_error_1y": null
+      },
+      "drawdown": {
+        "max_drawdown_1y": null,
+        "max_drawdown_3y": null,
+        "drawdown_recovery_days": null
+      },
+      "risk_adjusted": {
+        "sharpe_1y": null,
+        "information_ratio_1y": null,
+        "calmar_3y": null
+      },
+      "holding": {
+        "stock_position": 0.9363,
+        "bond_position": 0.0207,
+        "cash_position": 0.0422,
+        "top10_holding_weight": 0.6769,
+        "turnover_rate_1y": null
+      },
+      "fee": {
+        "management_fee": 0.012,
+        "custodian_fee": 0.002,
+        "sales_service_fee": 0.0
+      },
+      "scale": {
+        "aum": 12974088800.0,
+        "aum_change_6m": null,
+        "holder_count": null
+      },
+      "excess_return": {
+        "excess_return_1m": null,
+        "excess_return_3m": null,
+        "excess_return_6m": null,
+        "excess_return_1y": null,
+        "excess_return_3y_annualized": null
+      }
+    },
+    "manager": {
+      "name": "葛兰、赵磊",
+      "tenure_years": null,
+      "background": "中欧基金医疗健康主题基金经理。"
+    },
+    "data_quality": {
+      "source": "fixture_from_public_pages",
+      "missing_fields": [
+        "metrics.performance.benchmark_return_1y",
+        "metrics.performance.excess_return_1y",
+        "metrics.risk.volatility_1y",
+        "metrics.drawdown.max_drawdown_1y",
+        "metrics.risk_adjusted.sharpe_1y"
+      ],
+      "notes": "测试 fixture 来自公开网页摘录；缺失字段不补造。"
+    },
+    "data_notes": [
+      "中欧基金官网披露 2026-05-07 净值、规模和 2026-03-31 投资组合。",
+      "百分比字段使用小数形式，例如 0.1367 表示 13.67%。"
+    ]
+  },
+  "derived_metrics": {
+    "computed_excess_return_1y": null,
+    "reported_excess_return_1y": null,
+    "fee_total": 0.014,
+    "asset_position_total": 0.9992000000000001,
+    "return_to_volatility_1y": null,
+    "drawdown_to_return_1y": null
+  },
+  "metric_tables": {
+    "return_periods": [
+      {
+        "label": "近1个月收益",
+        "field": "return_1m",
+        "value": -0.0287,
+        "unit": "percentage",
+        "display": "-2.87%"
+      },
+      {
+        "label": "近3个月收益",
+        "field": "return_3m",
+        "value": -0.0027,
+        "unit": "percentage",
+        "display": "-0.27%"
+      },
+      {
+        "label": "近6个月收益",
+        "field": "return_6m",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      },
+      {
+        "label": "近1年收益",
+        "field": "return_1y",
+        "value": 0.1367,
+        "unit": "percentage",
+        "display": "13.67%"
+      },
+      {
+        "label": "近3年年化收益",
+        "field": "return_3y_annualized",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      },
+      {
+        "label": "成立以来年化收益",
+        "field": "return_since_inception_annualized",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      }
+    ],
+    "benchmark_comparison": [
+      {
+        "label": "基金近1年收益",
+        "field": "return_1y",
+        "value": 0.1367,
+        "unit": "percentage",
+        "display": "13.67%"
+      },
+      {
+        "label": "基准近1年收益",
+        "field": "benchmark_return_1y",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      },
+      {
+        "label": "近1年超额收益",
+        "field": "reported_excess_return_1y",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      },
+      {
+        "label": "计算近1年超额收益",
+        "field": "computed_excess_return_1y",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      }
+    ],
+    "risk_profile": [
+      {
+        "label": "近1年波动率",
+        "field": "volatility_1y",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      },
+      {
+        "label": "近1年下行波动率",
+        "field": "downside_volatility_1y",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      },
+      {
+        "label": "近1年最大回撤",
+        "field": "max_drawdown_1y",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      },
+      {
+        "label": "近3年最大回撤",
+        "field": "max_drawdown_3y",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      },
+      {
+        "label": "回撤修复天数",
+        "field": "drawdown_recovery_days",
+        "value": null,
+        "unit": "days",
+        "display": "缺失"
+      },
+      {
+        "label": "夏普比率",
+        "field": "sharpe_1y",
+        "value": null,
+        "unit": "number",
+        "display": "缺失"
+      }
+    ],
+    "peer_summary": [
+      {
+        "label": "同类分位",
+        "field": "peer_rank_percentile",
+        "value": 0.6134,
+        "unit": "percentile",
+        "display": "61.34%"
+      },
+      {
+        "label": "同类平均近1年收益",
+        "field": "peer_average_return_1y",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      },
+      {
+        "label": "同类中位近1年收益",
+        "field": "peer_median_return_1y",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      },
+      {
+        "label": "同类平均近1年波动率",
+        "field": "peer_average_volatility_1y",
+        "value": null,
+        "unit": "percentage",
+        "display": "缺失"
+      }
+    ]
+  },
+  "missing_fields": [
+    "metrics.drawdown.max_drawdown_1y",
+    "metrics.performance.benchmark_return_1y",
+    "metrics.performance.excess_return_1y",
+    "metrics.risk.volatility_1y",
+    "metrics.risk_adjusted.sharpe_1y"
+  ],
+  "data_notes": [
+    "中欧基金官网披露 2026-05-07 净值、规模和 2026-03-31 投资组合。",
+    "百分比字段使用小数形式，例如 0.1367 表示 13.67%。",
+    "测试 fixture 来自公开网页摘录；缺失字段不补造。",
+    "同类排名按新浪基金新闻 5017/8179 估算为分位 0.6134。"
+  ],
+  "retrieved_chunks": [
+    {
+      "chunk_id": "mat_aa8a135624975af3_parent_0140",
+      "material_id": "mat_aa8a135624975af3",
+      "fund_code": "003095",
+      "fund_name": "中欧医疗健康混合A",
+      "chunk_index": 158,
+      "evidence_text": "7.4.13.3 流动性风险\n\n流动性风险是指基金在履行与金融负债有关的义务时遇到资金短缺的风险。本基金的流动性\n风险一方面来自于基金份额持有人可随时要求赎回其持有的基金份额，另一方面来自于投资品种\n所处的交易市场不活跃而带来的变现困难或因投资集中而无法在市场出现剧烈波动的情况下以合\n理的价格变现。\n针对兑付赎回资金的流动性风险，本基金的基金管理人每日对本基金的申购赎回情况进行严密监\n控并预测流动性需求，保持基金投资组合中的可用现金头寸与之相匹配。本基金的基金管理人在\n基金合同中设计了巨额赎回条款，约定在非常情况下赎回申请的处理方式，控制因开放申购赎回\n模式带来的流动性风险，有效保障基金持有人利益。\n针对投资品种变现的流动性风险，本基金的基金管理人通过独立的风险管理部门设定流动性比例\n要求，对流动性指标进行持续的监测和分析，包括组合持仓集中度指标、组合在短时间内变现能\n力的综合指标、组合中变现能力较差的投资品种比例以及流通受限制的投资品种比例等。本基金\n投资于一家公司发行的证券市值不超过基金资产净值的 10%，且本基金与由本基金的基金管理人\n\n中欧医疗健康混合型证券投资基金2025年年度报告\n第 51页 共 73页\n管理的其他基金共同持有一家公司发行的证券不得超过该证券的 10%。本基金的基金管理人管理\n的所有开放式基金共同持有一家上市公司发行的可流通股票不得超过该上市公司可流通股票的\n15%。本基金主动投资于流动性受限资产的市值合计不得超过基金资产净值的15%。除附注7.4.12\n中列示的部分基金资产流通暂时受限制不能自由转让的情况外，本基金所持大部分资产均能以合\n理价格适时变现。此外，本基金可通过卖出回购金融资产方式借入短期资金应对流动性需求，其\n上限一般不超过基金持有的债券投资的公允价值。\n于 2025 年 12 月 31 日，本基金所承担的除卖出回购金融资产款以外的金融负债的合约约定到期\n日均为一个月以内且不计息，可赎回基金份额净值(净资产)无固定到期日且不计息，因此账面余\n额约为未折现的合约到期现金流量。",
+      "relevance_score": 0.4979161024093628,
+      "source_type": "report",
+      "title": "中欧医疗健康混合型证券投资基金2025年年度报告.pdf",
+      "source_name": null,
+      "source_url": null,
+      "publish_date": null,
+      "file_name": "中欧医疗健康混合型证券投资基金2025年年度报告.pdf",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\003095\\research\\materials\\mat_aa8a135624975af3\\original.pdf",
+      "parent_chunk_id": "mat_aa8a135624975af3_parent_0140",
+      "matched_small_chunk_id": "mat_aa8a135624975af3_parent_0140_small_000",
+      "section_path": "3、本报告期及上年度可比期间，基金管理人均未运用固有资金投资本基金C类基金份额。 / 399.3 / 7.4.13 金融工具风险及管理 / 7.4.13.3 流动性风险",
+      "page_start": 1,
+      "page_end": 1,
+      "document_type": "report",
+      "report_period": "2025年",
+      "raw_text": "7.4.13.3 流动性风险\n\n流动性风险是指基金在履行与金融负债有关的义务时遇到资金短缺的风险。本基金的流动性\n风险一方面来自于基金份额持有人可随时要求赎回其持有的基金份额，另一方面来自于投资品种\n所处的交易市场不活跃而带来的变现困难或因投资集中而无法在市场出现剧烈波动的情况下以合\n理的价格变现。\n针对兑付赎回资金的流动性风险，本基金的基金管理人每日对本基金的申购赎回情况进行严密监\n控并预测流动性需求，保持基金投资组合中的可用现金头寸与之相匹配。本基金的基金管理人在\n基金合同中设计了巨额赎回条款，约定在非常情况下赎回申请的处理方式，控制因开放申购赎回\n模式带来的流动性风险，有效保障基金持有人利益。\n针对投资品种变现的流动性风险，本基金的基金管理人通过独立的风险管理部门设定流动性比例\n要求，对流动性指标进行持续的监测和分析，包括组合持仓集中度指标、组合在短时间内变现能\n力的综合指标、组合中变现能力较差的投资品种比例以及流通受限制的投资品种比例等。本基金\n投资于一家公司发行的证券市值不超过基金资产净值的 10%，且本基金与由本基金的基金管理人",
+      "analysis_title": "流动性风险管理措施解读",
+      "material_summary": "本片段介绍了基金面临的流动性风险及其管理措施，包括每日监控申购赎回、巨额赎回条款、组合集中度限制等。",
+      "sentiment_label": "中性",
+      "evidence_excerpt": "流动性风险是指基金在履行与金融负债有关的义务时遇到资金短缺的风险。"
+    },
+    {
+      "chunk_id": "mat_9cf367f519cd16ed_parent_0004",
+      "material_id": "mat_9cf367f519cd16ed",
+      "fund_code": "003095",
+      "fund_name": "中欧医疗健康混合A",
+      "chunk_index": 7,
+      "evidence_text": "2.上述基金业绩指标不包括持有人认购或交易基金的各项费用，计入费用后实际收益水平要低于\n\n所列数字。\n\n3.2 基金净值表现\n\n3.2.1 基金份额净值增长率及其与同期业绩比较基准收益率的比较\n\n中欧医疗健康混合 A\n阶段 净值增长率①\n净值增长率标\n准差②\n业绩比较基准\n收益率③\n业绩比较基准\n收益率标准差\n④\n①－③ ②－④\n过去三个月 -0.22% 1.65% -0.69% 0.89% 0.47% 0.76%\n过去六个月 -15.00% 1.55% -8.85% 0.77% -6.15% 0.78%\n过去一年 10.21% 1.68% 2.28% 0.79% 7.93% 0.89%\n过去三年 -22.06% 1.57% -10.07% 0.92% -11.99% 0.65%\n过去五年 -45.65% 1.71% -25.00% 0.98% -20.65% 0.73%\n自基金合同\n生效起至今\n\n94.71% 1.72% 8.90% 0.97% 85.81% 0.75%\n\n中欧医疗健康混合 C\n阶段 净值增长率①\n净值增长率标\n准差②\n业绩比较基准\n收益率③\n业绩比较基准\n收益率标准差\n①－③ ②－④\n\n中欧医疗健康混合型证券投资基金 2026 年第 1 季度报告\n第 4页 共 13页\n④\n过去三个月 -0.41% 1.65% -0.69% 0.89% 0.28% 0.76%\n过去六个月 -15.34% 1.55% -8.85% 0.77% -6.49% 0.78%\n过去一年 9.33% 1.68% 2.28% 0.79% 7.05% 0.89%\n过去三年 -23.90% 1.57% -10.07% 0.92% -13.83% 0.65%\n过去五年 -47.79% 1.71% -25.00% 0.98% -22.79% 0.73%\n自基金合同\n生效起至今",
+      "relevance_score": 0.48917222023010254,
+      "source_type": "report",
+      "title": "中欧医疗健康混合型证券投资基金2026年第1季度报告.pdf",
+      "source_name": null,
+      "source_url": null,
+      "publish_date": null,
+      "file_name": "中欧医疗健康混合型证券投资基金2026年第1季度报告.pdf",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\003095\\research\\materials\\mat_9cf367f519cd16ed\\original.pdf",
+      "parent_chunk_id": "mat_9cf367f519cd16ed_parent_0004",
+      "matched_small_chunk_id": "mat_9cf367f519cd16ed_parent_0004_small_001",
+      "section_path": "2.上述基金业绩指标不包括持有人认购或交易基金的各项费用，计入费用后实际收益水平要低于",
+      "page_start": 1,
+      "page_end": 1,
+      "document_type": "report",
+      "report_period": "2026年",
+      "raw_text": "中欧医疗健康混合型证券投资基金 2026 年第 1 季度报告\n第 4页 共 13页\n④\n过去三个月 -0.41% 1.65% -0.69% 0.89% 0.28% 0.76%\n过去六个月 -15.34% 1.55% -8.85% 0.77% -6.49% 0.78%\n过去一年 9.33% 1.68% 2.28% 0.79% 7.05% 0.89%\n过去三年 -23.90% 1.57% -10.07% 0.92% -13.83% 0.65%\n过去五年 -47.79% 1.71% -25.00% 0.98% -22.79% 0.73%\n自基金合同\n生效起至今",
+      "analysis_title": "2026年一季度净值表现概览",
+      "material_summary": "本片段列出了基金A类和C类份额在多个时间段的净值增长率及与业绩比较基准的对比数据。",
+      "sentiment_label": "多空交织",
+      "evidence_excerpt": "过去三个月 -0.22% 1.65% -0.69% 0.89% 0.47% 0.76%"
+    },
+    {
+      "chunk_id": "mat_aa8a135624975af3_parent_0037",
+      "material_id": "mat_aa8a135624975af3",
+      "fund_code": "003095",
+      "fund_name": "中欧医疗健康混合A",
+      "chunk_index": 37,
+      "evidence_text": "20.54%\n\n自基金合同生效\n起至今\n\n95.14% 1.72% 9.66% 0.97% 85.48% 0.75%\n\n注：本基金业绩比较基准为：中证医药卫生指数收益率*65%+中证综合债券指数收益率*35%。比\n较基准每个交易日进行一次再平衡，每个交易日在加入损益后根据设定的权重比例进行大类资产\n之间的再平衡，使大类资产比例保持恒定。\n中欧医疗健康混合 C\n阶段\n份额净值\n增长率①\n份额净值\n增长率标\n准差②\n业绩比较\n基准收益\n率③\n业绩比较\n基准收益\n率标准差\n④\n①－③ ②－④\n过去三个月 -14.98% 1.45% -8.21% 0.64% -6.77% 0.81%\n过去六个月 3.98% 1.66% 1.38% 0.74% 2.60% 0.92%\n过去一年 12.16% 1.60% 3.47% 0.75% 8.69% 0.85%\n过去三年 -26.76% 1.54% -8.92% 0.91%\n-",
+      "relevance_score": 0.48423343896865845,
+      "source_type": "report",
+      "title": "中欧医疗健康混合型证券投资基金2025年年度报告.pdf",
+      "source_name": null,
+      "source_url": null,
+      "publish_date": null,
+      "file_name": "中欧医疗健康混合型证券投资基金2025年年度报告.pdf",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\003095\\research\\materials\\mat_aa8a135624975af3\\original.pdf",
+      "parent_chunk_id": "mat_aa8a135624975af3_parent_0037",
+      "matched_small_chunk_id": "mat_aa8a135624975af3_parent_0037_small_000",
+      "section_path": "3、上述基金业绩指标不包括基金份额持有人认购或交易基金的各项费用，计入费用后实际收益水 / 20.54%",
+      "page_start": 1,
+      "page_end": 1,
+      "document_type": "report",
+      "report_period": "2025年",
+      "raw_text": "20.54%\n\n自基金合同生效\n起至今\n\n95.14% 1.72% 9.66% 0.97% 85.48% 0.75%\n\n注：本基金业绩比较基准为：中证医药卫生指数收益率*65%+中证综合债券指数收益率*35%。比\n较基准每个交易日进行一次再平衡，每个交易日在加入损益后根据设定的权重比例进行大类资产\n之间的再平衡，使大类资产比例保持恒定。\n中欧医疗健康混合 C\n阶段\n份额净值\n增长率①\n份额净值\n增长率标\n准差②\n业绩比较\n基准收益\n率③\n业绩比较\n基准收益\n率标准差\n④\n①－③ ②－④\n过去三个月 -14.98% 1.45% -8.21% 0.64% -6.77% 0.81%\n过去六个月 3.98% 1.66% 1.38% 0.74% 2.60% 0.92%\n过去一年 12.16% 1.60% 3.47% 0.75% 8.69% 0.85%\n过去三年 -26.76% 1.54% -8.92% 0.91%\n-",
+      "analysis_title": "2025年年报净值表现数据",
+      "material_summary": "本片段展示了基金C类份额在多个时间段的净值增长率及与基准的对比。",
+      "sentiment_label": "多空交织",
+      "evidence_excerpt": "过去三个月 -14.98% 1.45% -8.21% 0.64% -6.77% 0.81%"
+    },
+    {
+      "chunk_id": "mat_aa8a135624975af3_parent_0141",
+      "material_id": "mat_aa8a135624975af3",
+      "fund_code": "003095",
+      "fund_name": "中欧医疗健康混合A",
+      "chunk_index": 160,
+      "evidence_text": "7.4.13.3.1 报告期内本基金组合资产的流动性风险分析\n\n本基金持有的资产主要为银行存款、股票及信用状况良好的固定收益类资产，其中银行存款\n主要为活期存款及可提前支取的定期存款，股票及固定收益类资产主要为在交易所及银行间公开\n发行上市且可自由流通的品种。本基金持有的流通受限资产比例较低，未对组合流动性造成重大\n影响，附注 7.4.12 披露的流通受限资产外，本基金未持有其他有重大流动性风险的投资品种。\n\n7.4.13.4 市场风险\n\n市场风险是指基金所持金融工具的公允价值或未来现金流量因所处市场各类价格因素的变动\n而发生波动的风险，包括利率风险、外汇风险和其他价格风险。",
+      "relevance_score": 0.4686542749404907,
+      "source_type": "report",
+      "title": "中欧医疗健康混合型证券投资基金2025年年度报告.pdf",
+      "source_name": null,
+      "source_url": null,
+      "publish_date": null,
+      "file_name": "中欧医疗健康混合型证券投资基金2025年年度报告.pdf",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\003095\\research\\materials\\mat_aa8a135624975af3\\original.pdf",
+      "parent_chunk_id": "mat_aa8a135624975af3_parent_0141",
+      "matched_small_chunk_id": "mat_aa8a135624975af3_parent_0141_small_000",
+      "section_path": "3、本报告期及上年度可比期间，基金管理人均未运用固有资金投资本基金C类基金份额。 / 399.3 / 7.4.13 金融工具风险及管理 / 7.4.13.3.1 报告期内本基金组合资产的流动性风险分析",
+      "page_start": 1,
+      "page_end": 1,
+      "document_type": "report",
+      "report_period": "2025年",
+      "raw_text": "7.4.13.3.1 报告期内本基金组合资产的流动性风险分析\n\n本基金持有的资产主要为银行存款、股票及信用状况良好的固定收益类资产，其中银行存款\n主要为活期存款及可提前支取的定期存款，股票及固定收益类资产主要为在交易所及银行间公开\n发行上市且可自由流通的品种。本基金持有的流通受限资产比例较低，未对组合流动性造成重大\n影响，附注 7.4.12 披露的流通受限资产外，本基金未持有其他有重大流动性风险的投资品种。\n\n7.4.13.4 市场风险\n\n市场风险是指基金所持金融工具的公允价值或未来现金流量因所处市场各类价格因素的变动\n而发生波动的风险，包括利率风险、外汇风险和其他价格风险。",
+      "analysis_title": "组合资产流动性风险分析",
+      "material_summary": "本片段指出本基金持有的资产主要为银行存款、股票及信用良好的固定收益类资产，流通受限资产比例较低，未对组合流动性造成重大影响。",
+      "sentiment_label": "中性",
+      "evidence_excerpt": "本基金持有的资产主要为银行存款、股票及信用状况良好的固定收益类资产"
+    },
+    {
+      "chunk_id": "mat_9cf367f519cd16ed_parent_0009",
+      "material_id": "mat_9cf367f519cd16ed",
+      "fund_code": "003095",
+      "fund_name": "中欧医疗健康混合A",
+      "chunk_index": 14,
+      "evidence_text": "4.5 报告期内基金的业绩表现\n\n本报告期内，基金 A 类份额净值增长率为-0.22%，同期业绩比较基准收益率为-0.69%；基金\nC 类份额净值增长率为-0.41%，同期业绩比较基准收益率为-0.69%。\n\n4.6 报告期内基金持有人数或基金资产净值预警说明\n\n本报告期内基金管理人无应说明预警信息。\n§5 投资组合报告",
+      "relevance_score": 0.4610676169395447,
+      "source_type": "report",
+      "title": "中欧医疗健康混合型证券投资基金2026年第1季度报告.pdf",
+      "source_name": null,
+      "source_url": null,
+      "publish_date": null,
+      "file_name": "中欧医疗健康混合型证券投资基金2026年第1季度报告.pdf",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\003095\\research\\materials\\mat_9cf367f519cd16ed\\original.pdf",
+      "parent_chunk_id": "mat_9cf367f519cd16ed_parent_0009",
+      "matched_small_chunk_id": "mat_9cf367f519cd16ed_parent_0009_small_000",
+      "section_path": "2、证券从业的含义遵从《证券基金经营机构董事、监事、高级管理人员及从业人员监督管理办法》 / 4.5 报告期内基金的业绩表现",
+      "page_start": 1,
+      "page_end": 1,
+      "document_type": "report",
+      "report_period": "2026年",
+      "raw_text": "4.5 报告期内基金的业绩表现\n\n本报告期内，基金 A 类份额净值增长率为-0.22%，同期业绩比较基准收益率为-0.69%；基金\nC 类份额净值增长率为-0.41%，同期业绩比较基准收益率为-0.69%。\n\n4.6 报告期内基金持有人数或基金资产净值预警说明\n\n本报告期内基金管理人无应说明预警信息。\n§5 投资组合报告",
+      "analysis_title": "2026年一季度业绩表现与预警说明",
+      "material_summary": "本片段报告了本季度基金A类和C类份额净值增长率分别为-0.22%和-0.41%，均高于业绩比较基准收益率-0.69%，且无预警信息。",
+      "sentiment_label": "多空交织",
+      "evidence_excerpt": "本报告期内，基金 A 类份额净值增长率为-0.22%，同期业绩比较基准收益率为-0.69%"
+    },
+    {
+      "chunk_id": "mat_aa8a135624975af3_parent_0035",
+      "material_id": "mat_aa8a135624975af3",
+      "fund_code": "003095",
+      "fund_name": "中欧医疗健康混合A",
+      "chunk_index": 35,
+      "evidence_text": "2、期末可供分配利润采用期末资产负债表中未分配利润与未分配利润中已实现部分的孰低数(为\n\n期末余额，不是当期发生数)。\n\n3、上述基金业绩指标不包括基金份额持有人认购或交易基金的各项费用，计入费用后实际收益水\n\n平要低于所列数字。\n\n3.2 基金净值表现\n\n3.2.1 基金份额净值增长率及其与同期业绩比较基准收益率的比较\n\n中欧医疗健康混合 A\n阶段\n份额净值\n增长率①\n份额净值\n增长率标\n准差②\n业绩比较\n基准收益\n率③\n业绩比较\n基准收益\n率标准差\n④\n①－③ ②－④\n过去三个月 -14.81% 1.45% -8.21% 0.64% -6.60% 0.81%\n过去六个月 4.40% 1.66% 1.38% 0.74% 3.02% 0.92%\n过去一年 13.07% 1.60% 3.47% 0.75% 9.60% 0.85%\n过去三年 -24.98% 1.54% -8.92% 0.91%\n-",
+      "relevance_score": 0.4497625231742859,
+      "source_type": "report",
+      "title": "中欧医疗健康混合型证券投资基金2025年年度报告.pdf",
+      "source_name": null,
+      "source_url": null,
+      "publish_date": null,
+      "file_name": "中欧医疗健康混合型证券投资基金2025年年度报告.pdf",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\003095\\research\\materials\\mat_aa8a135624975af3\\original.pdf",
+      "parent_chunk_id": "mat_aa8a135624975af3_parent_0035",
+      "matched_small_chunk_id": "mat_aa8a135624975af3_parent_0035_small_000",
+      "section_path": "2、期末可供分配利润采用期末资产负债表中未分配利润与未分配利润中已实现部分的孰低数(为",
+      "page_start": 1,
+      "page_end": 1,
+      "document_type": "report",
+      "report_period": "2025年",
+      "raw_text": "2、期末可供分配利润采用期末资产负债表中未分配利润与未分配利润中已实现部分的孰低数(为\n\n期末余额，不是当期发生数)。\n\n3、上述基金业绩指标不包括基金份额持有人认购或交易基金的各项费用，计入费用后实际收益水\n\n平要低于所列数字。\n\n3.2 基金净值表现\n\n3.2.1 基金份额净值增长率及其与同期业绩比较基准收益率的比较\n\n中欧医疗健康混合 A\n阶段\n份额净值\n增长率①\n份额净值\n增长率标\n准差②\n业绩比较\n基准收益\n率③\n业绩比较\n基准收益\n率标准差\n④\n①－③ ②－④\n过去三个月 -14.81% 1.45% -8.21% 0.64% -6.60% 0.81%\n过去六个月 4.40% 1.66% 1.38% 0.74% 3.02% 0.92%\n过去一年 13.07% 1.60% 3.47% 0.75% 9.60% 0.85%\n过去三年 -24.98% 1.54% -8.92% 0.91%\n-",
+      "analysis_title": "2025年年报A类份额净值表现",
+      "material_summary": "本片段展示了基金A类份额在多个时间段的净值增长率及与基准的对比，过去三个月负收益但过去一年正收益。",
+      "sentiment_label": "多空交织",
+      "evidence_excerpt": "过去三个月 -14.81% 1.45% -8.21% 0.64% -6.60% 0.81%"
+    }
+  ],
+  "source_materials": [
+    {
+      "material_id": "mat_aa8a135624975af3",
+      "title": "中欧医疗健康混合型证券投资基金2025年年度报告.pdf",
+      "source_type": "report",
+      "source_name": null,
+      "source_url": null,
+      "publish_date": null,
+      "file_name": "中欧医疗健康混合型证券投资基金2025年年度报告.pdf",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\003095\\research\\materials\\mat_aa8a135624975af3\\original.pdf",
+      "chunk_count": 4
+    },
+    {
+      "material_id": "mat_9cf367f519cd16ed",
+      "title": "中欧医疗健康混合型证券投资基金2026年第1季度报告.pdf",
+      "source_type": "report",
+      "source_name": null,
+      "source_url": null,
+      "publish_date": null,
+      "file_name": "中欧医疗健康混合型证券投资基金2026年第1季度报告.pdf",
+      "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\003095\\research\\materials\\mat_9cf367f519cd16ed\\original.pdf",
+      "chunk_count": 2
+    }
+  ],
+  "limitations": [],
+  "generated_at": "2026-05-14T11:16:42.143079+08:00"
+}

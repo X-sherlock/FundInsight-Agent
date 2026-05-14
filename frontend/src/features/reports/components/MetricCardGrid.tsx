@@ -7,7 +7,6 @@ export function MetricCardGrid({ metrics }: { metrics: KeyMetric[] }) {
         <div className={`metric-card metric-card--${metric.tone ?? "neutral"}`} key={metric.label}>
           <span>{metric.label}</span>
           <strong>{metric.value}</strong>
-          <em>{metric.helper}</em>
         </div>
       ))}
     </div>

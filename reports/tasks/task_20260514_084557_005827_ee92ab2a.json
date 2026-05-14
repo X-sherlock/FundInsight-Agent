@@ -1,0 +1,15 @@
+{
+  "task_id": "task_20260514_084557_005827_ee92ab2a",
+  "fund_code": "005827",
+  "status": "completed",
+  "stage": "completed",
+  "stage_label": "报告已生成",
+  "message": "即将打开报告详情页。",
+  "report_id": "005827",
+  "error": null,
+  "include_research": null,
+  "research_material_ids": null,
+  "force_reextract": false,
+  "created_at": "2026-05-14T08:45:57.192640+08:00",
+  "updated_at": "2026-05-14T08:47:14.734230+08:00"
+}

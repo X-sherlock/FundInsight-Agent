@@ -1,0 +1,91 @@
+{
+  "fund": {
+    "code": "005827",
+    "name": "易方达蓝筹精选混合",
+    "type": "混合型-偏股",
+    "inception_date": "2018-09-05",
+    "fund_company": "易方达基金管理有限公司"
+  },
+  "as_of_date": "2026-03-31",
+  "currency": "CNY",
+  "benchmark": {
+    "name": "沪深300指数收益率×45%+中证港股通综合指数收益率×35%+中债总指数收益率×20%",
+    "code": "CUSTOM_005827_BENCHMARK",
+    "description": "来自公开基金档案页面披露的业绩比较基准。"
+  },
+  "benchmark_info": {
+    "name": "沪深300指数收益率×45%+中证港股通综合指数收益率×35%+中债总指数收益率×20%",
+    "code": "CUSTOM_005827_BENCHMARK",
+    "description": "来自公开基金档案页面披露的业绩比较基准。"
+  },
+  "category": {
+    "name": "混合型-偏股",
+    "peer_count": null
+  },
+  "peer_summary": null,
+  "metrics": {
+    "performance": {
+      "return_1m": -0.0392,
+      "return_3m": -0.1139,
+      "return_6m": -0.1261,
+      "return_1y": -0.0722,
+      "return_3y_annualized": null,
+      "return_since_inception_annualized": null,
+      "benchmark_return_1y": null,
+      "excess_return_1y": null
+    },
+    "excess_return": {},
+    "risk": {
+      "volatility_1y": null,
+      "downside_volatility_1y": null,
+      "beta_1y": null,
+      "tracking_error_1y": null
+    },
+    "drawdown": {
+      "max_drawdown_1y": null,
+      "max_drawdown_3y": 0.3221,
+      "drawdown_recovery_days": null
+    },
+    "risk_adjusted": {
+      "sharpe_1y": null,
+      "information_ratio_1y": null,
+      "calmar_3y": null
+    },
+    "holding": {
+      "stock_position": null,
+      "bond_position": null,
+      "cash_position": null,
+      "top10_holding_weight": null,
+      "turnover_rate_1y": null
+    },
+    "fee": {
+      "management_fee": 0.012,
+      "custodian_fee": 0.002,
+      "sales_service_fee": 0.012
+    },
+    "scale": {
+      "aum": 26793000000.0,
+      "aum_change_6m": null,
+      "holder_count": null
+    }
+  },
+  "manager": {
+    "name": "张坤",
+    "tenure_years": 7.57,
+    "background": "公开基金档案页面披露基金经理为张坤。"
+  },
+  "data_quality": {
+    "source": "public_fund_pages_without_synthetic_fill",
+    "missing_fields": [
+      "metrics.performance.benchmark_return_1y",
+      "metrics.risk.volatility_1y",
+      "metrics.drawdown.max_drawdown_1y",
+      "metrics.risk_adjusted.sharpe_1y",
+      "peer_summary"
+    ],
+    "notes": "真实验收脚本从公开页面解析；未解析到的字段保留为空，不使用虚拟值补齐。"
+  },
+  "data_notes": [
+    "等待用户批准后才能使用虚拟数据补齐。"
+  ]
+}

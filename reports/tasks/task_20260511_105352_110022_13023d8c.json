@@ -1,0 +1,15 @@
+{
+  "task_id": "task_20260511_105352_110022_13023d8c",
+  "fund_code": "110022",
+  "status": "completed",
+  "stage": "completed",
+  "stage_label": "报告已生成",
+  "message": "即将打开报告详情页。",
+  "report_id": "110022",
+  "error": null,
+  "include_research": null,
+  "research_material_ids": null,
+  "force_reextract": false,
+  "created_at": "2026-05-11T10:53:52.751126+08:00",
+  "updated_at": "2026-05-11T10:55:39.733057+08:00"
+}

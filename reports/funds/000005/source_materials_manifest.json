@@ -1,18 +1,12 @@
 {
   "source_materials": [
     {
-      "material_id": "mat_bacc9c4683f096d6",
-      "title": "虚构样例研报：科技主题基金关注因素梳理",
-      "source_type": "report",
-      "source_name": "虚构研报样例",
-      "publish_date": "2026-04-08"
-    },
-    {
-      "material_id": "mat_1327d39fe51a7fd0",
-      "title": "虚构样例公告：基金运作要素与风险提示说明",
+      "material_id": "mat_06bc373c4d5ef2a4",
+      "title": "真实公开数据样例：2025年上半年电子信息制造业运行情况",
       "source_type": "announcement",
-      "source_name": "虚构公告样例",
-      "publish_date": "2026-04-18"
+      "source_name": "工业和信息化部运行监测协调局",
+      "source_url": "https://www.miit.gov.cn/jgsj/yxj/xxfb/art/2025/art_a55ea74ca4384daa998a23858e82372b.html",
+      "publish_date": "2025-07-30"
     },
     {
       "material_id": "mat_11a51e1f7e0ee210",
@@ -22,11 +16,41 @@
       "publish_date": "2026-04-25"
     },
     {
+      "material_id": "mat_1327d39fe51a7fd0",
+      "title": "虚构样例公告：基金运作要素与风险提示说明",
+      "source_type": "announcement",
+      "source_name": "虚构公告样例",
+      "publish_date": "2026-04-18"
+    },
+    {
+      "material_id": "mat_13d596d783193b1f",
+      "title": "真实公开数据样例：2025年上半年软件业运行情况",
+      "source_type": "news",
+      "source_name": "工业和信息化部运行监测协调局",
+      "source_url": "https://www.miit.gov.cn/jgsj/yxj/xxfb/art/2025/art_68003fdb41984bcab3f1234f8c8eb449.html",
+      "publish_date": "2025-08-01"
+    },
+    {
       "material_id": "mat_35228a0f4785c514",
       "title": "虚构样例内部投研：跟踪框架与观点变化记录",
       "source_type": "internal_research",
       "source_name": "虚构内部投研样例",
       "publish_date": "2026-05-02"
+    },
+    {
+      "material_id": "mat_8c9043a7ca023de4",
+      "title": "真实公开数据样例：中证TMT指数基础信息与风险指标",
+      "source_type": "report",
+      "source_name": "中证指数有限公司",
+      "source_url": "https://oss-ch.csindex.com.cn/static/html/csindex/public/uploads/indices/detail/files/zh_CN/000998factsheet.pdf",
+      "publish_date": "2026-03-31"
+    },
+    {
+      "material_id": "mat_bacc9c4683f096d6",
+      "title": "虚构样例研报：科技主题基金关注因素梳理",
+      "source_type": "report",
+      "source_name": "虚构研报样例",
+      "publish_date": "2026-04-08"
     }
   ]
 }

@@ -1,5 +1,5 @@
 import { mockDelay } from "./apiClient";
-import { apiDelete, apiGet, apiPost } from "./httpClient";
+import { apiDelete, apiGet, apiPost, apiPostForm } from "./httpClient";
 import { mockFunds } from "../mocks/mockFunds";
 import { buildDashboardSummary, mockReports } from "../mocks/mockReports";
 import type {
@@ -14,6 +14,7 @@ import type {
   ResearchContext,
   ResearchMaterial,
   ResearchMaterialCreateRequest,
+  ResearchSourceType,
   ReportRecord,
   ReportTaskStatus
 } from "../features/reports/types";
@@ -133,6 +134,7 @@ export async function createResearchMaterial(
       title: request.title,
       source_type: request.source_type,
       source_name: request.source_name ?? null,
+      source_url: request.source_url ?? null,
       publish_date: request.publish_date ?? null,
       file_name: null,
       created_at: new Date().toISOString()
@@ -141,6 +143,50 @@ export async function createResearchMaterial(
     return mockDelay(material);
   }
   return apiPost<ResearchMaterial>(`/api/funds/${encodeURIComponent(fundCode)}/research-materials`, request);
+}
+
+export async function uploadResearchMaterial(
+  fundCode: string,
+  request: {
+    file: File;
+    title: string;
+    source_type: ResearchSourceType;
+    source_name?: string | null;
+    source_url?: string | null;
+    publish_date?: string | null;
+  }
+): Promise<ResearchMaterial> {
+  if (USE_MOCK_API) {
+    const material: ResearchMaterial = {
+      material_id: `mock-material-${fundCode}-${mockResearchMaterials.length + 1}`,
+      fund_code: fundCode,
+      title: request.title,
+      source_type: request.source_type,
+      source_name: request.source_name ?? null,
+      source_url: request.source_url ?? null,
+      publish_date: request.publish_date ?? null,
+      file_name: request.file.name,
+      chunk_count: 1,
+      vector_status: "indexed",
+      created_at: new Date().toISOString()
+    };
+    mockResearchMaterials.push(material);
+    return mockDelay(material);
+  }
+  const form = new FormData();
+  form.set("file", request.file);
+  form.set("title", request.title);
+  form.set("source_type", request.source_type);
+  if (request.source_name) {
+    form.set("source_name", request.source_name);
+  }
+  if (request.source_url) {
+    form.set("source_url", request.source_url);
+  }
+  if (request.publish_date) {
+    form.set("publish_date", request.publish_date);
+  }
+  return apiPostForm<ResearchMaterial>(`/api/funds/${encodeURIComponent(fundCode)}/research-materials/upload`, form);
 }
 
 export async function deleteResearchMaterial(fundCode: string, materialId: string): Promise<void> {
@@ -310,6 +356,7 @@ function emptyResearchContext(fundCode: string): ResearchContext {
     key_events: [],
     view_changes: [],
     source_materials: [],
+    analyzed_materials: [],
     limitations: []
   };
 }

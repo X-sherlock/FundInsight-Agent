@@ -1,0 +1,31 @@
+{
+  "fund_code": "004997",
+  "collected_at": "2026-05-13T00:00:00+08:00",
+  "metric_sources": [
+    {
+      "source_name": "广发基金",
+      "source_url": "https://www.gffunds.com.cn/funds/?fundcode=004997",
+      "fields": ["fund", "benchmark", "fee", "investment_scope"]
+    },
+    {
+      "source_name": "新浪财经基金",
+      "source_url": "https://finance.sina.com.cn/fund/quotes/004997/bc.shtml",
+      "fields": ["performance", "peer_summary", "manager"]
+    }
+  ],
+  "material_sources": [
+    {
+      "material_id": "mat_004997_profile",
+      "source_type": "report",
+      "source_url": "https://www.gffunds.com.cn/funds/?fundcode=004997",
+      "file_name": "mat_004997_profile.txt"
+    },
+    {
+      "material_id": "mat_004997_news_20260203",
+      "source_type": "news",
+      "source_url": "https://finance.sina.com.cn/money/fund/aiassistant/jzyd/2026-02-03/doc-inhknpmm6935725.shtml",
+      "file_name": "mat_004997_news_20260203.txt"
+    }
+  ],
+  "notes": "公开网页采集的测试 fixture，仅用于 RAG 回归，不构成投资建议。"
+}

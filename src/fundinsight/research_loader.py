@@ -43,6 +43,7 @@ def split_research_chunks(
     content: str,
     target_min_chars: int = 800,
     target_max_chars: int = 1500,
+    overlap_chars: int = 0,
 ) -> list[str]:
     """Split normalized research content into paragraph-oriented chunks."""
 
@@ -50,6 +51,8 @@ def split_research_chunks(
         raise ValueError("Chunk size targets must be positive.")
     if target_min_chars > target_max_chars:
         raise ValueError("target_min_chars must not exceed target_max_chars.")
+    if overlap_chars < 0:
+        raise ValueError("overlap_chars must not be negative.")
 
     normalized = normalize_research_content(content)
     if not normalized:
@@ -78,6 +81,8 @@ def split_research_chunks(
 
     if current:
         chunks.append(current)
+    if overlap_chars:
+        return _add_chunk_overlap(chunks, overlap_chars)
     return chunks
 
 
@@ -104,6 +109,7 @@ def build_research_document(
     source_type: SourceType,
     content: str,
     source_name: str | None = None,
+    source_url: str | None = None,
     publish_date: date | str | None = None,
     file_name: str | None = None,
     material_id: str | None = None,
@@ -119,6 +125,7 @@ def build_research_document(
         "title": title,
         "source_type": source_type,
         "source_name": source_name,
+        "source_url": source_url,
         "publish_date": _parse_date(publish_date),
         "file_name": file_name,
         "content_hash": content_hash,
@@ -166,6 +173,22 @@ def _split_large_paragraph(paragraph: str, target_max_chars: int) -> list[str]:
     if current:
         units.append(current)
     return units
+
+
+def _add_chunk_overlap(chunks: list[str], overlap_chars: int) -> list[str]:
+    if len(chunks) <= 1:
+        return chunks
+
+    overlapped = [chunks[0]]
+    previous = chunks[0]
+    for chunk in chunks[1:]:
+        overlap = previous[-overlap_chars:].strip()
+        if overlap:
+            overlapped.append(f"{overlap}\n\n{chunk}")
+        else:
+            overlapped.append(chunk)
+        previous = chunk
+    return overlapped
 
 
 def _parse_date(value: date | str | None) -> date | None:

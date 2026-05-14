@@ -1,0 +1,31 @@
+{
+  "fund_code": "163406",
+  "collected_at": "2026-05-13T00:00:00+08:00",
+  "metric_sources": [
+    {
+      "source_name": "兴证全球/蚂蚁财富产品页",
+      "source_url": "https://www.amcfortune.com/funds/public/163406/index.shtml",
+      "fields": ["fund", "performance", "scale", "manager"]
+    },
+    {
+      "source_name": "证券之星基金",
+      "source_url": "https://fund.stockstar.com/funds/163406.shtml",
+      "fields": ["nav", "history_nav", "scale"]
+    }
+  ],
+  "material_sources": [
+    {
+      "material_id": "mat_163406_profile",
+      "source_type": "report",
+      "source_url": "https://www.amcfortune.com/funds/public/163406/index.shtml",
+      "file_name": "mat_163406_profile.txt"
+    },
+    {
+      "material_id": "mat_163406_news_20260512",
+      "source_type": "news",
+      "source_url": "https://finance.sina.com.cn/money/fund/aiassistant/jzyd/2026-05-12/doc-inhxqquv8579487.shtml",
+      "file_name": "mat_163406_news_20260512.txt"
+    }
+  ],
+  "notes": "公开网页采集的测试 fixture，仅用于 RAG 回归，不构成投资建议。"
+}

@@ -1,0 +1,17 @@
+{
+  "material_id": "mat_cf466345c4ccba64",
+  "fund_code": "005827",
+  "title": "易方达蓝筹精选混合公开行情与风险数据",
+  "source_type": "news",
+  "source_name": "阿牛智投",
+  "source_url": "https://www.aniu.com/fund_detail_005827.shtml",
+  "publish_date": null,
+  "file_name": "fund_detail_005827.shtml",
+  "content_hash": "cf466345c4ccba640fddf1eb7f9016adddbaaf14890dd59b4bd91d24dc41be1c",
+  "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\005827\\research\\materials\\mat_cf466345c4ccba64\\original.shtml",
+  "extracted_text_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\005827\\research\\materials\\mat_cf466345c4ccba64\\extracted.txt",
+  "chunk_count": 2,
+  "vector_status": "indexed",
+  "vector_error": null,
+  "created_at": "2026-05-14T08:46:01.841625+08:00"
+}

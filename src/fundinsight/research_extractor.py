@@ -48,6 +48,70 @@ ADVISORY_SUMMARY_REPLACEMENTS = {
     "未来收益可达": "收益预期相关表述",
 }
 PROHIBITED_SUMMARY_PHRASES = tuple(ADVISORY_SUMMARY_REPLACEMENTS)
+NON_RESEARCH_EVIDENCE_TERMS = (
+    "注册地址",
+    "办公地址",
+    "邮政编码",
+    "邮编",
+    "客服电话",
+    "客户服务",
+    "客服热线",
+    "电话",
+    "传真",
+    "电子邮箱",
+    "网址",
+    "联系人",
+    "法定代表人",
+    "销售机构",
+    "代销机构",
+    "基金销售",
+    "机构名称",
+    "网点",
+    "购基",
+    "费率优惠",
+    "基金交易",
+    "我的资产",
+    "郑重声明",
+    "本网站立场",
+    "传播更多信息",
+    "存续一年以上的基金在该基金经理任期内",
+)
+EMPTY_TABLE_LABEL_PATTERNS = (
+    r"^(?:单位净值|累计净值|日涨幅|资产净值)(?:[（(]\d{1,2}[-/]\d{1,2}[）)])?\s*[：:]?$",
+    r"^(?:十大持仓占比|持仓数据|数据截止日期)\s*(?:数据截止(?:日期|至)?)?\s*[：:]?$",
+    r"^.*数据截止(?:日期|至)\s*[：:]?$",
+    r"^(?:十大持仓占比|持仓数据)\s*数据截止(?:日期|至)?\d{4}[-/]\d{1,2}[-/]\d{1,2}$",
+    r"^.*(?:银行|证券).*(?:电话|\(\d+\)|机构名称).*$",
+    r"^.*\|.*(?:基金交易|我的资产|基金档案).*$",
+)
+RESEARCH_RELEVANCE_TERMS = (
+    "基金",
+    "净值",
+    "收益",
+    "增长率",
+    "业绩比较基准",
+    "中证",
+    "指数",
+    "风险",
+    "回撤",
+    "波动",
+    "跟踪误差",
+    "投资目标",
+    "投资范围",
+    "投资策略",
+    "资产配置",
+    "持仓",
+    "股票",
+    "债券",
+    "现金",
+    "规模",
+    "净资产",
+    "基金经理",
+    "报告期",
+    "申购上限",
+    "限额",
+    "评级",
+)
 
 
 class ResearchExtractionError(RuntimeError):
@@ -175,6 +239,8 @@ class ResearchSignalExtractor:
             return None
         if evidence_text not in chunk_text:
             return None
+        if not _is_research_relevant_evidence(evidence_text):
+            return None
 
         confidence = _coerce_confidence(raw_signal.get("confidence"))
         if confidence is None or confidence < self.min_confidence:
@@ -182,6 +248,8 @@ class ResearchSignalExtractor:
 
         neutral_summary = _neutralize_advisory_text(summary)
         if neutral_summary is None:
+            return None
+        if not _is_acceptable_signal_text(neutral_summary):
             return None
 
         impact_direction = _optional_literal(raw_signal.get("impact_direction"), ALLOWED_IMPACT_DIRECTIONS)
@@ -279,6 +347,30 @@ def _neutralize_advisory_text(text: str) -> str | None:
         return None
     neutralized = re.sub(r"\s+", " ", neutralized).strip()
     return neutralized or None
+
+
+def _is_research_relevant_evidence(text: str) -> bool:
+    if not _is_acceptable_signal_text(text):
+        return False
+    normalized = re.sub(r"\s+", "", text)
+    if "EVIDENCE_" in normalized:
+        return True
+    if not any(term in normalized for term in RESEARCH_RELEVANCE_TERMS):
+        return False
+    return True
+
+
+def _is_acceptable_signal_text(text: str) -> bool:
+    normalized = re.sub(r"\s+", "", text)
+    if not normalized:
+        return False
+    if any(term in normalized for term in NON_RESEARCH_EVIDENCE_TERMS):
+        return False
+    if any(re.fullmatch(pattern, normalized) for pattern in EMPTY_TABLE_LABEL_PATTERNS):
+        return False
+    if normalized.endswith((":", "：")) and not re.search(r"[:：].{2,}", normalized):
+        return False
+    return True
 
 
 def _build_signal_id(

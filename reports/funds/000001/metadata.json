@@ -1,13 +1,17 @@
 {
   "report_id": "000001",
   "fund_code": "000001",
-  "created_at": "2026-05-07T17:13:37.006755+08:00",
+  "created_at": "2026-05-14T11:10:10.993487+08:00",
   "status": "warning",
   "guard_passed": false,
   "guard_issues": [
     {
-      "code": "too_few_tables",
-      "message": "Report should include at least 3 tables."
+      "code": "missing_section",
+      "message": "Required section is missing: ## 14. 数据局限性"
+    },
+    {
+      "code": "missing_section",
+      "message": "Required section is missing: ## 15. 风险提示"
     },
     {
       "code": "missing_analysis_chain_language",
@@ -21,5 +25,15 @@
       "code": "unused_chart_spec",
       "message": "chart_specs_json contains id not used by Markdown placeholders: asset_allocation_profile"
     }
-  ]
+  ],
+  "research": {
+    "mode": "forced_on",
+    "materials_found": true,
+    "used": true,
+    "material_count": 1,
+    "processing_error": null,
+    "included": true,
+    "context_saved": true,
+    "fact_card_saved": true
+  }
 }

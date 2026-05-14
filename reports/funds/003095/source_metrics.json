@@ -1,0 +1,106 @@
+{
+  "fund": {
+    "code": "003095",
+    "name": "中欧医疗健康混合A",
+    "type": "混合型",
+    "inception_date": "2016-09-29",
+    "fund_company": "中欧基金管理有限公司"
+  },
+  "as_of_date": "2026-05-07",
+  "currency": "CNY",
+  "benchmark": {
+    "name": "65%×中证医药卫生指数收益率+35%×中证综合债券指数收益率",
+    "code": "custom_benchmark",
+    "description": "中欧医疗健康混合A业绩评价标准"
+  },
+  "benchmark_info": {
+    "name": "65%×中证医药卫生指数收益率+35%×中证综合债券指数收益率",
+    "code": "custom_benchmark",
+    "description": "中欧医疗健康混合A业绩评价标准"
+  },
+  "category": {
+    "name": "偏股混合型基金",
+    "peer_count": 8179
+  },
+  "peer_summary": {
+    "peer_rank_percentile": 0.6134,
+    "peer_average_return_1y": null,
+    "peer_median_return_1y": null,
+    "peer_average_volatility_1y": null,
+    "peer_count": 8179,
+    "percentile_direction": "lower_is_better_rank_position",
+    "notes": "同类排名按新浪基金新闻 5017/8179 估算为分位 0.6134。"
+  },
+  "metrics": {
+    "performance": {
+      "return_1m": -0.0287,
+      "return_3m": -0.0027,
+      "return_6m": null,
+      "return_1y": 0.1367,
+      "return_3y_annualized": null,
+      "return_since_inception_annualized": null,
+      "benchmark_return_1y": null,
+      "excess_return_1y": null
+    },
+    "excess_return": {
+      "excess_return_1m": null,
+      "excess_return_3m": null,
+      "excess_return_6m": null,
+      "excess_return_1y": null,
+      "excess_return_3y_annualized": null
+    },
+    "risk": {
+      "volatility_1y": null,
+      "downside_volatility_1y": null,
+      "beta_1y": null,
+      "tracking_error_1y": null
+    },
+    "drawdown": {
+      "max_drawdown_1y": null,
+      "max_drawdown_3y": null,
+      "drawdown_recovery_days": null
+    },
+    "risk_adjusted": {
+      "sharpe_1y": null,
+      "information_ratio_1y": null,
+      "calmar_3y": null
+    },
+    "holding": {
+      "stock_position": 0.9363,
+      "bond_position": 0.0207,
+      "cash_position": 0.0422,
+      "top10_holding_weight": 0.6769,
+      "turnover_rate_1y": null
+    },
+    "fee": {
+      "management_fee": 0.012,
+      "custodian_fee": 0.002,
+      "sales_service_fee": 0.0
+    },
+    "scale": {
+      "aum": 12974088800,
+      "aum_change_6m": null,
+      "holder_count": null
+    }
+  },
+  "manager": {
+    "name": "葛兰、赵磊",
+    "tenure_years": null,
+    "background": "中欧基金医疗健康主题基金经理。"
+  },
+  "data_quality": {
+    "source": "fixture_from_public_pages",
+    "missing_fields": [
+      "metrics.performance.benchmark_return_1y",
+      "metrics.performance.excess_return_1y",
+      "metrics.risk.volatility_1y",
+      "metrics.drawdown.max_drawdown_1y",
+      "metrics.risk_adjusted.sharpe_1y"
+    ],
+    "notes": "测试 fixture 来自公开网页摘录；缺失字段不补造。"
+  },
+  "data_notes": [
+    "中欧基金官网披露 2026-05-07 净值、规模和 2026-03-31 投资组合。",
+    "百分比字段使用小数形式，例如 0.1367 表示 13.67%。"
+  ]
+}

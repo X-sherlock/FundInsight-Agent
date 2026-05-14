@@ -88,6 +88,7 @@ def test_api_lists_and_creates_research_materials(tmp_path: Path) -> None:
             "content": "Fund 000001 research material body.",
             "source_type": "report",
             "source_name": "Research Desk",
+            "source_url": "https://example.com/research-note",
             "publish_date": "2026-05-01",
         },
     )
@@ -97,10 +98,12 @@ def test_api_lists_and_creates_research_materials(tmp_path: Path) -> None:
     assert empty.json()["items"] == []
     assert created.status_code == 200
     assert created.json()["fund_code"] == "000001"
+    assert created.json()["vector_status"] == "indexed"
     assert listed.status_code == 200
     assert len(listed.json()["items"]) == 1
     assert "content" not in listed.json()["items"][0]
     assert listed.json()["items"][0]["title"] == "research note"
+    assert listed.json()["items"][0]["source_url"] == "https://example.com/research-note"
 
 
 def test_api_rejects_invalid_research_material_payload(tmp_path: Path) -> None:
@@ -194,6 +197,7 @@ def test_api_research_context_returns_empty_context_when_missing(tmp_path: Path)
     assert response.status_code == 200
     assert response.json()["fund_code"] == "000001"
     assert response.json()["source_materials"] == []
+    assert response.json()["analyzed_materials"] == []
 
 
 def test_api_allows_configured_cors_origin(tmp_path: Path, monkeypatch) -> None:
@@ -228,7 +232,13 @@ def _client_with_research_store(tmp_path: Path):
     task_store = TaskStore(report_store.reports_root)
     research_store = ResearchStore(tmp_path / "data")
     research_service = ResearchMaterialService(research_store)
-    manager = ReportTaskManager(fund_repository, report_store, task_store, report_agent_factory=FakeReportAgent)
+    manager = ReportTaskManager(
+        fund_repository,
+        report_store,
+        task_store,
+        report_agent_factory=StubReportAgent,
+        research_material_service=research_service,
+    )
     app = create_app(
         fund_repository=fund_repository,
         report_store=report_store,
@@ -239,7 +249,7 @@ def _client_with_research_store(tmp_path: Path):
     return TestClient(app), report_store, research_store
 
 
-class FakeReportAgent:
+class StubReportAgent:
     def generate_report(self, input_path: str | Path, **kwargs):
         metrics = FundRepository(sample_input_path=SAMPLE_INPUT).get_metrics("000001")
         return _report_result(metrics)

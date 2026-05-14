@@ -1,31 +1,24 @@
-import type { ChartSpec, DataQuality } from "../types";
+import type { DataQuality } from "../types";
 
-export function SourceFieldsDrawer({ charts, dataQuality }: { charts: ChartSpec[]; dataQuality: DataQuality }) {
+export function SourceFieldsDrawer({ dataQuality }: { dataQuality: DataQuality }) {
   return (
     <details className="source-drawer">
-      <summary>查看字段来源与数据局限</summary>
+      <summary>查看数据局限</summary>
       <div className="source-drawer__content">
         <div>
-          <h3>图表字段</h3>
-          <ul>
-            {charts.flatMap((chart) =>
-              chart.source_fields.map((field) => (
-                <li key={`${chart.id}-${field}`}>
-                  <strong>{chart.title}</strong>
-                  <span>{field}</span>
-                </li>
-              ))
-            )}
-          </ul>
+          <h3>数据完整性</h3>
+          <p>当前报告存在 {dataQuality.missing_fields.length} 项数据缺口，具体影响已在报告正文的数据局限性中说明。</p>
         </div>
-        <div>
-          <h3>缺失字段</h3>
-          <ul>
-            {dataQuality.missing_fields.map((field) => (
-              <li key={field}>{field}</li>
-            ))}
-          </ul>
-        </div>
+        {dataQuality.notes.length > 0 && (
+          <div>
+            <h3>数据说明</h3>
+            <ul>
+              {dataQuality.notes.map((note) => (
+                <li key={note}>{note}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </details>
   );

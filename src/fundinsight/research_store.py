@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import logging
 import re
+import shutil
 from pathlib import Path
 
 from fundinsight.research_models import (
@@ -16,13 +18,22 @@ from fundinsight.research_models import (
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DATA_ROOT = PROJECT_ROOT / "data"
 _SAFE_SEGMENT_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*$")
+logger = logging.getLogger(__name__)
 
 
 class ResearchStore:
     def __init__(self, data_root: str | Path = DEFAULT_DATA_ROOT) -> None:
         self.data_root = Path(data_root)
 
-    def save_material(self, fund_code: str, document: ResearchDocument, content: str) -> None:
+    def save_material(
+        self,
+        fund_code: str,
+        document: ResearchDocument,
+        content: str,
+        *,
+        original_bytes: bytes | None = None,
+        original_file_name: str | None = None,
+    ) -> None:
         if document.fund_code != fund_code:
             raise ValueError("Document fund_code does not match storage fund_code.")
         material_id = self._safe_material_id(document.material_id)
@@ -34,6 +45,12 @@ class ResearchStore:
             encoding="utf-8",
         )
         self._material_content_path(fund_code, material_id).write_text(content, encoding="utf-8")
+        material_dir = self.material_dir(fund_code, material_id)
+        material_dir.mkdir(parents=True, exist_ok=True)
+        (material_dir / "metadata.json").write_text(self._dump_json(document), encoding="utf-8")
+        (material_dir / "extracted.txt").write_text(content, encoding="utf-8")
+        if original_bytes is not None and original_file_name:
+            (material_dir / self._safe_file_name(original_file_name)).write_bytes(original_bytes)
 
     def list_materials(self, fund_code: str) -> list[ResearchDocument]:
         materials_dir = self.materials_dir(fund_code)
@@ -41,16 +58,30 @@ class ResearchStore:
             return []
 
         documents: list[ResearchDocument] = []
-        for path in sorted(materials_dir.glob("*.json")):
-            payload = json.loads(path.read_text(encoding="utf-8"))
-            documents.append(ResearchDocument.model_validate(payload))
+        metadata_paths = list(materials_dir.glob("*.json")) + list(materials_dir.glob("*/metadata.json"))
+        seen: set[str] = set()
+        for path in sorted(metadata_paths):
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+                document = ResearchDocument.model_validate(payload)
+                if document.material_id in seen:
+                    continue
+                seen.add(document.material_id)
+                documents.append(document)
+            except Exception as exc:
+                logger.warning("Failed to load research material metadata %s: %s", path, exc)
         return documents
 
     def read_material_content(self, fund_code: str, material_id: str) -> str | None:
         safe_material_id = self._safe_material_id(material_id)
         path = self._material_content_path(fund_code, safe_material_id)
         if not path.exists():
-            return None
+            if self._material_metadata_path(fund_code, safe_material_id).exists():
+                return None
+            directory_content_path = self.material_dir(fund_code, safe_material_id) / "extracted.txt"
+            if not directory_content_path.exists():
+                return None
+            path = directory_content_path
         return path.read_text(encoding="utf-8")
 
     def delete_material(self, fund_code: str, material_id: str) -> bool:
@@ -63,6 +94,10 @@ class ResearchStore:
             if path.exists():
                 path.unlink()
                 deleted = True
+        material_dir = self.material_dir(fund_code, safe_material_id)
+        if material_dir.exists():
+            shutil.rmtree(material_dir)
+            deleted = True
         return deleted
 
     def save_signal_bundle(self, fund_code: str, bundle: ResearchSignalBundle) -> None:
@@ -98,6 +133,9 @@ class ResearchStore:
     def materials_dir(self, fund_code: str) -> Path:
         return self.research_dir(fund_code) / "materials"
 
+    def material_dir(self, fund_code: str, material_id: str) -> Path:
+        return self.materials_dir(fund_code) / self._safe_material_id(material_id)
+
     def _material_metadata_path(self, fund_code: str, material_id: str) -> Path:
         return self.materials_dir(fund_code) / f"{material_id}.json"
 
@@ -118,6 +156,12 @@ class ResearchStore:
         if not _SAFE_SEGMENT_RE.fullmatch(candidate):
             raise ValueError(f"Invalid {label}: path traversal or unsafe characters are not allowed.")
         return candidate
+
+    def _safe_file_name(self, value: str) -> str:
+        candidate = Path(value).name.strip()
+        if not candidate or candidate in {".", ".."}:
+            raise ValueError("Invalid file_name.")
+        return re.sub(r"[^A-Za-z0-9_.-]", "_", candidate)
 
     def _dump_json(self, model: ResearchDocument | ResearchSignalBundle | ResearchFusionContext) -> str:
         return json.dumps(model.model_dump(mode="json"), ensure_ascii=False, indent=2)

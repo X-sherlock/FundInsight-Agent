@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ChartGrid } from "../components/charts/ChartGrid";
 import { MarkdownReportViewer } from "../components/markdown/MarkdownReportViewer";
-import { GuardIssueList } from "../components/status/GuardIssueList";
 import { Button } from "../components/ui/Button";
 import { Card } from "../components/ui/Card";
 import { CoreConclusionPanel } from "../features/reports/components/CoreConclusionPanel";
@@ -13,15 +12,16 @@ import { ReportHeader } from "../features/reports/components/ReportHeader";
 import { ResearchFusionPanel } from "../features/reports/components/ResearchFusionPanel";
 import { RiskNoticePanel } from "../features/reports/components/RiskNoticePanel";
 import { SourceFieldsDrawer } from "../features/reports/components/SourceFieldsDrawer";
-import type { ReportRecord, ResearchContext } from "../features/reports/types";
+import type { FactCard, ReportRecord, ResearchContext } from "../features/reports/types";
 import { extractMarkdownTitle } from "../lib/markdownSections";
-import { ensureReport, getReport, getResearchContext } from "../services/reportApi";
+import { ensureReport, getReport } from "../services/reportApi";
 
 export function ReportDetailPage() {
   const { reportId } = useParams();
   const navigate = useNavigate();
   const [report, setReport] = useState<ReportRecord | null>(null);
   const [researchContext, setResearchContext] = useState<ResearchContext | null>(null);
+  const [factCard, setFactCard] = useState<FactCard | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [regenerating, setRegenerating] = useState(false);
 
@@ -32,22 +32,11 @@ export function ReportDetailPage() {
       return;
     }
     getReport(reportId)
-      .then(async (data) => {
+      .then((data) => {
         if (mounted) {
           setReport(data);
           setResearchContext(data.research_context ?? null);
-        }
-        if (!data.research_context) {
-          try {
-            const context = await getResearchContext(data.fund.code);
-            if (mounted) {
-              setResearchContext(context);
-            }
-          } catch {
-            if (mounted) {
-              setResearchContext(null);
-            }
-          }
+          setFactCard(data.fact_card ?? null);
         }
       })
       .catch((issue) => {
@@ -88,6 +77,8 @@ export function ReportDetailPage() {
     return <div className="page-loading">正在加载报告详情...</div>;
   }
 
+  const showResearchFusion = hasResearchSignals(researchContext) || Boolean(factCard?.retrieved_chunks?.length);
+
   return (
     <div className="page-stack">
       <ReportHeader report={report} />
@@ -109,9 +100,11 @@ export function ReportDetailPage() {
             <MetricCardGrid metrics={report.key_metrics} />
           </Card>
 
-          <Card title="投研信息融合" eyebrow="Research">
-            <ResearchFusionPanel context={researchContext} />
-          </Card>
+          {showResearchFusion && (
+            <Card title="相关材料解读" eyebrow="RAG">
+              <ResearchFusionPanel context={researchContext} factCard={factCard} />
+            </Card>
+          )}
 
           <Card title="图表区域" eyebrow="Chart Specs">
             <ChartGrid charts={report.chart_specs.charts} />
@@ -126,14 +119,23 @@ export function ReportDetailPage() {
           <Card title="基金基本信息" eyebrow="Fund">
             <FundInfoPanel report={report} />
           </Card>
-          <Card title="报告质量状态" eyebrow="Guard">
-            <GuardIssueList guardResult={report.guard_result} />
-          </Card>
           <Card title="数据质量" eyebrow="Source">
-            <SourceFieldsDrawer charts={report.chart_specs.charts} dataQuality={report.data_quality} />
+            <SourceFieldsDrawer dataQuality={report.data_quality} />
           </Card>
         </aside>
       </div>
     </div>
+  );
+}
+
+function hasResearchSignals(context?: ResearchContext | null): boolean {
+  if (!context) {
+    return false;
+  }
+  return Boolean(
+    context.positive_factors?.length ||
+      context.risk_notices?.length ||
+      context.key_events?.length ||
+      context.view_changes?.length
   );
 }

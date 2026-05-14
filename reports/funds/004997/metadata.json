@@ -1,0 +1,27 @@
+{
+  "report_id": "004997",
+  "fund_code": "004997",
+  "created_at": "2026-05-14T14:31:48.160462+08:00",
+  "status": "warning",
+  "guard_passed": false,
+  "guard_issues": [
+    {
+      "code": "missing_analysis_chain_language",
+      "message": "Report should contain explicit analytical interpretation language."
+    },
+    {
+      "code": "data_restatement_risk",
+      "message": "Core conclusions look too close to metric restatement and need interpretation."
+    }
+  ],
+  "research": {
+    "mode": "auto",
+    "materials_found": true,
+    "used": true,
+    "material_count": 1,
+    "processing_error": null,
+    "included": null,
+    "context_saved": true,
+    "fact_card_saved": true
+  }
+}

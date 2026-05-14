@@ -97,12 +97,31 @@ def test_fusion_keeps_only_selected_source_materials() -> None:
     assert [material.material_id for material in context.source_materials] == ["mat_1"]
 
 
+def test_fusion_records_all_analyzed_materials_separately_from_selected_sources() -> None:
+    bundle = ResearchSignalBundle(
+        fund_code="000001",
+        materials=[_material("mat_1"), _material("mat_2"), _material("mat_3")],
+        signals=[
+            _signal("positive_factor", "selected one", "mat_1"),
+            _signal("risk_notice", "selected two", "mat_2"),
+        ],
+    )
+
+    context = build_research_fusion_context("000001", bundle)
+
+    assert [material.material_id for material in context.analyzed_materials] == ["mat_1", "mat_2", "mat_3"]
+    assert {material.material_id for material in context.source_materials} == {"mat_1", "mat_2"}
+    counts = {material.material_id: material.signal_count for material in context.analyzed_materials}
+    assert counts == {"mat_1": 1, "mat_2": 1, "mat_3": 0}
+
+
 def test_fusion_empty_signals_has_limitation() -> None:
     bundle = ResearchSignalBundle(fund_code="000001", materials=[_material("mat_1")], signals=[])
 
     context = build_research_fusion_context("000001", bundle)
 
     assert context.positive_factors == []
+    assert [material.material_id for material in context.analyzed_materials] == ["mat_1"]
     assert context.limitations == [EMPTY_RESEARCH_LIMITATION]
 
 

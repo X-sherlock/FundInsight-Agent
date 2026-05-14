@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 from typing import Any, cast
 
-from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from fundinsight.api_models import (
@@ -26,6 +26,7 @@ from fundinsight.llm_client import DEFAULT_BAILIAN_MODEL
 from fundinsight.report_store import ReportNotFoundError, ReportStore
 from fundinsight.report_tasks import ReportTaskManager
 from fundinsight.research_models import ResearchDocument, SourceType
+from fundinsight.research_rag import ResearchIngestionService
 from fundinsight.research_service import ResearchMaterialService
 from fundinsight.task_store import TaskNotFoundError, TaskStore
 
@@ -45,13 +46,21 @@ def create_app(
     reports = report_store or ReportStore()
     tasks = task_store or TaskStore(reports.reports_root)
     research_service = research_material_service or ResearchMaterialService()
+    research_ingestion: ResearchIngestionService | None = None
     guard_enforced = _resolve_enforce_report_guard(enforce_report_guard)
     manager = task_manager or ReportTaskManager(
         repository,
         reports,
         tasks,
         enforce_report_guard=guard_enforced,
+        research_material_service=research_service,
     )
+
+    def get_research_ingestion() -> ResearchIngestionService:
+        nonlocal research_ingestion
+        if research_ingestion is None:
+            research_ingestion = ResearchIngestionService(research_service.store)
+        return research_ingestion
 
     app = FastAPI(title="FundInsight Agent API", version="0.4.0")
     app.add_middleware(
@@ -108,13 +117,49 @@ def create_app(
                 f"Invalid source_type: {request.source_type}. Allowed values: {allowed}.",
             )
         try:
-            return research_service.import_text_material(
+            return get_research_ingestion().import_text_material(
                 fund_code=fund_code,
                 title=request.title.strip(),
                 content=request.content,
                 source_type=cast(SourceType, request.source_type),
                 source_name=request.source_name.strip() if request.source_name else None,
+                source_url=request.source_url.strip() if request.source_url else None,
                 publish_date=request.publish_date,
+            )
+        except ValueError as exc:
+            raise _http_error(400, "INVALID_RESEARCH_MATERIAL", str(exc)) from exc
+
+    @app.post("/api/funds/{fund_code}/research-materials/upload", response_model=ResearchDocument)
+    async def upload_research_material(fund_code: str, request: Request) -> ResearchDocument:
+        try:
+            form = await request.form()
+        except Exception as exc:
+            raise _http_error(400, "INVALID_RESEARCH_MATERIAL", f"Invalid multipart upload: {exc}") from exc
+
+        file_item = form.get("file")
+        if file_item is None or not hasattr(file_item, "read"):
+            raise _http_error(400, "INVALID_RESEARCH_MATERIAL", "Upload field 'file' is required.")
+
+        title = _form_text(form.get("title")) or getattr(file_item, "filename", None) or "uploaded material"
+        source_type = _form_text(form.get("source_type")) or "report"
+        if source_type not in ALLOWED_SOURCE_TYPES:
+            allowed = ", ".join(sorted(ALLOWED_SOURCE_TYPES))
+            raise _http_error(
+                400,
+                "INVALID_RESEARCH_MATERIAL",
+                f"Invalid source_type: {source_type}. Allowed values: {allowed}.",
+            )
+        try:
+            content = await file_item.read()
+            return get_research_ingestion().import_file_material(
+                fund_code=fund_code,
+                title=title.strip(),
+                file_name=getattr(file_item, "filename", None) or "material.txt",
+                content=content,
+                source_type=cast(SourceType, source_type),
+                source_name=_form_text(form.get("source_name")),
+                source_url=_form_text(form.get("source_url")),
+                publish_date=_form_text(form.get("publish_date")),
             )
         except ValueError as exc:
             raise _http_error(400, "INVALID_RESEARCH_MATERIAL", str(exc)) from exc
@@ -122,7 +167,7 @@ def create_app(
     @app.delete("/api/funds/{fund_code}/research-materials/{material_id}")
     def delete_research_material(fund_code: str, material_id: str) -> dict[str, Any]:
         try:
-            deleted = research_service.delete_material(fund_code, material_id)
+            deleted = get_research_ingestion().delete_material(fund_code, material_id)
         except ValueError as exc:
             raise _http_error(400, "INVALID_RESEARCH_MATERIAL", str(exc)) from exc
         if not deleted:
@@ -136,6 +181,9 @@ def create_app(
             report_context_path = reports.research_context_path(fund_code)
             if report_context_path.exists():
                 return _read_json_object(report_context_path)
+            fact_card_path = reports.fact_card_path(fund_code)
+            if fact_card_path.exists():
+                return _read_json_object(fact_card_path)
             context = research_service.store.load_fusion_context(fund_code)
             if context is not None:
                 return context.model_dump(mode="json")
@@ -221,6 +269,13 @@ def _read_json_object(path: Path) -> dict[str, Any]:
     return payload
 
 
+def _form_text(value: Any) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    return text or None
+
+
 def _empty_research_context(fund_code: str) -> dict[str, Any]:
     return {
         "fund_code": fund_code,
@@ -229,6 +284,7 @@ def _empty_research_context(fund_code: str) -> dict[str, Any]:
         "key_events": [],
         "view_changes": [],
         "source_materials": [],
+        "analyzed_materials": [],
         "limitations": [],
     }
 

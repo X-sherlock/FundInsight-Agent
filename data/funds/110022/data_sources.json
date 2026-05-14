@@ -1,0 +1,58 @@
+{
+  "fund_code": "110022",
+  "fund_name": "易方达消费行业股票",
+  "metrics_sources": [
+    "data/funds/110022/metrics.json"
+  ],
+  "material_sources": [
+    {
+      "title": "易方达消费行业股票型证券投资基金2026年第1季度报告",
+      "source_type": "report",
+      "source_name": "易方达基金官网",
+      "publish_date": "2026-04-22",
+      "url": "https://cdn.efunds.com.cn/owch/data/bulletin/20260422/%E6%98%93%E6%96%B9%E8%BE%BE%E6%B6%88%E8%B4%B9%E8%A1%8C%E4%B8%9A%E8%82%A1%E7%A5%A8%E5%9E%8B%E8%AF%81%E5%88%B8%E6%8A%95%E8%B5%84%E5%9F%BA%E9%87%912026%E5%B9%B4%E7%AC%AC1%E5%AD%A3%E5%BA%A6%E6%8A%A5%E5%91%8A.pdf?from=person"
+    },
+    {
+      "title": "易方达消费行业股票基金档案",
+      "source_type": "announcement",
+      "source_name": "天天基金基金档案",
+      "publish_date": null,
+      "url": "https://fundf10.eastmoney.com/110022.html"
+    },
+    {
+      "title": "易方达消费行业股票公开行情与风险数据",
+      "source_type": "news",
+      "source_name": "阿牛智投",
+      "publish_date": null,
+      "url": "https://www.aniu.com/fund_detail_110022.shtml"
+    }
+  ],
+  "missing_fields": [
+    "metrics.performance.return_1m",
+    "metrics.performance.return_3y_annualized",
+    "metrics.performance.return_since_inception_annualized",
+    "metrics.risk.volatility_1y",
+    "metrics.risk.downside_volatility_1y",
+    "metrics.risk.beta_1y",
+    "metrics.risk.tracking_error_1y",
+    "metrics.drawdown.max_drawdown_1y",
+    "metrics.drawdown.drawdown_recovery_days",
+    "metrics.risk_adjusted.sharpe_1y",
+    "metrics.risk_adjusted.information_ratio_1y",
+    "metrics.risk_adjusted.calmar_3y",
+    "metrics.fee.management_fee",
+    "metrics.fee.custodian_fee",
+    "metrics.fee.sales_service_fee",
+    "metrics.scale.aum_change_6m",
+    "metrics.scale.holder_count",
+    "peer_summary"
+  ],
+  "failed_sources": [
+    {
+      "url": "https://cdn.efunds.com.cn/owch/data/bulletin/20260422/%E6%98%93%E6%96%B9%E8%BE%BE%E6%B6%88%E8%B4%B9%E8%A1%8C%E4%B8%9A%E8%82%A1%E7%A5%A8%E5%9E%8B%E8%AF%81%E5%88%B8%E6%8A%95%E8%B5%84%E5%9F%BA%E9%87%912026%E5%B9%B4%E7%AC%AC1%E5%AD%A3%E5%BA%A6%E6%8A%A5%E5%91%8A.pdf?from=person",
+      "reason": "PDF 解析库不可用；可安装 pypdf、pdfplumber 或 PyMuPDF 作为 dev 依赖"
+    }
+  ],
+  "generated_at": "2026-05-11T15:52:05.269878+08:00",
+  "whether_any_synthetic_data_used": false
+}

@@ -14,14 +14,6 @@ export function ChartGrid({ charts }: { charts: ChartSpec[] }) {
             <span>{chart.type}</span>
           </div>
           <ChartRenderer chart={chart} />
-          <details className="source-fields">
-            <summary>来源字段</summary>
-            <ul>
-              {chart.source_fields.map((field) => (
-                <li key={field}>{field}</li>
-              ))}
-            </ul>
-          </details>
         </article>
       ))}
     </div>

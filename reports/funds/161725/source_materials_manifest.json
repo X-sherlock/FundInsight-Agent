@@ -1,0 +1,52 @@
+{
+  "source_materials": [
+    {
+      "material_id": "mat_436f7c729c36d2a9",
+      "title": "招商中证白酒指数基金官网产品详情",
+      "source_type": "announcement",
+      "source_name": "招商基金官网",
+      "source_url": "https://www.cmfchina.com/web/fundDetail/161725/index.html",
+      "publish_date": null
+    },
+    {
+      "material_id": "mat_fd5f6de2a131d706",
+      "title": "招商中证白酒指数基金档案",
+      "source_type": "announcement",
+      "source_name": "天天基金基金档案",
+      "source_url": "https://fundf10.eastmoney.com/161725.html",
+      "publish_date": null
+    }
+  ],
+  "analyzed_materials": [
+    {
+      "material_id": "mat_436f7c729c36d2a9",
+      "title": "招商中证白酒指数基金官网产品详情",
+      "source_type": "announcement",
+      "source_name": "招商基金官网",
+      "source_url": "https://www.cmfchina.com/web/fundDetail/161725/index.html",
+      "publish_date": null,
+      "chunk_count": 3,
+      "signal_count": 4
+    },
+    {
+      "material_id": "mat_fd5f6de2a131d706",
+      "title": "招商中证白酒指数基金档案",
+      "source_type": "announcement",
+      "source_name": "天天基金基金档案",
+      "source_url": "https://fundf10.eastmoney.com/161725.html",
+      "publish_date": null,
+      "chunk_count": 2,
+      "signal_count": 6
+    },
+    {
+      "material_id": "mat_4be930a2c6646127",
+      "title": "招商中证白酒指数公开行情与风险数据",
+      "source_type": "news",
+      "source_name": "阿牛智投",
+      "source_url": "https://www.aniu.com/fund_detail_161725.shtml",
+      "publish_date": null,
+      "chunk_count": null,
+      "signal_count": 0
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "material_id": "mat_9cf367f519cd16ed",
+  "fund_code": "000001",
+  "title": "中欧医疗健康混合型证券投资基金2026年第1季度报告.pdf",
+  "source_type": "report",
+  "source_name": null,
+  "source_url": null,
+  "publish_date": null,
+  "file_name": "中欧医疗健康混合型证券投资基金2026年第1季度报告.pdf",
+  "content_hash": "9cf367f519cd16ed5c926c3248bd6423d44bc3e70ec030cf2fa1abdb3f78813c",
+  "original_file_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\000001\\research\\materials\\mat_9cf367f519cd16ed\\original.pdf",
+  "extracted_text_path": "D:\\Data\\Workspace\\FundInsightAgent\\data\\funds\\000001\\research\\materials\\mat_9cf367f519cd16ed\\extracted.txt",
+  "chunk_count": 30,
+  "parent_chunk_count": 24,
+  "vector_status": "indexed",
+  "vector_error": null,
+  "created_at": "2026-05-14T11:08:20.410347+08:00"
+}

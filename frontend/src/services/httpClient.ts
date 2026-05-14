@@ -20,6 +20,13 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   });
 }
 
+export async function apiPostForm<T>(path: string, body: FormData): Promise<T> {
+  return apiRequest<T>(path, {
+    method: "POST",
+    body
+  });
+}
+
 export async function apiDelete<T>(path: string): Promise<T> {
   return apiRequest<T>(path, { method: "DELETE" });
 }

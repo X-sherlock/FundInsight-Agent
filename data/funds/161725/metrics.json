@@ -1,0 +1,111 @@
+{
+  "fund": {
+    "code": "161725",
+    "name": "招商中证白酒指数A",
+    "type": "股票型指数基金",
+    "inception_date": "2015-05-27",
+    "fund_company": "招商基金管理有限公司"
+  },
+  "as_of_date": "2026-03-31",
+  "currency": "CNY",
+  "benchmark": {
+    "name": "中证白酒指数收益率*95%+金融机构人民币活期存款基准利率(税后)*5%",
+    "code": "CUSTOM_161725_BENCHMARK",
+    "description": "招商基金官网和基金2026年第1季度报告披露的业绩比较基准。"
+  },
+  "benchmark_info": {
+    "name": "中证白酒指数收益率*95%+金融机构人民币活期存款基准利率(税后)*5%",
+    "code": "CUSTOM_161725_BENCHMARK",
+    "description": "招商基金官网和基金2026年第1季度报告披露的业绩比较基准。"
+  },
+  "category": {
+    "name": "被动指数型股票基金",
+    "peer_count": null
+  },
+  "peer_summary": null,
+  "metrics": {
+    "performance": {
+      "return_1m": null,
+      "return_3m": -0.0995,
+      "return_6m": -0.185,
+      "return_1y": -0.2226,
+      "return_3y_annualized": null,
+      "return_since_inception_annualized": null,
+      "benchmark_return_1y": -0.2426,
+      "excess_return_1y": 0.02
+    },
+    "excess_return": {
+      "excess_return_1m": null,
+      "excess_return_3m": 0.0037,
+      "excess_return_6m": 0.0059,
+      "excess_return_1y": 0.02,
+      "excess_return_3y_annualized": null
+    },
+    "risk": {
+      "volatility_1y": null,
+      "downside_volatility_1y": null,
+      "beta_1y": null,
+      "tracking_error_1y": null
+    },
+    "drawdown": {
+      "max_drawdown_1y": null,
+      "max_drawdown_3y": -0.4656,
+      "drawdown_recovery_days": null
+    },
+    "risk_adjusted": {
+      "sharpe_1y": null,
+      "information_ratio_1y": null,
+      "calmar_3y": null
+    },
+    "holding": {
+      "stock_position": 0.9413,
+      "bond_position": 0.0,
+      "cash_position": 0.057,
+      "top10_holding_weight": 0.8576,
+      "turnover_rate_1y": null
+    },
+    "fee": {
+      "management_fee": 0.01,
+      "custodian_fee": 0.002,
+      "sales_service_fee": 0.0
+    },
+    "scale": {
+      "aum": 25837313173.42,
+      "aum_change_6m": null,
+      "holder_count": null
+    }
+  },
+  "manager": {
+    "name": "侯昊",
+    "tenure_years": 8.6,
+    "background": "招商基金官网披露任职时间为2017-08-22至今；基金2026年第1季度报告披露其为本基金基金经理。"
+  },
+  "data_quality": {
+    "source": "official_fund_page_and_official_quarterly_report_2026_q1",
+    "missing_fields": [
+      "metrics.performance.return_1m",
+      "metrics.performance.return_3y_annualized",
+      "metrics.performance.return_since_inception_annualized",
+      "metrics.risk.volatility_1y",
+      "metrics.risk.downside_volatility_1y",
+      "metrics.risk.beta_1y",
+      "metrics.risk.tracking_error_1y",
+      "metrics.drawdown.max_drawdown_1y",
+      "metrics.drawdown.drawdown_recovery_days",
+      "metrics.risk_adjusted.sharpe_1y",
+      "metrics.risk_adjusted.information_ratio_1y",
+      "metrics.risk_adjusted.calmar_3y",
+      "metrics.scale.aum_change_6m",
+      "metrics.scale.holder_count",
+      "peer_summary"
+    ],
+    "notes": "真实验收样本。已填字段来自公开披露材料；未在公开来源中确认为本模型同口径的指标保留为空，不使用虚构值补齐。"
+  },
+  "data_notes": [
+    "收益率、基准收益率、超额收益率、A类基金资产净值、股票和现金资产占比、前十大指数投资股票占净资产比例来自招商中证白酒指数证券投资基金2026年第1季度报告，报告期为2026-01-01至2026-03-31。",
+    "管理费率、托管费率和销售服务费来自招商基金官网产品详情页。",
+    "max_drawdown_3y 来自阿牛智投基金详情页披露的“3年最大回撤：46.56%”，数据抓取日为2026-05-11，页面口径未说明是否与本系统风险指标完全一致。",
+    "tenure_years 为根据招商基金官网披露的任职时间2017-08-22和报告期末2026-03-31计算的近似值。",
+    "未检索到同类分位、夏普比率、信息比率、Calmar、Beta、跟踪误差、下行波动率、持有人户数等公开同口径数据，因此保留为空。"
+  ]
+}

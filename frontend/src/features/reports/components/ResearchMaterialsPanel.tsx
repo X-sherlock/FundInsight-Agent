@@ -1,10 +1,10 @@
-import { Save, Trash2 } from "lucide-react";
+import { LoaderCircle, Trash2, UploadCloud } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "../../../components/ui/Button";
 import {
-  createResearchMaterial,
   deleteResearchMaterial,
-  listResearchMaterials
+  listResearchMaterials,
+  uploadResearchMaterial
 } from "../../../services/reportApi";
 import type { FundBrief, ResearchMaterial, ResearchSourceType } from "../types";
 
@@ -37,15 +37,19 @@ export function ResearchMaterialsPanel({
   const [title, setTitle] = useState("");
   const [sourceType, setSourceType] = useState<ResearchSourceType>("report");
   const [sourceName, setSourceName] = useState("");
+  const [sourceUrl, setSourceUrl] = useState("");
   const [publishDate, setPublishDate] = useState("");
-  const [content, setContent] = useState("");
+  const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fundCode = fund?.code;
   const hasMaterials = materials.length > 0;
-  const materialCountText = useMemo(() => `${materials.length} 条已保存材料`, [materials.length]);
+  const materialCountText = useMemo(() => `${materials.length} 条已入库材料`, [materials.length]);
+  const uploadStatusText = file
+    ? `正在处理 ${file.name}，系统会完成上传、分片和向量入库，请稍等片刻。`
+    : "正在上传并处理材料，请稍等片刻。";
 
   useEffect(() => {
     let mounted = true;
@@ -63,7 +67,7 @@ export function ResearchMaterialsPanel({
       })
       .catch((issue) => {
         if (mounted) {
-          setError(issue instanceof Error ? issue.message : "投研材料列表加载失败。");
+          setError(issue instanceof Error ? issue.message : "材料列表加载失败。");
         }
       })
       .finally(() => {
@@ -76,35 +80,30 @@ export function ResearchMaterialsPanel({
     };
   }, [fundCode]);
 
-  async function handleSave() {
-    if (!fundCode) {
+  async function handleUpload() {
+    if (!fundCode || !file) {
       return;
     }
-    if (!title.trim()) {
-      setError("标题不能为空。");
-      return;
-    }
-    if (!content.trim()) {
-      setError("正文内容不能为空。");
-      return;
-    }
+    const resolvedTitle = title.trim() || file.name;
     setSaving(true);
     setError(null);
     try {
-      await createResearchMaterial(fundCode, {
-        title: title.trim(),
-        content,
+      await uploadResearchMaterial(fundCode, {
+        file,
+        title: resolvedTitle,
         source_type: sourceType,
         source_name: sourceName.trim() || null,
+        source_url: sourceUrl.trim() || null,
         publish_date: publishDate || null
       });
       setTitle("");
       setSourceName("");
+      setSourceUrl("");
       setPublishDate("");
-      setContent("");
+      setFile(null);
       setMaterials(await listResearchMaterials(fundCode));
     } catch (issue) {
-      setError(issue instanceof Error ? issue.message : "投研材料保存失败。");
+      setError(issue instanceof Error ? issue.message : "材料上传或向量入库失败。");
     } finally {
       setSaving(false);
     }
@@ -119,7 +118,7 @@ export function ResearchMaterialsPanel({
       await deleteResearchMaterial(fundCode, materialId);
       setMaterials((current) => current.filter((item) => item.material_id !== materialId));
     } catch (issue) {
-      setError(issue instanceof Error ? issue.message : "投研材料删除失败。");
+      setError(issue instanceof Error ? issue.message : "材料删除失败。");
     }
   }
 
@@ -132,18 +131,29 @@ export function ResearchMaterialsPanel({
             checked={includeResearch}
             onChange={(event) => onIncludeResearchChange(event.target.checked)}
           />
-          融合投研材料生成增强报告
+          使用 RAG 相关材料增强报告
         </label>
         <span>{materialCountText}</span>
       </div>
 
       <div className="research-materials__form">
         <div>
+          <label htmlFor="research-file">材料文件</label>
+          <input
+            id="research-file"
+            type="file"
+            accept=".pdf,.txt,.md,text/plain,text/markdown,application/pdf"
+            disabled={!fund || saving}
+            onChange={(event) => setFile(event.target.files?.[0] ?? null)}
+          />
+        </div>
+        <div>
           <label htmlFor="research-title">标题</label>
           <input
             id="research-title"
             value={title}
-            disabled={!fund}
+            placeholder={file?.name ?? "未填写时使用文件名"}
+            disabled={!fund || saving}
             onChange={(event) => setTitle(event.target.value)}
           />
         </div>
@@ -152,7 +162,7 @@ export function ResearchMaterialsPanel({
           <select
             id="research-source-type"
             value={sourceType}
-            disabled={!fund}
+            disabled={!fund || saving}
             onChange={(event) => setSourceType(event.target.value as ResearchSourceType)}
           >
             {sourceTypeOptions.map((option) => (
@@ -167,8 +177,17 @@ export function ResearchMaterialsPanel({
           <input
             id="research-source-name"
             value={sourceName}
-            disabled={!fund}
+            disabled={!fund || saving}
             onChange={(event) => setSourceName(event.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="research-source-url">来源链接</label>
+          <input
+            id="research-source-url"
+            value={sourceUrl}
+            disabled={!fund || saving}
+            onChange={(event) => setSourceUrl(event.target.value)}
           />
         </div>
         <div>
@@ -177,39 +196,53 @@ export function ResearchMaterialsPanel({
             id="research-publish-date"
             type="date"
             value={publishDate}
-            disabled={!fund}
+            disabled={!fund || saving}
             onChange={(event) => setPublishDate(event.target.value)}
           />
         </div>
-        <div className="research-materials__content">
-          <label htmlFor="research-content">正文内容</label>
-          <textarea
-            id="research-content"
-            value={content}
-            disabled={!fund}
-            rows={8}
-            onChange={(event) => setContent(event.target.value)}
-          />
-        </div>
-        <Button type="button" disabled={!fund || saving} onClick={handleSave}>
-          <Save size={16} />
-          保存材料
+        <Button type="button" disabled={!fund || !file || saving} onClick={() => void handleUpload()}>
+          {saving ? (
+            <LoaderCircle className="research-materials__upload-spinner" size={16} aria-hidden="true" />
+          ) : (
+            <UploadCloud size={16} />
+          )}
+          {saving ? "正在入库..." : "上传并入库"}
         </Button>
       </div>
 
+      {saving && (
+        <div className="research-materials__upload-status" role="status" aria-live="polite">
+          <LoaderCircle className="research-materials__upload-spinner" size={18} aria-hidden="true" />
+          <div>
+            <strong>正在上传并解析材料</strong>
+            <span>{uploadStatusText}</span>
+          </div>
+        </div>
+      )}
+
       {error && <div className="form-error">{error}</div>}
 
-      <div className="research-materials__list" aria-busy={loading}>
+      <div className="research-materials__list" aria-busy={loading || saving}>
         {loading ? (
-          <div className="data-source-summary">正在读取已保存材料...</div>
+          <div className="data-source-summary">正在读取已入库材料...</div>
         ) : hasMaterials ? (
           materials.map((material) => (
             <article className="research-materials__item" key={material.material_id}>
               <div>
-                <strong>{material.title}</strong>
+                {material.source_url ? (
+                  <a href={material.source_url} target="_blank" rel="noreferrer">
+                    <strong>{material.title}</strong>
+                  </a>
+                ) : (
+                  <strong>{material.title}</strong>
+                )}
                 <span>
                   {sourceTypeLabels[material.source_type]} / {material.source_name || "未填写来源"} /{" "}
                   {material.publish_date || "未填写日期"}
+                </span>
+                <span>
+                  {material.file_name || "文本材料"} / 分片 {material.chunk_count ?? 0} /{" "}
+                  {material.vector_status === "indexed" ? "已向量化" : material.vector_status || "待入库"}
                 </span>
               </div>
               <Button type="button" variant="ghost" onClick={() => void handleDelete(material.material_id)}>
@@ -219,7 +252,7 @@ export function ResearchMaterialsPanel({
             </article>
           ))
         ) : (
-          <div className="data-source-summary">当前基金暂无已保存投研材料。</div>
+          <div className="data-source-summary">当前基金暂无已入库材料。</div>
         )}
       </div>
     </div>

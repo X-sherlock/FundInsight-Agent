@@ -1,0 +1,62 @@
+{
+  "fund_code": "161725",
+  "fund_name": "招商中证白酒指数A",
+  "metrics_sources": [
+    "data/funds/161725/metrics.json"
+  ],
+  "material_sources": [
+    {
+      "title": "招商中证白酒指数证券投资基金2026年第1季度报告",
+      "source_type": "report",
+      "source_name": "招商基金官网",
+      "publish_date": "2026-04-22",
+      "url": "https://static.cmfchina.com/fundarticle/20260422/20022306017791.pdf"
+    },
+    {
+      "title": "招商中证白酒指数基金官网产品详情",
+      "source_type": "announcement",
+      "source_name": "招商基金官网",
+      "publish_date": null,
+      "url": "https://www.cmfchina.com/web/fundDetail/161725/index.html"
+    },
+    {
+      "title": "招商中证白酒指数基金档案",
+      "source_type": "announcement",
+      "source_name": "天天基金基金档案",
+      "publish_date": null,
+      "url": "https://fundf10.eastmoney.com/161725.html"
+    },
+    {
+      "title": "招商中证白酒指数公开行情与风险数据",
+      "source_type": "news",
+      "source_name": "阿牛智投",
+      "publish_date": null,
+      "url": "https://www.aniu.com/fund_detail_161725.shtml"
+    }
+  ],
+  "missing_fields": [
+    "metrics.performance.return_1m",
+    "metrics.performance.return_3y_annualized",
+    "metrics.performance.return_since_inception_annualized",
+    "metrics.risk.volatility_1y",
+    "metrics.risk.downside_volatility_1y",
+    "metrics.risk.beta_1y",
+    "metrics.risk.tracking_error_1y",
+    "metrics.drawdown.max_drawdown_1y",
+    "metrics.drawdown.drawdown_recovery_days",
+    "metrics.risk_adjusted.sharpe_1y",
+    "metrics.risk_adjusted.information_ratio_1y",
+    "metrics.risk_adjusted.calmar_3y",
+    "metrics.scale.aum_change_6m",
+    "metrics.scale.holder_count",
+    "peer_summary"
+  ],
+  "failed_sources": [
+    {
+      "url": "https://static.cmfchina.com/fundarticle/20260422/20022306017791.pdf",
+      "reason": "PDF 解析库不可用；可安装 pypdf、pdfplumber 或 PyMuPDF 作为 dev 依赖"
+    }
+  ],
+  "generated_at": "2026-05-11T16:07:26.608572+08:00",
+  "whether_any_synthetic_data_used": false
+}

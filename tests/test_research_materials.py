@@ -60,6 +60,7 @@ def test_research_models_validate_and_serialize() -> None:
 
     assert payload["generated_at"]
     assert payload["signals"][0]["confidence"] == 0.8
+    assert payload["materials"][0]["source_url"] == "https://example.com/material"
     assert context.model_dump(mode="json")["source_materials"][0]["publish_date"] == "2026-05-01"
 
 
@@ -182,6 +183,20 @@ def test_research_content_split_short_and_long_text() -> None:
     assert normalize_research_content("收益率  5.2%\r\n基金代码\t000001") == "收益率 5.2%\n基金代码 000001"
 
 
+def test_research_content_split_can_add_overlap_context() -> None:
+    text = "\n\n".join(
+        f"第{index}段：基金代码 000001 在本段中保留收益率 {index}.5%，并描述风险暴露变化。"
+        for index in range(12)
+    )
+
+    chunks_without_overlap = split_research_chunks(text, target_min_chars=80, target_max_chars=160)
+    chunks_with_overlap = split_research_chunks(text, target_min_chars=80, target_max_chars=160, overlap_chars=30)
+
+    assert len(chunks_with_overlap) == len(chunks_without_overlap)
+    assert chunks_with_overlap[1].endswith(chunks_without_overlap[1])
+    assert len(chunks_with_overlap[1]) > len(chunks_without_overlap[1])
+
+
 @pytest.mark.parametrize("field_name", ["content", "text", "body"])
 def test_load_research_json_reads_common_text_fields(tmp_path: Path, field_name: str) -> None:
     path = tmp_path / f"{field_name}.json"
@@ -196,7 +211,7 @@ def test_build_chunks_for_material_uses_stable_chunk_ids(tmp_path: Path) -> None
         fund_code="000001",
         title="长材料",
         source_type="announcement",
-        content="\n\n".join(f"第{index}段：基金代码 000001 的公告内容。" for index in range(80)),
+        content="\n\n".join(f"第{index}段：基金代码 000001 的公告内容。" for index in range(180)),
     )
 
     chunks = service.build_chunks_for_material("000001", document.material_id)
@@ -214,6 +229,7 @@ def _document(material_id: str = "mat_001") -> ResearchDocument:
         title="示例投研材料",
         source_type="report",
         source_name="测试来源",
+        source_url="https://example.com/material",
         publish_date=date(2026, 5, 1),
         file_name="material.txt",
         content="基金代码 000001 的材料正文。",

@@ -62,7 +62,7 @@ class TaskStore:
         task_id: str,
         fund_code: str,
         *,
-        include_research: bool = False,
+        include_research: bool | None = None,
         research_material_ids: list[str] | None = None,
         force_reextract: bool = False,
     ) -> ReportTaskResponse:

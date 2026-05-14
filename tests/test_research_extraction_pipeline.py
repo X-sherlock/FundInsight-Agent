@@ -1,10 +1,11 @@
-import json
+﻿import json
 from datetime import date, datetime, timezone
 from pathlib import Path
 
 import pytest
 
 from fundinsight.research_extractor import ResearchExtractionError, ResearchSignalExtractor
+from fundinsight.research_fusion import build_research_fusion_context
 from fundinsight.research_loader import build_research_document
 from fundinsight.research_models import ResearchChunk
 from fundinsight.research_pipeline import process_research_materials
@@ -12,7 +13,7 @@ from fundinsight.research_service import ResearchMaterialService
 from fundinsight.research_store import ResearchStore
 
 
-class FakeLLMClient:
+class StubLLMClient:
     def __init__(self, responses: list[str | Exception]) -> None:
         self.responses = list(responses)
         self.prompts: list[str] = []
@@ -20,7 +21,7 @@ class FakeLLMClient:
     def generate(self, prompt: str) -> str:
         self.prompts.append(prompt)
         if not self.responses:
-            raise AssertionError("FakeLLMClient has no remaining responses.")
+            raise AssertionError("StubLLMClient has no remaining responses.")
         response = self.responses.pop(0)
         if isinstance(response, Exception):
             raise response
@@ -31,7 +32,7 @@ def test_extractor_extracts_normal_json() -> None:
     extractor = ResearchSignalExtractor()
     document = _document()
     chunk = _chunk("Material says risk controls improved and EVIDENCE_POS is clearly stated.")
-    llm = FakeLLMClient([_output([_signal(evidence_text="EVIDENCE_POS")])])
+    llm = StubLLMClient([_output([_signal(evidence_text="EVIDENCE_POS")])])
 
     signals = extractor.extract_signals_from_chunk(
         fund_code="000001",
@@ -54,7 +55,7 @@ def test_extractor_handles_empty_signals() -> None:
     extractor = ResearchSignalExtractor()
     document = _document()
     chunk = _chunk("No extractable item.")
-    llm = FakeLLMClient([_output([])])
+    llm = StubLLMClient([_output([])])
 
     assert (
         extractor.extract_signals_from_chunk(
@@ -135,6 +136,72 @@ def test_extractor_filters_invalid_signal_type() -> None:
     assert signals == []
 
 
+def test_extractor_filters_operational_address_noise() -> None:
+    evidence = "注册地址 北京市西城区复兴门内大街1号"
+
+    signals = _extract_one_response(
+        _output([_signal(summary="材料披露注册地址", evidence_text=evidence)]),
+        chunk_text=f"Chunk text includes {evidence} for validation.",
+    )
+
+    assert signals == []
+
+
+def test_extractor_filters_empty_table_label_noise() -> None:
+    evidence = "单位净值（05-08）："
+
+    signals = _extract_one_response(
+        _output([_signal(summary="单位净值标签", evidence_text=evidence)]),
+        chunk_text=f"Chunk text includes {evidence} for validation.",
+    )
+
+    assert signals == []
+
+
+def test_extractor_filters_empty_holding_date_label_noise() -> None:
+    evidence = "十大持仓占比 数据截止日期："
+
+    signals = _extract_one_response(
+        _output([_signal(summary="十大持仓占比数据截止日期", evidence_text=evidence)]),
+        chunk_text=f"Chunk text includes {evidence} for validation.",
+    )
+
+    assert signals == []
+
+
+def test_extractor_filters_nav_and_promotion_noise() -> None:
+    evidence = "| 基金交易 | 我的资产"
+
+    signals = _extract_one_response(
+        _output([_signal(summary="基金档案导航项", evidence_text=evidence)]),
+        chunk_text=f"Chunk text includes {evidence} for validation.",
+    )
+
+    assert signals == []
+
+
+def test_extractor_filters_disclaimer_noise() -> None:
+    evidence = "郑重声明：天天基金网发布此信息目的在于传播更多信息，与本网站立场无关。"
+
+    signals = _extract_one_response(
+        _output([_signal(summary="网站免责声明", evidence_text=evidence)]),
+        chunk_text=f"Chunk text includes {evidence} for validation.",
+    )
+
+    assert signals == []
+
+
+def test_extractor_filters_date_only_holding_noise() -> None:
+    evidence = "持仓数据 数据截止至2026-03-31"
+
+    signals = _extract_one_response(
+        _output([_signal(summary="持仓数据截止日期", evidence_text=evidence)]),
+        chunk_text=f"Chunk text includes {evidence} for validation.",
+    )
+
+    assert signals == []
+
+
 def test_pipeline_processes_single_material_single_chunk(tmp_path: Path) -> None:
     store, service = _store_and_service(tmp_path)
     document = service.import_text_material(
@@ -144,7 +211,7 @@ def test_pipeline_processes_single_material_single_chunk(tmp_path: Path) -> None
         publish_date=date(2026, 5, 1),
         content="The material contains EVIDENCE_ONE for extraction.",
     )
-    llm = FakeLLMClient([_output([_signal(summary="single signal", evidence_text="EVIDENCE_ONE")])])
+    llm = StubLLMClient([_output([_signal(summary="single signal", evidence_text="EVIDENCE_ONE")])])
 
     bundle = process_research_materials("000001", store, service, ResearchSignalExtractor(), llm_client=llm)
 
@@ -162,7 +229,7 @@ def test_pipeline_processes_single_material_multiple_chunks(tmp_path: Path) -> N
         publish_date=date(2026, 5, 1),
         content=_long_material("EVIDENCE_ONE", "EVIDENCE_TWO"),
     )
-    llm = FakeLLMClient(
+    llm = StubLLMClient(
         [
             _output(
                 [
@@ -199,7 +266,7 @@ def test_pipeline_processes_multiple_materials(tmp_path: Path) -> None:
         source_type="news",
         content="Second material has EVIDENCE_TWO.",
     )
-    llm = FakeLLMClient(
+    llm = StubLLMClient(
         [
             _output(
                 [
@@ -222,6 +289,77 @@ def test_pipeline_processes_multiple_materials(tmp_path: Path) -> None:
     assert len(bundle.signals) == 2
 
 
+def test_pipeline_processes_three_materials_and_fusion_records_analyzed_sources(tmp_path: Path) -> None:
+    store, service = _store_and_service(tmp_path)
+    first = service.import_text_material(
+        fund_code="000001",
+        title="first",
+        source_type="report",
+        content="First material has EVIDENCE_ONE.",
+    )
+    second = service.import_text_material(
+        fund_code="000001",
+        title="second",
+        source_type="announcement",
+        content="Second material has EVIDENCE_TWO.",
+    )
+    third = service.import_text_material(
+        fund_code="000001",
+        title="third",
+        source_type="news",
+        content="Third material has EVIDENCE_THREE.",
+    )
+    llm = StubLLMClient(
+        [
+            _output(
+                [
+                    _signal(summary="first signal", evidence_text="EVIDENCE_ONE"),
+                    _signal(summary="second signal", evidence_text="EVIDENCE_TWO", signal_type="risk_notice"),
+                    _signal(summary="third signal", evidence_text="EVIDENCE_THREE", signal_type="key_event"),
+                ]
+            ),
+            _output(
+                [
+                    _signal(summary="first signal", evidence_text="EVIDENCE_ONE"),
+                    _signal(summary="second signal", evidence_text="EVIDENCE_TWO", signal_type="risk_notice"),
+                    _signal(summary="third signal", evidence_text="EVIDENCE_THREE", signal_type="key_event"),
+                ]
+            ),
+            _output(
+                [
+                    _signal(summary="first signal", evidence_text="EVIDENCE_ONE"),
+                    _signal(summary="second signal", evidence_text="EVIDENCE_TWO", signal_type="risk_notice"),
+                    _signal(summary="third signal", evidence_text="EVIDENCE_THREE", signal_type="key_event"),
+                ]
+            ),
+        ]
+    )
+
+    bundle = process_research_materials("000001", store, service, ResearchSignalExtractor(), llm_client=llm)
+    context = build_research_fusion_context("000001", bundle)
+
+    assert {material.material_id for material in bundle.materials} == {
+        first.material_id,
+        second.material_id,
+        third.material_id,
+    }
+    assert {signal.material_id for signal in bundle.signals} == {
+        first.material_id,
+        second.material_id,
+        third.material_id,
+    }
+    assert {material.material_id for material in context.analyzed_materials} == {
+        first.material_id,
+        second.material_id,
+        third.material_id,
+    }
+    assert {material.material_id for material in context.source_materials} == {
+        first.material_id,
+        second.material_id,
+        third.material_id,
+    }
+
+
 def test_pipeline_processes_selected_material_ids(tmp_path: Path) -> None:
     store, service = _store_and_service(tmp_path)
     first = service.import_text_material(
@@ -236,7 +374,7 @@ def test_pipeline_processes_selected_material_ids(tmp_path: Path) -> None:
         source_type="news",
         content="Second material has EVIDENCE_TWO.",
     )
-    llm = FakeLLMClient([_output([_signal(summary="second signal", evidence_text="EVIDENCE_TWO")])])
+    llm = StubLLMClient([_output([_signal(summary="second signal", evidence_text="EVIDENCE_TWO")])])
 
     bundle = process_research_materials(
         "000001",
@@ -251,6 +389,46 @@ def test_pipeline_processes_selected_material_ids(tmp_path: Path) -> None:
     assert first.material_id not in {signal.material_id for signal in bundle.signals}
 
 
+def test_pipeline_processes_only_two_selected_material_ids(tmp_path: Path) -> None:
+    store, service = _store_and_service(tmp_path)
+    first = service.import_text_material(
+        fund_code="000001",
+        title="first",
+        source_type="report",
+        content="First material has EVIDENCE_ONE.",
+    )
+    second = service.import_text_material(
+        fund_code="000001",
+        title="second",
+        source_type="announcement",
+        content="Second material has EVIDENCE_TWO.",
+    )
+    third = service.import_text_material(
+        fund_code="000001",
+        title="third",
+        source_type="news",
+        content="Third material has EVIDENCE_THREE.",
+    )
+    llm = StubLLMClient(
+        [
+            _output([_signal(summary="first signal", evidence_text="EVIDENCE_ONE")]),
+            _output([_signal(summary="third signal", evidence_text="EVIDENCE_THREE")]),
+        ]
+    )
+
+    bundle = process_research_materials(
+        "000001",
+        store,
+        service,
+        ResearchSignalExtractor(),
+        material_ids=[first.material_id, third.material_id],
+        llm_client=llm,
+    )
+
+    assert {material.material_id for material in bundle.materials} == {first.material_id, third.material_id}
+    assert second.material_id not in {signal.material_id for signal in bundle.signals}
+
+
 def test_pipeline_skips_missing_material_ids(tmp_path: Path) -> None:
     store, service = _store_and_service(tmp_path)
     document = service.import_text_material(
@@ -259,7 +437,7 @@ def test_pipeline_skips_missing_material_ids(tmp_path: Path) -> None:
         source_type="report",
         content="First material has EVIDENCE_ONE.",
     )
-    llm = FakeLLMClient([_output([_signal(summary="first signal", evidence_text="EVIDENCE_ONE")])])
+    llm = StubLLMClient([_output([_signal(summary="first signal", evidence_text="EVIDENCE_ONE")])])
 
     bundle = process_research_materials(
         "000001",
@@ -287,7 +465,7 @@ def test_pipeline_reuses_existing_bundle_when_not_forced(tmp_path: Path) -> None
         service,
         ResearchSignalExtractor(),
         force_reextract=True,
-        llm_client=FakeLLMClient([_output([_signal(summary="first signal", evidence_text="EVIDENCE_ONE")])]),
+        llm_client=StubLLMClient([_output([_signal(summary="first signal", evidence_text="EVIDENCE_ONE")])]),
     )
 
     reused = process_research_materials(
@@ -295,7 +473,7 @@ def test_pipeline_reuses_existing_bundle_when_not_forced(tmp_path: Path) -> None
         store,
         service,
         ResearchSignalExtractor(),
-        llm_client=FakeLLMClient([RuntimeError("should not be called")]),
+        llm_client=StubLLMClient([RuntimeError("should not be called")]),
     )
 
     assert reused == first
@@ -309,7 +487,7 @@ def test_pipeline_continues_when_one_chunk_fails(tmp_path: Path) -> None:
         source_type="report",
         content=_long_material("EVIDENCE_ONE", "EVIDENCE_TWO"),
     )
-    llm = FakeLLMClient(
+    llm = StubLLMClient(
         [
             RuntimeError("chunk failed"),
             _output([_signal(summary="second signal", evidence_text="EVIDENCE_TWO")]),
@@ -321,6 +499,66 @@ def test_pipeline_continues_when_one_chunk_fails(tmp_path: Path) -> None:
     assert [signal.summary for signal in bundle.signals] == ["second signal"]
 
 
+def test_pipeline_continues_when_one_material_content_is_broken(tmp_path: Path) -> None:
+    store, service = _store_and_service(tmp_path)
+    first = service.import_text_material(
+        fund_code="000001",
+        title="first",
+        source_type="report",
+        content="First material has EVIDENCE_ONE.",
+    )
+    broken = service.import_text_material(
+        fund_code="000001",
+        title="broken",
+        source_type="news",
+        content="Broken material has EVIDENCE_BROKEN.",
+    )
+    third = service.import_text_material(
+        fund_code="000001",
+        title="third",
+        source_type="announcement",
+        content="Third material has EVIDENCE_THREE.",
+    )
+    (store.materials_dir("000001") / f"{broken.material_id}.txt").unlink()
+    llm = StubLLMClient(
+        [
+            _output(
+                [
+                    _signal(summary="first signal", evidence_text="EVIDENCE_ONE"),
+                    _signal(summary="third signal", evidence_text="EVIDENCE_THREE"),
+                ]
+            ),
+            _output(
+                [
+                    _signal(summary="first signal", evidence_text="EVIDENCE_ONE"),
+                    _signal(summary="third signal", evidence_text="EVIDENCE_THREE"),
+                ]
+            ),
+        ]
+    )
+
+    bundle = process_research_materials("000001", store, service, ResearchSignalExtractor(), llm_client=llm)
+
+    assert {material.material_id for material in bundle.materials} == {first.material_id, third.material_id}
+    assert {signal.material_id for signal in bundle.signals} == {first.material_id, third.material_id}
+
+
+def test_store_skips_corrupt_material_metadata(tmp_path: Path) -> None:
+    store, service = _store_and_service(tmp_path)
+    document = service.import_text_material(
+        fund_code="000001",
+        title="valid",
+        source_type="report",
+        content="Valid material has EVIDENCE_ONE.",
+    )
+    corrupt_path = store.materials_dir("000001") / "mat_corrupt.json"
+    corrupt_path.write_text("{not json", encoding="utf-8")
+
+    materials = store.list_materials("000001")
+
+    assert [material.material_id for material in materials] == [document.material_id]
+
+
 def test_pipeline_returns_empty_bundle_without_materials(tmp_path: Path) -> None:
     store, service = _store_and_service(tmp_path)
 
@@ -329,7 +567,7 @@ def test_pipeline_returns_empty_bundle_without_materials(tmp_path: Path) -> None
         store,
         service,
         ResearchSignalExtractor(),
-        llm_client=FakeLLMClient([RuntimeError("should not be called")]),
+        llm_client=StubLLMClient([RuntimeError("should not be called")]),
     )
 
     assert bundle.signals == []
@@ -345,7 +583,7 @@ def _extract_one_response(raw_output: str, chunk_text: str = "Chunk text include
         material=document,
         chunk=chunk,
         chunk_text=chunk.chunk_text,
-        llm_client=FakeLLMClient([raw_output]),
+        llm_client=StubLLMClient([raw_output]),
     )
 
 
@@ -406,6 +644,6 @@ def _chunk(text: str) -> ResearchChunk:
 
 
 def _long_material(first_evidence: str, second_evidence: str) -> str:
-    first = f"First paragraph {first_evidence}. " + ("alpha " * 190)
-    second = f"Second paragraph {second_evidence}. " + ("beta " * 220)
+    first = f"First paragraph {first_evidence}. " + ("alpha " * 350)
+    second = f"Second paragraph {second_evidence}. " + ("beta " * 420)
     return f"{first}\n\n{second}"

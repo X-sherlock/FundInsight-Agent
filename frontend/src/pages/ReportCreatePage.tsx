@@ -17,7 +17,7 @@ export function ReportCreatePage() {
   const [fundMetrics, setFundMetrics] = useState<FundMetricsResponse | null>(null);
   const [metricsLoading, setMetricsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [includeResearch, setIncludeResearch] = useState(false);
+  const [includeResearch, setIncludeResearch] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -135,15 +135,15 @@ export function ReportCreatePage() {
           <ReportCreateForm fund={selectedFund} loading={loading} onSubmit={handleCreate} />
           {error && <div className="form-error">{error}</div>}
         </Card>
-      </div>
 
-      <Card title="投研材料" eyebrow="Research">
-        <ResearchMaterialsPanel
-          fund={selectedFund}
-          includeResearch={includeResearch}
-          onIncludeResearchChange={setIncludeResearch}
-        />
-      </Card>
+        <Card title="上传相关材料" eyebrow="RAG Materials">
+          <ResearchMaterialsPanel
+            fund={selectedFund}
+            includeResearch={includeResearch}
+            onIncludeResearchChange={setIncludeResearch}
+          />
+        </Card>
+      </div>
     </div>
   );
 }

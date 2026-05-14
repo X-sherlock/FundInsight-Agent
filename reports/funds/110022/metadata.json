@@ -1,0 +1,30 @@
+{
+  "report_id": "110022",
+  "fund_code": "110022",
+  "created_at": "2026-05-11T16:57:56.988496+08:00",
+  "status": "warning",
+  "guard_passed": false,
+  "guard_issues": [
+    {
+      "code": "too_few_tables",
+      "message": "Report should include at least 3 tables."
+    },
+    {
+      "code": "missing_analysis_chain_language",
+      "message": "Report should contain explicit analytical interpretation language."
+    },
+    {
+      "code": "data_restatement_risk",
+      "message": "Core conclusions look too close to metric restatement and need interpretation."
+    }
+  ],
+  "research": {
+    "mode": "auto",
+    "materials_found": true,
+    "used": true,
+    "material_count": 6,
+    "processing_error": null,
+    "included": null,
+    "context_saved": true
+  }
+}

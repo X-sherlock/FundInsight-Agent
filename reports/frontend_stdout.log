@@ -1,0 +1,28 @@
+Usage:
+npm install <foo>  add the <foo> dependency to your project
+npm <command> -h   quick help on <command>
+npm <command>
+npm help npm       more involved overview (in a browser)
+npm -l             display usage info for all commands
+npm install        install all the dependencies in your project
+    edit, exec, explain, explore, find-dupes, fund, get, help,
+npm run <foo>      run the script named <foo>
+    config, dedupe, deprecate, diff, dist-tag, docs, doctor,
+npm test           run this project's tests
+All commands:
+    help-search, init, install, install-ci-test, install-test,
+    link, ll, login, logout, ls, org, outdated, owner, pack,
+    ping, pkg, prefix, profile, prune, publish, query, rebuild,
+    repo, restart, root, run, sbom, search, set, shrinkwrap,
+    access, adduser, audit, bugs, cache, ci, completion,
+    uninstall, unpublish, unstar, update, version, view, whoami
+    star, stars, start, stop, team, test, token, undeprecate,
+npm help <term>    search for help on <term> (in a browser)
+Specify configs in the ini-formatted file:
+    C:\Users\13611\.npmrc
+or on the command line via: npm <command> --key=value
+More configuration info: npm help config
+Configuration fields: npm help 7 config
+npm@11.6.2 D:\Software\NodeJs\node_modules\npm
+> fundinsight-frontend@0.3.0 dev
+> vite --host 127.0.0.1 --port 5173

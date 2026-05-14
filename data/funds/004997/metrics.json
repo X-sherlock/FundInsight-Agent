@@ -1,0 +1,105 @@
+{
+  "fund": {
+    "code": "004997",
+    "name": "广发高端制造股票A",
+    "type": "股票型",
+    "inception_date": "2017-09-01",
+    "fund_company": "广发基金管理有限公司"
+  },
+  "as_of_date": "2026-03-16",
+  "currency": "CNY",
+  "benchmark": {
+    "name": "中证高端装备制造指数收益率×90%+中证全债指数收益率×10%",
+    "code": "custom_benchmark",
+    "description": "广发高端制造股票A业绩比较基准"
+  },
+  "benchmark_info": {
+    "name": "中证高端装备制造指数收益率×90%+中证全债指数收益率×10%",
+    "code": "custom_benchmark",
+    "description": "广发高端制造股票A业绩比较基准"
+  },
+  "category": {
+    "name": "普通股票型基金",
+    "peer_count": 997
+  },
+  "peer_summary": {
+    "peer_rank_percentile": 0.492,
+    "peer_average_return_1y": 0.2828,
+    "peer_median_return_1y": null,
+    "peer_average_volatility_1y": null,
+    "peer_count": 997,
+    "percentile_direction": "lower_is_better_rank_position",
+    "notes": "同类排名按新浪基金页面 491/997 估算为分位 0.492。"
+  },
+  "metrics": {
+    "performance": {
+      "return_1m": null,
+      "return_3m": 0.1581,
+      "return_6m": 0.1452,
+      "return_1y": 0.2585,
+      "return_3y_annualized": -0.1049,
+      "return_since_inception_annualized": 0.0709,
+      "benchmark_return_1y": 0.2828,
+      "excess_return_1y": -0.0243
+    },
+    "excess_return": {
+      "excess_return_1m": null,
+      "excess_return_3m": null,
+      "excess_return_6m": null,
+      "excess_return_1y": -0.0243,
+      "excess_return_3y_annualized": null
+    },
+    "risk": {
+      "volatility_1y": null,
+      "downside_volatility_1y": null,
+      "beta_1y": null,
+      "tracking_error_1y": null
+    },
+    "drawdown": {
+      "max_drawdown_1y": null,
+      "max_drawdown_3y": null,
+      "drawdown_recovery_days": null
+    },
+    "risk_adjusted": {
+      "sharpe_1y": null,
+      "information_ratio_1y": null,
+      "calmar_3y": null
+    },
+    "holding": {
+      "stock_position": 0.9,
+      "bond_position": 0.1,
+      "cash_position": null,
+      "top10_holding_weight": 0.5545,
+      "turnover_rate_1y": null
+    },
+    "fee": {
+      "management_fee": 0.015,
+      "custodian_fee": 0.002,
+      "sales_service_fee": 0.0
+    },
+    "scale": {
+      "aum": 4399000000,
+      "aum_change_6m": null,
+      "holder_count": null
+    }
+  },
+  "manager": {
+    "name": "郑澄然",
+    "tenure_years": 5.7,
+    "background": "广发基金权益投资基金经理。"
+  },
+  "data_quality": {
+    "source": "fixture_from_public_pages",
+    "missing_fields": [
+      "metrics.risk.volatility_1y",
+      "metrics.drawdown.max_drawdown_1y",
+      "metrics.risk_adjusted.sharpe_1y",
+      "daily_nav_series"
+    ],
+    "notes": "测试 fixture 来自公开网页摘录；缺失字段不补造。"
+  },
+  "data_notes": [
+    "指标来源包括广发基金产品页和新浪基金行情页，采集时间按 data_sources.json 记录。",
+    "百分比字段使用小数形式，例如 0.2585 表示 25.85%。"
+  ]
+}

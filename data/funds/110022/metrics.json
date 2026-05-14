@@ -1,0 +1,113 @@
+{
+  "fund": {
+    "code": "110022",
+    "name": "易方达消费行业股票",
+    "type": "股票型",
+    "inception_date": "2010-08-20",
+    "fund_company": "易方达基金管理有限公司"
+  },
+  "as_of_date": "2026-03-31",
+  "currency": "CNY",
+  "benchmark": {
+    "name": "中证内地消费主题指数收益率×85%+中债总指数收益率×15%",
+    "code": "CUSTOM_110022_BENCHMARK",
+    "description": "基金2026年第1季度报告披露的业绩比较基准。"
+  },
+  "benchmark_info": {
+    "name": "中证内地消费主题指数收益率×85%+中债总指数收益率×15%",
+    "code": "CUSTOM_110022_BENCHMARK",
+    "description": "基金2026年第1季度报告披露的业绩比较基准。"
+  },
+  "category": {
+    "name": "主动股票型基金",
+    "peer_count": null
+  },
+  "peer_summary": null,
+  "metrics": {
+    "performance": {
+      "return_1m": null,
+      "return_3m": -0.0967,
+      "return_6m": -0.1472,
+      "return_1y": -0.1397,
+      "return_3y_annualized": null,
+      "return_since_inception_annualized": null,
+      "benchmark_return_1y": -0.0936,
+      "excess_return_1y": -0.0461
+    },
+    "excess_return": {
+      "excess_return_1m": null,
+      "excess_return_3m": -0.0392,
+      "excess_return_6m": -0.0481,
+      "excess_return_1y": -0.0461,
+      "excess_return_3y_annualized": null
+    },
+    "risk": {
+      "volatility_1y": null,
+      "downside_volatility_1y": null,
+      "beta_1y": null,
+      "tracking_error_1y": null
+    },
+    "drawdown": {
+      "max_drawdown_1y": null,
+      "max_drawdown_3y": -0.2454,
+      "drawdown_recovery_days": null
+    },
+    "risk_adjusted": {
+      "sharpe_1y": null,
+      "information_ratio_1y": null,
+      "calmar_3y": null
+    },
+    "holding": {
+      "stock_position": 0.8926,
+      "bond_position": 0.0134,
+      "cash_position": 0.074,
+      "top10_holding_weight": 0.6724,
+      "turnover_rate_1y": null
+    },
+    "fee": {
+      "management_fee": null,
+      "custodian_fee": null,
+      "sales_service_fee": null
+    },
+    "scale": {
+      "aum": 12686398967.24,
+      "aum_change_6m": null,
+      "holder_count": null
+    }
+  },
+  "manager": {
+    "name": "萧楠",
+    "tenure_years": 13.5,
+    "background": "基金2026年第1季度报告披露：硕士研究生，具有基金从业资格；任本基金基金经理日期为2012-09-28。"
+  },
+  "data_quality": {
+    "source": "official_quarterly_report_2026_q1_and_public_fund_page",
+    "missing_fields": [
+      "metrics.performance.return_1m",
+      "metrics.performance.return_3y_annualized",
+      "metrics.performance.return_since_inception_annualized",
+      "metrics.risk.volatility_1y",
+      "metrics.risk.downside_volatility_1y",
+      "metrics.risk.beta_1y",
+      "metrics.risk.tracking_error_1y",
+      "metrics.drawdown.max_drawdown_1y",
+      "metrics.drawdown.drawdown_recovery_days",
+      "metrics.risk_adjusted.sharpe_1y",
+      "metrics.risk_adjusted.information_ratio_1y",
+      "metrics.risk_adjusted.calmar_3y",
+      "metrics.fee.management_fee",
+      "metrics.fee.custodian_fee",
+      "metrics.fee.sales_service_fee",
+      "metrics.scale.aum_change_6m",
+      "metrics.scale.holder_count",
+      "peer_summary"
+    ],
+    "notes": "真实验收样本。已填字段来自公开披露材料；未在公开来源中确认为本模型同口径的指标保留为空，不使用虚构值补齐。"
+  },
+  "data_notes": [
+    "收益率、基准收益率、超额收益率、期末基金资产净值、期末基金份额净值、股票和债券资产占比、前十大股票占净资产比例来自易方达消费行业股票型证券投资基金2026年第1季度报告，报告期为2026-01-01至2026-03-31。",
+    "max_drawdown_3y 来自阿牛智投基金详情页披露的“3年最大回撤：24.54%”，数据抓取日为2026-05-11，页面口径未说明是否与本系统风险指标完全一致。",
+    "tenure_years 为根据季报披露的任职日期2012-09-28和报告期末2026-03-31计算的近似值。",
+    "未检索到同类分位、夏普比率、信息比率、Calmar、Beta、跟踪误差、下行波动率、持有人户数等公开同口径数据，因此保留为空。"
+  ]
+}

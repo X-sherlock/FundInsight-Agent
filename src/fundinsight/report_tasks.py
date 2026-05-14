@@ -11,6 +11,7 @@ from fundinsight.api_models import ApiError, EnsureReportResponse
 from fundinsight.fund_repository import FundNotFoundError, FundRepository
 from fundinsight.report_agent import ReportAgent, ReportResult
 from fundinsight.report_store import ReportStore
+from fundinsight.research_service import ResearchMaterialService
 from fundinsight.task_store import TaskStore
 
 
@@ -26,24 +27,33 @@ class ReportTaskManager:
         report_agent_factory: ReportAgentFactory | None = None,
         *,
         enforce_report_guard: bool = False,
+        research_material_service: ResearchMaterialService | None = None,
     ) -> None:
         self.fund_repository = fund_repository
         self.report_store = report_store
         self.task_store = task_store
-        self.report_agent_factory = report_agent_factory or ReportAgent
         self.enforce_report_guard = enforce_report_guard
+        self.research_material_service = research_material_service or ResearchMaterialService()
+        self.report_agent_factory = report_agent_factory or (
+            lambda: ReportAgent(research_material_service=self.research_material_service)
+        )
 
     def ensure_report(
         self,
         fund_code: str,
         *,
         force_regenerate: bool = False,
-        include_research: bool = False,
+        include_research: bool | None = None,
         research_material_ids: list[str] | None = None,
         force_reextract: bool = False,
     ) -> EnsureReportResponse:
         normalized_code = fund_code.strip()
-        if not force_regenerate and not include_research and self.report_store.report_exists(normalized_code):
+        if (
+            not force_regenerate
+            and include_research is not True
+            and self.report_store.report_exists(normalized_code)
+            and not self._should_refresh_existing_report_for_auto_research(normalized_code, include_research)
+        ):
             report_id = self.report_store.report_id_for_fund(normalized_code)
             return EnsureReportResponse(
                 mode="existing",
@@ -144,6 +154,28 @@ class ReportTaskManager:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         suffix = uuid4().hex[:8]
         return f"task_{timestamp}_{fund_code}_{suffix}"
+
+    def _should_refresh_existing_report_for_auto_research(
+        self,
+        fund_code: str,
+        include_research: bool | None,
+    ) -> bool:
+        if include_research is not None:
+            return False
+        try:
+            material_count = len(self.research_material_service.list_materials(fund_code))
+        except Exception:
+            return False
+        if material_count == 0:
+            return False
+        try:
+            metadata = self.report_store._read_json(self.report_store.metadata_path(fund_code))
+        except Exception:
+            return False
+        research_metadata = metadata.get("research")
+        if not isinstance(research_metadata, dict):
+            return True
+        return not bool(research_metadata.get("used") or research_metadata.get("context_saved"))
 
 
 class ReportTaskError(Exception):

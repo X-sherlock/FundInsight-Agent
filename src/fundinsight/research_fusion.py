@@ -5,7 +5,13 @@ from __future__ import annotations
 import re
 from datetime import date
 
-from fundinsight.research_models import ResearchDocument, ResearchFusionContext, ResearchSignal, ResearchSignalBundle
+from fundinsight.research_models import (
+    ResearchAnalyzedMaterial,
+    ResearchDocument,
+    ResearchFusionContext,
+    ResearchSignal,
+    ResearchSignalBundle,
+)
 from fundinsight.research_store import ResearchStore
 
 
@@ -38,6 +44,7 @@ def build_research_fusion_context(
         return ResearchFusionContext(
             fund_code=fund_code,
             source_materials=[],
+            analyzed_materials=_analyzed_materials(bundle.materials, bundle.signals),
             limitations=[EMPTY_RESEARCH_LIMITATION],
         )
 
@@ -64,6 +71,7 @@ def build_research_fusion_context(
         return ResearchFusionContext(
             fund_code=fund_code,
             source_materials=[],
+            analyzed_materials=_analyzed_materials(bundle.materials, bundle.signals),
             limitations=[EMPTY_RESEARCH_LIMITATION],
         )
 
@@ -78,6 +86,7 @@ def build_research_fusion_context(
         key_events=selected_by_type["key_event"],
         view_changes=selected_by_type["view_change"],
         source_materials=_selected_materials(bundle.materials, selected_signals),
+        analyzed_materials=_analyzed_materials(bundle.materials, bundle.signals),
         limitations=limitations,
     )
 
@@ -95,6 +104,7 @@ def save_or_build_fusion_context(
         context = ResearchFusionContext(
             fund_code=fund_code,
             source_materials=[],
+            analyzed_materials=[],
             limitations=[EMPTY_RESEARCH_LIMITATION],
         )
     else:
@@ -139,6 +149,32 @@ def _selected_materials(
 ) -> list[ResearchDocument]:
     selected_ids = {signal.material_id for signal in selected_signals}
     return [material for material in materials if material.material_id in selected_ids]
+
+
+def _analyzed_materials(
+    materials: list[ResearchDocument],
+    signals: list[ResearchSignal],
+) -> list[ResearchAnalyzedMaterial]:
+    signal_count_by_material: dict[str, int] = {}
+    chunks_by_material: dict[str, set[str]] = {}
+    for signal in signals:
+        signal_count_by_material[signal.material_id] = signal_count_by_material.get(signal.material_id, 0) + 1
+        if signal.chunk_id:
+            chunks_by_material.setdefault(signal.material_id, set()).add(signal.chunk_id)
+
+    return [
+        ResearchAnalyzedMaterial(
+            material_id=material.material_id,
+            title=material.title,
+            source_type=material.source_type,
+            source_name=material.source_name,
+            source_url=material.source_url,
+            publish_date=material.publish_date,
+            chunk_count=len(chunks_by_material.get(material.material_id, set())) or None,
+            signal_count=signal_count_by_material.get(material.material_id, 0),
+        )
+        for material in materials
+    ]
 
 
 def _reference_date(signals: list[ResearchSignal]) -> date:

@@ -83,6 +83,7 @@ export interface ReportRecord {
   markdown: string;
   chart_specs: ChartSpecsPayload;
   research_context?: ResearchContext | null;
+  fact_card?: FactCard | null;
   guard_result: GuardResult;
   data_quality: DataQuality;
 }
@@ -101,7 +102,7 @@ export interface CreateReportResponse {
 export interface EnsureReportRequest {
   fund_code: string;
   force_regenerate?: boolean;
-  include_research?: boolean;
+  include_research?: boolean | null;
   research_material_ids?: string[] | null;
   force_reextract?: boolean;
 }
@@ -137,7 +138,7 @@ export interface ReportTaskStatus {
   message: string;
   report_id?: string | null;
   error?: GuardIssue | null;
-  include_research?: boolean;
+  include_research?: boolean | null;
   research_material_ids?: string[] | null;
   force_reextract?: boolean;
   created_at: string;
@@ -152,9 +153,26 @@ export interface ResearchMaterial {
   title: string;
   source_type: ResearchSourceType;
   source_name?: string | null;
+  source_url?: string | null;
   publish_date?: string | null;
   file_name?: string | null;
+  original_file_path?: string | null;
+  extracted_text_path?: string | null;
+  chunk_count?: number | null;
+  vector_status?: "pending" | "indexed" | "failed";
+  vector_error?: string | null;
   created_at: string;
+}
+
+export interface ResearchAnalyzedMaterial {
+  material_id: string;
+  title: string;
+  source_type: ResearchSourceType;
+  source_name?: string | null;
+  source_url?: string | null;
+  publish_date?: string | null;
+  chunk_count?: number | null;
+  signal_count?: number | null;
 }
 
 export interface ResearchMaterialCreateRequest {
@@ -162,6 +180,7 @@ export interface ResearchMaterialCreateRequest {
   content: string;
   source_type: ResearchSourceType;
   source_name?: string | null;
+  source_url?: string | null;
   publish_date?: string | null;
 }
 
@@ -190,7 +209,53 @@ export interface ResearchContext {
   key_events?: ResearchSignal[];
   view_changes?: ResearchSignal[];
   source_materials?: ResearchMaterial[];
+  analyzed_materials?: ResearchAnalyzedMaterial[];
   limitations?: string[];
+  generated_at?: string;
+}
+
+export interface RetrievedResearchChunk {
+  chunk_id: string;
+  material_id: string;
+  fund_code: string;
+  chunk_index: number;
+  evidence_text: string;
+  relevance_score: number;
+  source_type: ResearchSourceType;
+  title: string;
+  source_name?: string | null;
+  source_url?: string | null;
+  publish_date?: string | null;
+  file_name?: string | null;
+  original_file_path?: string | null;
+  analysis_title?: string | null;
+  material_summary?: string | null;
+  sentiment_label?: string | null;
+  evidence_excerpt?: string | null;
+}
+
+export interface FactCardSourceMaterial {
+  material_id: string;
+  title: string;
+  source_type: ResearchSourceType;
+  source_name?: string | null;
+  source_url?: string | null;
+  publish_date?: string | null;
+  file_name?: string | null;
+  original_file_path?: string | null;
+  chunk_count?: number | null;
+}
+
+export interface FactCard {
+  fund_code: string;
+  source_metrics: Record<string, unknown>;
+  derived_metrics: Record<string, unknown>;
+  metric_tables: Record<string, unknown>;
+  missing_fields: string[];
+  data_notes: string[];
+  retrieved_chunks: RetrievedResearchChunk[];
+  source_materials: FactCardSourceMaterial[];
+  limitations: string[];
   generated_at?: string;
 }
 

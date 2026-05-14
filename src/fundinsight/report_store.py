@@ -47,6 +47,9 @@ class ReportStore:
     def research_context_path(self, fund_code: str) -> Path:
         return self.fund_report_dir(fund_code) / "research_context.json"
 
+    def fact_card_path(self, fund_code: str) -> Path:
+        return self.fund_report_dir(fund_code) / "fact_card.json"
+
     def source_materials_manifest_path(self, fund_code: str) -> Path:
         return self.fund_report_dir(fund_code) / "source_materials_manifest.json"
 
@@ -79,6 +82,12 @@ class ReportStore:
             encoding="utf-8",
         )
         research_context_payload = sanitize_research_context(result.research_context)
+        fact_card_payload = result.fact_card
+        if fact_card_payload is not None:
+            self.fact_card_path(fund_code).write_text(
+                json.dumps(fact_card_payload, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
         if research_context_payload is not None:
             self.research_context_path(fund_code).write_text(
                 json.dumps(research_context_payload, ensure_ascii=False, indent=2),
@@ -86,12 +95,35 @@ class ReportStore:
             )
             self.source_materials_manifest_path(fund_code).write_text(
                 json.dumps(
-                    {"source_materials": research_context_payload.get("source_materials", [])},
+                    {
+                        "source_materials": research_context_payload.get("source_materials", []),
+                        "analyzed_materials": research_context_payload.get("analyzed_materials", []),
+                    },
                     ensure_ascii=False,
                     indent=2,
                 ),
                 encoding="utf-8",
             )
+        elif fact_card_payload is not None:
+            self.source_materials_manifest_path(fund_code).write_text(
+                json.dumps(
+                    {
+                        "source_materials": fact_card_payload.get("source_materials", []),
+                        "retrieved_chunks": fact_card_payload.get("retrieved_chunks", []),
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                ),
+                encoding="utf-8",
+            )
+        else:
+            for stale_path in (
+                self.research_context_path(fund_code),
+                self.source_materials_manifest_path(fund_code),
+                self.fact_card_path(fund_code),
+            ):
+                if stale_path.exists():
+                    stale_path.unlink()
         metadata = {
             "report_id": self.report_id_for_fund(fund_code),
             "fund_code": fund_code,
@@ -103,9 +135,14 @@ class ReportStore:
                 for issue in result.guard_result.issues
             ],
             "research": {
-                "included": result.include_research,
+                "mode": result.research_mode,
+                "materials_found": result.research_materials_found,
+                "used": result.research_used,
+                "material_count": result.research_material_count,
                 "processing_error": result.research_processing_error,
-                "context_saved": research_context_payload is not None,
+                "included": result.include_research,
+                "context_saved": research_context_payload is not None or fact_card_payload is not None,
+                "fact_card_saved": fact_card_payload is not None,
             },
         }
         self.metadata_path(fund_code).write_text(
@@ -123,7 +160,9 @@ class ReportStore:
         metadata = self._read_json(self.metadata_path(fund_code))
         chart_specs = self._read_json(self.chart_specs_path(fund_code), default={"charts": []})
         research_context = self._read_json(self.research_context_path(fund_code), default={})
+        fact_card = self._read_json(self.fact_card_path(fund_code), default={})
         markdown = self.report_path(fund_code).read_text(encoding="utf-8")
+        fact_card = self._enrich_fact_card_with_material_interpretations(fact_card, markdown)
         metrics = FundMetricsInput.model_validate(source_metrics)
         guard_issues = metadata.get("guard_issues", [])
         guard_passed = bool(metadata.get("guard_passed", not guard_issues))
@@ -139,6 +178,7 @@ class ReportStore:
             "markdown": markdown,
             "chart_specs": chart_specs,
             "research_context": research_context or None,
+            "fact_card": fact_card or None,
             "guard_result": {"passed": guard_passed, "issues": guard_issues},
             "data_quality": {
                 "missing_fields": metrics.data_quality.missing_fields,
@@ -252,3 +292,104 @@ class ReportStore:
         if metrics.data_quality.notes:
             notes.insert(0, metrics.data_quality.notes)
         return notes
+
+    def _enrich_fact_card_with_material_interpretations(
+        self,
+        fact_card: dict[str, Any],
+        markdown: str,
+    ) -> dict[str, Any]:
+        chunks = fact_card.get("retrieved_chunks")
+        if not isinstance(chunks, list):
+            return fact_card
+
+        interpretations = _extract_material_interpretations(markdown)
+        if not interpretations:
+            return fact_card
+
+        enriched_chunks: list[Any] = []
+        for chunk in chunks:
+            if not isinstance(chunk, dict):
+                enriched_chunks.append(chunk)
+                continue
+            chunk_id = str(chunk.get("chunk_id") or "")
+            interpretation = interpretations.get(chunk_id)
+            if interpretation is None:
+                enriched_chunks.append(chunk)
+                continue
+            enriched_chunks.append(_fill_missing_interpretation_fields(chunk, interpretation))
+        return {**fact_card, "retrieved_chunks": enriched_chunks}
+
+
+def _extract_material_interpretations(markdown: str) -> dict[str, dict[str, str]]:
+    """Parse the generated report's related-material section by chunk_id."""
+
+    section = _extract_related_material_section(markdown)
+    if not section:
+        return {}
+
+    heading_pattern = re.compile(
+        r"^\s*(?:#{3,6}\s*)?\*\*?\s*解读\s*\d+\s*[：:]\s*(?P<title>.+?)\s*\*\*?\s*$",
+        flags=re.MULTILINE,
+    )
+    matches = list(heading_pattern.finditer(section))
+    interpretations: dict[str, dict[str, str]] = {}
+    for index, match in enumerate(matches):
+        block_start = match.end()
+        block_end = matches[index + 1].start() if index + 1 < len(matches) else len(section)
+        block = section[block_start:block_end]
+        chunk_id = _extract_chunk_id(block)
+        if not chunk_id:
+            continue
+        interpretation = {
+            "analysis_title": _strip_markdown(match.group("title")),
+            "material_summary": _extract_markdown_field(block, "材料摘要"),
+            "sentiment_label": _extract_markdown_field(block, "情绪标签"),
+            "evidence_excerpt": _extract_markdown_field(block, "证据原文摘录"),
+        }
+        interpretations[chunk_id] = {
+            key: value
+            for key, value in interpretation.items()
+            if value
+        }
+    return interpretations
+
+
+def _extract_related_material_section(markdown: str) -> str:
+    match = re.search(
+        r"^##\s*14\.\s*相关材料解读\s*\n(?P<body>.*?)(?=^##\s*\d+\.|\Z)",
+        markdown,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+    return match.group("body").strip() if match else ""
+
+
+def _extract_markdown_field(block: str, field_name: str) -> str:
+    pattern = re.compile(
+        rf"^\s*[-*]\s*\*\*{re.escape(field_name)}\*\*\s*[：:]\s*(?P<value>.+?)\s*$",
+        flags=re.MULTILINE,
+    )
+    match = pattern.search(block)
+    return _strip_markdown(match.group("value")) if match else ""
+
+
+def _extract_chunk_id(block: str) -> str:
+    match = re.search(r"chunk_id\s*[：:]\s*(?P<chunk_id>[^，,；;\s)）]+)", block)
+    return match.group("chunk_id").strip() if match else ""
+
+
+def _strip_markdown(value: str) -> str:
+    text = value.strip()
+    text = re.sub(r"^\*\*", "", text)
+    text = re.sub(r"\*\*$", "", text)
+    return text.strip()
+
+
+def _fill_missing_interpretation_fields(
+    chunk: dict[str, Any],
+    interpretation: dict[str, str],
+) -> dict[str, Any]:
+    enriched = dict(chunk)
+    for field_name in ("analysis_title", "material_summary", "sentiment_label", "evidence_excerpt"):
+        if not str(enriched.get(field_name) or "").strip() and interpretation.get(field_name):
+            enriched[field_name] = interpretation[field_name]
+    return enriched

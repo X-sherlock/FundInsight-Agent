@@ -50,6 +50,18 @@ python -m venv .venv
 python -m pip install -e ".[dev]"
 ```
 
+The RAG path uses the same project dependencies:
+
+- `chromadb` for the persistent local vector index under `data/vector_store/chroma/`.
+- `openai` for Bailian/DashScope-compatible embeddings and report-generation calls.
+- `pypdf` for text extraction from searchable PDFs. OCR is intentionally not supported.
+
+If these packages are missing in an existing virtual environment, reinstall the project:
+
+```powershell
+.venv\Scripts\python -m pip install -e ".[dev]"
+```
+
 ## Environment Variables
 
 ### Bailian / DashScope
@@ -68,6 +80,27 @@ https://dashscope.aliyuncs.com/compatible-mode/v1
 
 You can override it with `DASHSCOPE_BASE_URL` or `BAILIAN_BASE_URL`.
 
+### RAG Embeddings
+
+By default, the project uses Bailian embeddings when `DASHSCOPE_API_KEY` or `ALIYUN_BAILIAN_API_KEY` is set. Without an API key it falls back to deterministic local hash embeddings so tests and offline development can still run, but production-like retrieval should use real embeddings.
+
+```powershell
+$env:FUNDINSIGHT_EMBEDDING_PROVIDER = "bailian"
+$env:FUNDINSIGHT_EMBEDDING_MODEL = "text-embedding-v4"
+```
+
+For offline smoke tests:
+
+```powershell
+$env:FUNDINSIGHT_EMBEDDING_PROVIDER = "hash"
+```
+
+You can tune report-time retrieval count with:
+
+```powershell
+$env:FUNDINSIGHT_RAG_TOP_K = "12"
+```
+
 ## CLI Usage
 
 Generate a Markdown report and chart specs from the sample metrics file:
@@ -77,6 +110,40 @@ fundinsight report --input data/sample/fund_metrics.json --output data/outputs/s
 ```
 
 If `--chart-output` is omitted, the CLI writes chart specs next to the Markdown report using `<output stem>_chart_specs.json`.
+
+### CLI RAG Usage
+
+Import and index local research material first. Supported file types are `.txt`, `.md`, and text-based `.pdf`:
+
+```powershell
+fundinsight research import `
+  --fund-code 000001 `
+  --file data/funds/000001/research/materials/example_note.txt `
+  --title "Example research note" `
+  --source-type report `
+  --source-name "Research Desk" `
+  --publish-date 2026-05-01
+```
+
+Check indexing status:
+
+```powershell
+fundinsight research list --fund-code 000001
+```
+
+Generate a report with RAG retrieval enabled and save the exact fact card sent to the prompt:
+
+```powershell
+fundinsight report `
+  --input data/funds/000001/metrics.json `
+  --output data/outputs/000001_rag_report.md `
+  --chart-output data/outputs/000001_rag_chart_specs.json `
+  --include-research `
+  --force-reextract `
+  --fact-card-output data/outputs/000001_fact_card.json
+```
+
+When research materials exist, the API report task also auto-enables RAG unless the request sets `include_research` to `false`. Use `include_research: true` to force RAG on for a regenerated report, or `include_research: false` to force structured-metrics-only output.
 
 ## LLM Output Contract
 
@@ -181,7 +248,7 @@ The frontend reads `VITE_API_BASE_URL` and defaults to `http://127.0.0.1:8000`. 
 .venv\Scripts\python -m pytest
 ```
 
-The tests cover schema validation, planner context generation, prompt rendering, tagged output parsing, report orchestration with a fake LLM client, guard checks, chart spec output, LLM client configuration, and CLI behavior.
+The tests cover schema validation, planner context generation, prompt rendering, tagged output parsing, report orchestration with a stub LLM client, guard checks, chart spec output, LLM client configuration, and CLI behavior.
 
 ## Safety Boundary
 

@@ -1,0 +1,15 @@
+{
+  "task_id": "task_20260511_152037_161725_e5bea8e4",
+  "fund_code": "161725",
+  "status": "completed",
+  "stage": "completed",
+  "stage_label": "报告已生成",
+  "message": "即将打开报告详情页。",
+  "report_id": "161725",
+  "error": null,
+  "include_research": null,
+  "research_material_ids": null,
+  "force_reextract": false,
+  "created_at": "2026-05-11T15:20:37.193653+08:00",
+  "updated_at": "2026-05-11T15:22:08.513971+08:00"
+}

@@ -686,16 +686,52 @@ table {
   justify-self: start;
 }
 
+.research-materials__upload-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--text);
+  background: var(--primary-soft);
+}
+
+.research-materials__upload-status div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.research-materials__upload-status strong {
+  font-size: 14px;
+}
+
+.research-materials__upload-status span {
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.research-materials__upload-spinner {
+  flex: 0 0 auto;
+  animation: spin 0.9s linear infinite;
+}
+
 .research-materials__item,
 .research-fusion__signal,
 .research-fusion__material {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
   gap: 14px;
   padding: 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface-muted);
+}
+
+.research-materials__item {
+  display: flex;
+  justify-content: space-between;
 }
 
 .research-materials__item > div,
@@ -706,8 +742,34 @@ table {
 .research-materials__item strong,
 .research-materials__item span,
 .research-fusion__material strong,
+.research-fusion__material a,
 .research-fusion__material span {
   display: block;
+}
+
+.research-fusion__material a {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--primary);
+  font-weight: 800;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 40px), transparent);
+}
+
+.research-fusion__material strong {
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 40px), transparent);
+}
+
+.research-fusion__material span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .research-fusion__group h3 {
@@ -725,10 +787,132 @@ table {
   gap: 8px;
 }
 
+.research-fusion__analysis {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.research-fusion__analysis-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.research-fusion__analysis-header div,
+.research-fusion__analysis-block {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.research-fusion__analysis-header span,
+.research-fusion__analysis-block span,
+.research-fusion__source-detail {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.research-fusion__analysis-header strong {
+  font-size: 15px;
+}
+
+.research-fusion__sentiment {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.research-fusion__sentiment--positive {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.research-fusion__sentiment--neutral {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.research-fusion__sentiment--negative {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.research-fusion__sentiment--mixed {
+  color: #7c3aed;
+  background: #ede9fe;
+}
+
+.research-fusion__sentiment--uncertain {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.research-fusion__source-detail {
+  line-height: 1.6;
+}
+
+.research-fusion__more {
+  justify-self: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--primary);
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.research-fusion__more:hover {
+  background: var(--primary-soft);
+}
+
 .research-fusion__signal p {
   margin: 0;
   color: var(--text-muted);
   line-height: 1.6;
+}
+
+.research-fusion__evidence {
+  max-width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.research-fusion__evidence summary {
+  cursor: pointer;
+  padding: 8px 10px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 800;
+  list-style-position: inside;
+}
+
+.research-fusion__evidence p {
+  max-height: 180px;
+  margin: 0;
+  overflow: auto;
+  padding: 0 10px 10px;
+}
+
+.research-fusion__evidence[open] p {
+  max-height: none;
 }
 
 .generation-progress {

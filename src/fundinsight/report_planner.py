@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from fundinsight.models import ChartEncoding, ChartSeries, ChartSpec, FundMetricsInput, ReportPlan
+from fundinsight.research_rag import build_fact_card
 
 
 RESEARCH_CONTEXT_FIELDS = (
@@ -13,6 +14,7 @@ RESEARCH_CONTEXT_FIELDS = (
     "key_events",
     "view_changes",
     "source_materials",
+    "analyzed_materials",
     "limitations",
 )
 RESEARCH_SIGNAL_FIELDS = (
@@ -37,13 +39,17 @@ SOURCE_MATERIAL_FIELDS = (
     "title",
     "source_type",
     "source_name",
+    "source_url",
     "publish_date",
+    "chunk_count",
+    "signal_count",
 )
 
 
 def build_report_plan(
     fund_metrics: FundMetricsInput,
     research_context: Any | None = None,
+    retrieved_chunks: list[Any] | None = None,
 ) -> ReportPlan:
     """Build deterministic context for the LLM.
 
@@ -58,6 +64,16 @@ def build_report_plan(
     data_notes = _collect_data_notes(fund_metrics)
     analysis_focus = _build_analysis_focus(fund_metrics, missing_fields)
     sanitized_research_context = sanitize_research_context(research_context)
+    fact_card = None
+    if retrieved_chunks is not None:
+        fact_card = build_fact_card(
+            fund_metrics=fund_metrics,
+            derived_metrics=derived_metrics,
+            metric_tables=metric_tables,
+            missing_fields=missing_fields,
+            data_notes=data_notes,
+            retrieved_chunks=retrieved_chunks,
+        ).model_dump(mode="json")
 
     return ReportPlan(
         source_metrics=fund_metrics.to_prompt_payload(),
@@ -68,6 +84,7 @@ def build_report_plan(
         missing_fields=missing_fields,
         data_notes=data_notes,
         research_context=sanitized_research_context,
+        fact_card=fact_card,
     )
 
 
@@ -86,7 +103,7 @@ def sanitize_research_context(research_context: Any | None) -> dict[str, Any] | 
     sanitized: dict[str, Any] = {}
     for field_name in RESEARCH_CONTEXT_FIELDS:
         value = raw_context.get(field_name)
-        if field_name == "source_materials":
+        if field_name in {"source_materials", "analyzed_materials"}:
             sanitized[field_name] = [_sanitize_source_material(item) for item in value or []]
         elif field_name == "limitations":
             sanitized[field_name] = [item for item in value or [] if isinstance(item, str)]

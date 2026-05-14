@@ -1,4 +1,4 @@
-import json
+﻿import json
 from dataclasses import replace
 from datetime import date
 from pathlib import Path
@@ -11,7 +11,7 @@ from fundinsight.report_tasks import ReportTaskManager
 from fundinsight.research_service import ResearchMaterialService
 from fundinsight.research_store import ResearchStore
 from fundinsight.task_store import TaskStore
-from tests.test_report_agent import FakeLLMClient, FakeResearchLLMClient, PROMPT_TEMPLATE
+from tests.test_report_agent import StubLLMClient, StubResearchLLMClient, PROMPT_TEMPLATE
 from tests.test_report_store import SAMPLE_INPUT, _report_result
 
 
@@ -39,16 +39,15 @@ def test_report_task_with_research_saves_context_and_manifest(tmp_path: Path) ->
         source_type="report",
         source_name="Research Desk",
         publish_date=date(2026, 5, 1),
-        content="EVIDENCE_RESEARCH appears here. FULL ORIGINAL BODY SHOULD NOT ENTER PROMPT.",
+        content="EVIDENCE_RESEARCH appears here with return, drawdown and manager context.",
     )
     manager, task_store, report_store = _manager(
         tmp_path,
         report_agent_factory=lambda: ReportAgent(
-            llm_client=FakeLLMClient(),
+            llm_client=StubLLMClient(),
             prompt_template_path=PROMPT_TEMPLATE,
             research_store=research_store,
             research_material_service=service,
-            research_llm_client=FakeResearchLLMClient(),
         ),
     )
 
@@ -57,15 +56,15 @@ def test_report_task_with_research_saves_context_and_manifest(tmp_path: Path) ->
     manager.execute_task(response.task_id)
 
     task = task_store.get(response.task_id)
-    research_context = json.loads(report_store.research_context_path("000001").read_text(encoding="utf-8"))
+    fact_card = json.loads(report_store.fact_card_path("000001").read_text(encoding="utf-8"))
     manifest = json.loads(report_store.source_materials_manifest_path("000001").read_text(encoding="utf-8"))
 
     assert task.status == "completed"
-    assert research_store.load_signal_bundle("000001") is not None
-    assert research_store.load_fusion_context("000001") is not None
-    assert research_context["positive_factors"][0]["summary"] == "research signal"
+    assert fact_card["retrieved_chunks"][0]["chunk_id"]
     assert manifest["source_materials"][0]["material_id"]
-    assert "FULL ORIGINAL BODY SHOULD NOT ENTER PROMPT" not in json.dumps(research_context, ensure_ascii=False)
+    assert manifest["retrieved_chunks"][0]["material_id"]
+    assert fact_card["source_materials"][0]["chunk_count"] == 1
+    assert "EVIDENCE_RESEARCH" in json.dumps(fact_card, ensure_ascii=False)
 
 
 def test_report_task_with_research_and_no_materials_still_generates(tmp_path: Path) -> None:
@@ -73,7 +72,7 @@ def test_report_task_with_research_and_no_materials_still_generates(tmp_path: Pa
     manager, task_store, report_store = _manager(
         tmp_path,
         report_agent_factory=lambda: ReportAgent(
-            llm_client=FakeLLMClient(),
+            llm_client=StubLLMClient(),
             prompt_template_path=PROMPT_TEMPLATE,
             research_store=research_store,
         ),
@@ -84,11 +83,34 @@ def test_report_task_with_research_and_no_materials_still_generates(tmp_path: Pa
     manager.execute_task(response.task_id)
 
     task = task_store.get(response.task_id)
-    research_context = json.loads(report_store.research_context_path("000001").read_text(encoding="utf-8"))
+    metadata = json.loads(report_store.metadata_path("000001").read_text(encoding="utf-8"))
 
     assert task.status == "completed"
-    assert research_context["limitations"]
-    assert research_context["positive_factors"] == []
+    assert not report_store.research_context_path("000001").exists()
+    assert metadata["research"]["mode"] == "forced_on"
+    assert metadata["research"]["materials_found"] is False
+    assert metadata["research"]["used"] is False
+
+
+def test_auto_mode_refreshes_existing_plain_report_when_materials_exist(tmp_path: Path) -> None:
+    research_store = ResearchStore(tmp_path / "data")
+    service = ResearchMaterialService(research_store)
+    service.import_text_material(
+        fund_code="000001",
+        title="research material",
+        source_type="report",
+        source_name="Research Desk",
+        publish_date=date(2026, 5, 1),
+        content="EVIDENCE_RESEARCH appears here.",
+    )
+    manager, _, report_store = _manager(tmp_path, research_material_service=service)
+    metrics = FundRepository(sample_input_path=SAMPLE_INPUT).get_metrics("000001")
+    report_store.save_generated_report(_report_result(metrics), metrics.model_dump(mode="json"))
+
+    response = manager.ensure_report("000001")
+
+    assert response.mode == "created"
+    assert response.task_id
 
 
 def test_report_task_reuses_running_task_for_same_fund(tmp_path: Path) -> None:
@@ -108,7 +130,7 @@ def test_report_task_records_friendly_failure(tmp_path: Path) -> None:
     )
     report_store = ReportStore(tmp_path / "reports")
     task_store = TaskStore(report_store.reports_root)
-    manager = ReportTaskManager(fund_repository, report_store, task_store, report_agent_factory=FakeReportAgent)
+    manager = ReportTaskManager(fund_repository, report_store, task_store, report_agent_factory=StubReportAgent)
     response = manager.ensure_report("404404")
 
     assert response.task_id
@@ -121,7 +143,7 @@ def test_report_task_records_friendly_failure(tmp_path: Path) -> None:
 
 
 def test_guard_issues_are_saved_as_warning_when_not_enforced(tmp_path: Path) -> None:
-    manager, task_store, report_store = _manager(tmp_path, report_agent_factory=FakeGuardFailedReportAgent)
+    manager, task_store, report_store = _manager(tmp_path, report_agent_factory=StubGuardFailedReportAgent)
     response = manager.ensure_report("000001")
 
     assert response.task_id
@@ -137,7 +159,7 @@ def test_guard_issues_are_saved_as_warning_when_not_enforced(tmp_path: Path) -> 
 def test_guard_issues_fail_task_when_enforced(tmp_path: Path) -> None:
     manager, task_store, report_store = _manager(
         tmp_path,
-        report_agent_factory=FakeGuardFailedReportAgent,
+        report_agent_factory=StubGuardFailedReportAgent,
         enforce_report_guard=True,
     )
     response = manager.ensure_report("000001")
@@ -152,8 +174,13 @@ def test_guard_issues_fail_task_when_enforced(tmp_path: Path) -> None:
     assert not report_store.report_exists("000001")
 
 
-def _manager(tmp_path: Path, report_agent_factory=None, enforce_report_guard: bool = False):
-    report_agent_factory = report_agent_factory or FakeReportAgent
+def _manager(
+    tmp_path: Path,
+    report_agent_factory=None,
+    enforce_report_guard: bool = False,
+    research_material_service: ResearchMaterialService | None = None,
+):
+    report_agent_factory = report_agent_factory or StubReportAgent
     fund_repository = FundRepository(
         funds_root=tmp_path / "funds",
         sample_input_path=SAMPLE_INPUT,
@@ -166,17 +193,18 @@ def _manager(tmp_path: Path, report_agent_factory=None, enforce_report_guard: bo
         task_store,
         report_agent_factory=report_agent_factory,
         enforce_report_guard=enforce_report_guard,
+        research_material_service=research_material_service,
     )
     return manager, task_store, report_store
 
 
-class FakeReportAgent:
+class StubReportAgent:
     def generate_report(self, input_path: str | Path, **kwargs):
         metrics = FundRepository(sample_input_path=SAMPLE_INPUT).get_metrics("000001")
         return _report_result(metrics)
 
 
-class FakeGuardFailedReportAgent:
+class StubGuardFailedReportAgent:
     def generate_report(self, input_path: str | Path, **kwargs):
         metrics = FundRepository(sample_input_path=SAMPLE_INPUT).get_metrics("000001")
         return replace(
